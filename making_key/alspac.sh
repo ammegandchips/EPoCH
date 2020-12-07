@@ -13,7 +13,7 @@ mkdir -p ~/EPoCH/out/
 
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds ~/EPoCH/data/
 
-wget --no-check-certificate --content-disposition https://github.com/ammegandchips/EPoCH/blob/main/making_key/MAKE_KEY.R
+wget 0 --no-check-certificate --content-disposition ~/EPoCH/scripts/MAKE_KEY.R https://github.com/ammegandchips/EPoCH/blob/main/making_key/MAKE_KEY.R
 
 curl -LJO https://github.com/ammegandchips/EPoCH/blob/main/making_key/MAKE_KEY.R
 
