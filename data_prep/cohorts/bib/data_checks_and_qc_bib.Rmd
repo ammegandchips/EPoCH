@@ -1,0 +1,197 @@
+---
+title: "Data checks and QC: BIB"
+author: "Kayleigh Easey and Gemma Sharp"
+date: "3/31/2020"
+output:
+  rmdformats::material
+---
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+# Cohort overview {.tabset}
+```{r eval=TRUE, include=FALSE}
+rm(list=ls())
+library(ggplot2)
+library(gridExtra)
+library(grid)
+
+dat<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_pheno.rds")
+
+check.categorical.variables<-function(variables){
+  list_of_variable_dataframes <- lapply(variables,function(x)dat[,c(x,"covs_sex")])
+  list_of_variable_dataframes <- lapply(list_of_variable_dataframes,setNames,c("variable","covs_sex"))
+  table.and.plot.function<-function(list.of.dfs,list.of.variables,i){
+  df<-list.of.dfs[[i]]
+  name.df <-list.of.variables[[i]]
+  Plot <- ggplot(df,aes(x=factor(variable),fill=factor(covs_sex)))+
+    geom_bar()+scale_fill_manual(values=c("lightseagreen","darksalmon"),na.value="grey")+theme_minimal()+ggtitle(name.df)+theme(legend.position="bottom",legend.title=element_blank(),axis.text.x = element_text(angle = 35, hjust = 1),axis.title=element_blank(),plot.title=element_text(hjust=0.5))
+  Table <- tableGrob(table(df$variable,df$covs_sex,useNA="always"),theme=ttheme_minimal(base_size=10))
+grid.arrange(Plot,Table,nrow=1,ncol=2,as.table=T)
+}
+lapply(1:length(variables),table.and.plot.function,list.of.dfs=list_of_variable_dataframes,list.of.variables=variables)
+}
+
+
+check.numerical.variables<-function(variables){
+  list_of_variable_dataframes <- lapply(variables,function(x)dat[,c(x,"covs_sex")])
+  list_of_variable_dataframes <- lapply(list_of_variable_dataframes,setNames,c("variable","covs_sex"))
+  table.and.plot.function<-function(list.of.dfs,list.of.variables,i){
+  df<-list.of.dfs[[i]]
+  name.df <-list.of.variables[[i]]
+  Plot <- ggplot(df,aes(x=variable,colour=factor(covs_sex)))+
+    geom_histogram(fill="white",alpha=0.5,position="identity",bins=80)+scale_colour_manual(values=c("lightseagreen","darksalmon"),na.value="grey")+theme_classic()+ggtitle(name.df)+theme(legend.position="bottom",legend.title=element_blank(),axis.text.x = element_text(angle = 35, hjust = 1),axis.title=element_blank(),plot.title=element_text(hjust=0.5))
+  Table <- data.frame(covs_sex =c("all","male","female"),
+                      n = c(length(which(!is.na(df$variable))),length(which(!is.na(df$variable[df$covs_sex=="male"]))),length(which(!is.na(df$variable[df$covs_sex=="female"])))),
+                      mean = c(mean(df$variable,na.rm=T),mean(df$variable[df$covs_sex=="male"],na.rm=T),mean(df$variable[df$covs_sex=="female"],na.rm=T)),
+                      sd = c(sd(df$variable,na.rm=T),sd(df$variable[df$covs_sex=="male"],na.rm=T),sd(df$variable[df$covs_sex=="female"],na.rm=T)),
+                      lower.iqr = c(quantile(df$variable,na.rm=T,prob=0.25),quantile(df$variable[df$covs_sex=="male"],na.rm=T,prob=0.25),quantile(df$variable[df$covs_sex=="female"],na.rm=T,prob=0.25)),
+                      median = c(quantile(df$variable,na.rm=T,prob=0.5),quantile(df$variable[df$covs_sex=="male"],na.rm=T,prob=0.5),quantile(df$variable[df$covs_sex=="female"],na.rm=T,prob=0.5)),
+                      upper.iqr = c(quantile(df$variable,na.rm=T,prob=0.75),quantile(df$variable[df$covs_sex=="male"],na.rm=T,prob=0.75),quantile(df$variable[df$covs_sex=="female"],na.rm=T,prob=0.75)),
+                      min = c(min(df$variable,na.rm=T),min(df$variable[df$covs_sex=="male"],na.rm=T),min(df$variable[df$covs_sex=="female"],na.rm=T)),
+                      max = c(max(df$variable,na.rm=T),max(df$variable[df$covs_sex=="male"],na.rm=T),max(df$variable[df$covs_sex=="female"],na.rm=T)))
+grid.arrange(Plot,tableGrob(Table,theme=ttheme_minimal(base_size=10)),nrow=2,ncol=1,as.table=T)
+}
+lapply(1:length(variables),table.and.plot.function,list.of.dfs=list_of_variable_dataframes,list.of.variables=variables)
+}
+```
+There are `r nrow(dat)` observations and `r ncol(dat)` variables in the Born in Bradford dataset.
+
+
+# Smoking {.tabset}
+
+## Maternal
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="smoking_mother_")]
+check.categorical.variables(variables)
+```
+
+## Paternal
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="smoking_father_")]
+check.categorical.variables(variables)
+```
+
+# Alcohol {.tabset}
+
+There's a surprisingly low number of mums who say they don't drink before pregnancy. However, we have coded the same way as Lifecycle. There's also a surprisingly low number of fathers reporting that they DO drink, although this is associated with ethnicity as might be expected.
+
+## Maternal
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="alcohol_mother_")]
+check.categorical.variables(variables)
+```
+
+## Paternal 
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="alcohol_father_")]
+check.categorical.variables(variables)
+```
+
+# Caffeine {.tabset}
+
+## Maternal numerical
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="caffeine_mother_")]
+binary.variables <-variables[grep(variables,pattern="binary")]
+check.numerical.variables(variables[!variables%in%binary.variables])
+```
+
+## Maternal categorical
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+check.categorical.variables(binary.variables)
+```
+
+## Paternal numerical
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="caffeine_father_")]
+binary.variables <-variables[grep(variables,pattern="binary")]
+check.numerical.variables(variables[!variables%in%binary.variables])
+```
+
+## Paternal numerical
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+check.categorical.variables(binary.variables)
+```
+
+# Physical activity {.tabset}
+
+## Maternal
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="physact_mother_")]
+check.categorical.variables(variables)
+```
+## Paternal
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="physact_father_")]
+check.categorical.variables(variables)
+```
+
+# Anthropometry and adiposity {.tabset}
+
+## Numerical
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="anthro_")]
+binary.variables <-variables[grep(variables,pattern="binary")]
+check.numerical.variables(variables[!variables%in%binary.variables])
+```
+
+## Categorical
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+check.categorical.variables(binary.variables)
+```
+
+# Psychosocial and cognitive outcomes {.tabset}
+
+## Numerical
+Not yet available
+```{r eval=FALSE, include=FALSE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="neuro_")]
+binary.variables <-variables[grep(variables,pattern="binary")]
+check.numerical.variables(variables[!variables%in%binary.variables])
+```
+
+## Categorical
+Not yet available
+```{r eval=FALSE, include=FALSE, message=FALSE, warning=FALSE }
+check.categorical.variables(binary.variables)
+```
+
+# Immunological outcomes{.tabset}
+
+## Categorical
+Not yet available
+```{r eval=FALSE, include=FALSE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="immuno_")]
+check.categorical.variables(variables)
+```
+
+# Negative control outcomes {.tabset}
+
+## Categorical
+Not yet available
+```{r eval=FALSE, include=FALSE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grep(names(dat),pattern="negcon_")]
+check.categorical.variables(variables)
+```
+
+# Covariates {.tabset}
+
+## Numerical
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grepl(names(dat),pattern="covs_")&apply(dat,2,function(x) length(unique(x))>=10)]
+check.numerical.variables(variables)
+```
+
+## Categorical
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grepl(names(dat),pattern="covs_")&apply(dat,2,function(x) length(unique(x))<10)] #categorical defined based on having less than 10 unique values (inc NA)
+check.categorical.variables(variables)
+```
+
+## Pregnancy outcomes 
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE }
+variables<-names(dat)[grepl(names(dat),pattern="live_birth|miscarriage|fetal_death|termination|congenital")]
+check.categorical.variables(variables)
+```
