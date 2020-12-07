@@ -10,10 +10,11 @@
 
 # Arguments that need to be changed for each cohort
 
-cohort <- "BIB"
-location_of_dat <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/",tolower(cohort),"/",tolower(cohort),"_pheno.rds")
-location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/making_key/"
-save_directory <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/",tolower(cohort))
+cohort <- "ALSPAC"
+location_of_dat <- paste0("/projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/",tolower(cohort),"/",tolower(cohort),"_pheno.rds")
+location_of_extra_functions <-"https://github.com/ammegandchips/EPoCH/blob/main/making_key/"
+#location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/making_key/"
+save_directory <- paste0("/projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/",tolower(cohort))
 
 ################################################
 
@@ -23,6 +24,7 @@ save_directory <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working
 
 library(tidyverse)
 library(dplyr)
+library(devtools)
 
 # Read data and summarise size
 
@@ -30,7 +32,7 @@ dat<-readRDS(location_of_dat)
 print(paste0("There are ",nrow(dat)," observations and ",ncol(dat)," variables in the ",cohort," dataset"))
 
 # create lists of all exposures and outcomes
-source(paste0(location_of_extra_functions,"list_exposures_outcomes.r"))
+source_url(paste0(location_of_extra_functions,"list_exposures_outcomes.R?raw=TRUE"))
 
 # cross all exposure/outcome combinations
 key <- bind_rows(lapply(all_exposures[all_exposures %in% colnames(dat)],function(x) tibble(x,all_outcomes[all_outcomes %in% colnames(dat)])))
@@ -50,7 +52,7 @@ key$outcome_subclass2<-NA
 key$outcome_time <- NA
 key$outcome_type <- NA
 
-source(paste0(location_of_extra_functions,"specify_classes.R"))
+source_url(paste0(location_of_extra_functions,"specify_classes.R?raw=TRUE"))
 
 # define model 1a covariates (age and sex of child, + genetic principal components if exposure is PRS)
 
@@ -62,7 +64,7 @@ source(paste0(location_of_extra_functions,"specify_classes.R"))
 ### like BMI, height, weight, waist circumference, head circumference, IQ, SDQ measures, SCDC and  MFQ.
 
 key$child_age_covariates <- NA
-source(paste0(location_of_extra_functions,"define_child_age.R"))
+source(paste0(location_of_extra_functions,"define_child_age.R?raw=TRUE"))
 
 ## add sex of child
 
@@ -92,16 +94,16 @@ key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","
 ## where the exposure is a PRS, model 1a and 1b will suffice
 
 key$basic_covariates <- NA
-source(paste0(location_of_extra_functions,"define_basic_parents_covariates.R"))
+source_url(paste0(location_of_extra_functions,"define_basic_parents_covariates.R?raw=TRUE"))
 
 key$other_health_behaviours <- NA
-source(paste0(location_of_extra_functions,"define_parents_other_health_behaviours.R"))
+source_url(paste0(location_of_extra_functions,"define_parents_other_health_behaviours.R?raw=TRUE"))
 x<-apply(key[,c("exposure_class","exposure_time","person_exposed","exposure_type","exposure_source","exposure_subclass")],1,function(x) select_other_health_behaviours(expclass=x[1],exptime=x[2],expparent=x[3],exptype=x[4],expsource=x[5],expsubclass=x[6]))
 key$other_health_behaviours<-unlist(lapply(x,paste,collapse=","))
 rm(x)
 
 key$extra_parent_covariates <-NA
-source(paste0(location_of_extra_functions,"define_parents_disease_covariates.R"))
+source_url(paste0(location_of_extra_functions,"define_parents_disease_covariates.R?raw=TRUE"))
 
 key$covariates_model2a <- NA
 key$covariates_model2a <- apply(key[,c("covariates_model1a","basic_covariates","other_health_behaviours","extra_parent_covariates")],1,function(x) paste(na.omit(x),collapse=","))
@@ -112,7 +114,7 @@ key$covariates_model2a[key$exposure_subclass=="polygenic risk score"]<-NA
 ## e.g. if the exposure is third trimester smoking, adjust for 1st and 2nd trimester smoking
 
 key$previous_exposure_timepoints <- NA
-source(paste0(location_of_extra_functions,"define_previous_timepoints.R"))
+source_url(paste0(location_of_extra_functions,"define_previous_timepoints.R?raw=TRUE"))
 
 x<-apply(key[,c("exposure_class","exposure_time","person_exposed","exposure_type","exposure_source","exposure_subclass")],1,function(x) select_previous_timepoints(expclass=x[1],exptime=x[2],expparent=x[3],exptype="binary",expsource=x[5],expsubclass=x[6]))
 key$previous_exposure_timepoints<-unlist(lapply(x,paste,collapse=","))
@@ -126,7 +128,7 @@ key$covariates_model3a[key$exposure_subclass=="polygenic risk score"]<-NA
 # define model 4a covariates (2a + possible mediators: gest age, birthweight, child passive smoke before 2, child caffeine before 2, child alcohol before 2)
 
 key$potential_mediators<-NA
-source(paste0(location_of_extra_functions,"define_potential_mediators.R"))
+source_url(paste0(location_of_extra_functions,"define_potential_mediators.R?raw=TRUE"))
 
 key$covariates_model4a <- NA
 key$covariates_model4a <- apply(key[,c("covariates_model2a","potential_mediators")],1,function(x) paste(na.omit(x),collapse=","))
@@ -136,7 +138,7 @@ key$covariates_model4a[key$exposure_subclass=="polygenic risk score"]<-NA
 # define model 1b/2b/3b/4b covariates (1a/2b/3b/4b + other parent's exposure)
 
 key$other_parents_exposure <- NA
-source(paste0(location_of_extra_functions,"define_other_parents_exposure.R"))
+source_url(paste0(location_of_extra_functions,"define_other_parents_exposure.R?raw=TRUE"))
 
 x<-apply(key[,c("exposure_class","exposure_time","person_exposed","exposure_type","exposure_source","exposure_subclass")],1,function(x) select_other_parents_exposure(expclass=x[1],exptime=x[2],expparent=x[3],exptype=x[4],expsource=x[5],expsubclass=x[6]))
 key$other_parents_exposure<-unlist(lapply(x,paste,collapse=","))
