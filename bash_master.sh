@@ -6,9 +6,6 @@
 scriptname=echo "$scriptname"
 cohort=echo "$cohort"
 
-echo $script
-echo $cohort
-
 scriptlocation="~/EPoCH/scripts/${scriptname}.R"
 outfile="~/EPoCH/out/${cohort}_${scriptname}.out"
 
@@ -17,4 +14,6 @@ echo $outfile
 
 module add languages/R-4.0.3-gcc9.1.0
 
-echo "Rscript --verbose $scriptlocation $cohort > $outfile"
+rscriptcommand=echo "Rscript --verbose $scriptlocation $cohort > $outfile"
+
+eval rscriptcommand
