@@ -1,8 +1,3 @@
-#!/bin/bash
-#
-#
-#PBS -l nodes=1:ppn=1,walltime=12:00:00
-
 mkdir -p ~/EPoCH/data/
 
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds ~/EPoCH/data/
