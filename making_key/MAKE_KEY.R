@@ -25,6 +25,7 @@ save_directory <- paste0("EPoCH/results/",tolower(cohort),"_pheno.rds")
 
 library(dplyr)
 library(devtools)
+library(stringr)
 
 # Read data and summarise size
 
