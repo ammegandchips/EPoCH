@@ -12,10 +12,10 @@
 
 args <- commandArgs(trailingOnly = TRUE)
 cohort <- toString(args[1])
-location_of_dat <- paste0("~EPoCH/data/",tolower(cohort),"_pheno.rds")
+location_of_dat <- paste0("EPoCH/data/",tolower(cohort),"_pheno.rds")
 location_of_extra_functions <-"https://github.com/ammegandchips/EPoCH/blob/main/making_key/"
 #location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/making_key/"
-save_directory <- paste0("~EPoCH/results/",tolower(cohort),"_pheno.rds")
+save_directory <- paste0("EPoCH/results/",tolower(cohort),"_pheno.rds")
 
 ################################################
 

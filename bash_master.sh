@@ -6,8 +6,8 @@
 scriptname=echo "$scriptname"
 cohort=echo "$cohort"
 
-scriptlocation="~/EPoCH/scripts/${scriptname}.R"
-outfile="~/EPoCH/out/${cohort}_${scriptname}.out"
+scriptlocation="EPoCH/scripts/${scriptname}.R"
+outfile="EPoCH/out/${cohort}_${scriptname}.out"
 
 echo $scriptlocation
 echo $outfile
