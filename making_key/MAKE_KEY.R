@@ -23,7 +23,6 @@ save_directory <- paste0("~EPoCH/results/",tolower(cohort),"_pheno.rds")
 
 # Load packages
 
-library(tidyverse)
 library(dplyr)
 library(devtools)
 
