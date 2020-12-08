@@ -11,4 +11,4 @@ outfile="~/EPoCH/out/${cohort}_${script}.out"
 
 module add languages/R-4.0.3-gcc9.1.0
 
-Rscript --verbose "$scriptlocation" "$cohort" > "$outfile"
+echo "Rscript --verbose $scriptlocation $cohort > $outfile"
