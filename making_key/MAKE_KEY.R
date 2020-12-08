@@ -10,11 +10,12 @@
 
 # Arguments that need to be changed for each cohort
 
-cohort <- "ALSPAC"
-location_of_dat <- paste0("/projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/",tolower(cohort),"/",tolower(cohort),"_pheno.rds")
+args <- commandArgs(trailingOnly = TRUE)
+cohort <- toString(args[1])
+location_of_dat <- paste0("~EPoCH/data/",tolower(cohort),"_pheno.rds")
 location_of_extra_functions <-"https://github.com/ammegandchips/EPoCH/blob/main/making_key/"
 #location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/making_key/"
-save_directory <- paste0("/projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/",tolower(cohort))
+save_directory <- paste0("~EPoCH/results/",tolower(cohort),"_pheno.rds")
 
 ################################################
 
