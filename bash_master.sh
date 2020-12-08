@@ -3,14 +3,14 @@
 #
 #PBS -l nodes=1:ppn=1,walltime=12:00:00
 
-script=echo "$script"
+scriptname=echo "$scriptname"
 cohort=echo "$cohort"
 
 echo $script
 echo $cohort
 
-scriptlocation="~/EPoCH/scripts/${script}.R"
-outfile="~/EPoCH/out/${cohort}_${script}.out"
+scriptlocation="~/EPoCH/scripts/${scriptname}.R"
+outfile="~/EPoCH/out/${cohort}_${scriptname}.out"
 
 echo $scriptlocation
 echo $outfile
