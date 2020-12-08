@@ -14,6 +14,6 @@ echo $outfile
 
 module add languages/R-4.0.3-gcc9.1.0
 
-rscriptcommand=echo "Rscript --verbose $scriptlocation $cohort > $outfile"
+rscriptcommand="Rscript --verbose $scriptlocation $cohort > $outfile"
 
-eval rscriptcommand
+eval $rscriptcommand
