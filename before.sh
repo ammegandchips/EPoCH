@@ -6,6 +6,8 @@ cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rd
 
 mkdir -p ~/EPoCH/scripts/
 
+rm /EPoCH/scripts/*
+
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/data_prep/check_prepared_data/SUMMARISE_DATA.R -P ~/EPoCH/scripts/
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/making_key/MAKE_KEY.R -P ~/EPoCH/scripts/
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/phewas/RUN_PHEWAS.R -P ~/EPoCH/scripts/
