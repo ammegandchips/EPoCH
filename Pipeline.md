@@ -6,7 +6,7 @@
 
 This script moves all the phenotype data and key files from the RDSF folder to a folder in your home directory on bluecrystal called `EPoCH/data`.
 
-It also downloads all necessary r files to `EPoCH/scripts` and makes a folder called `EPoCH/out` if it doesn’t already exist.
+It also downloads all necessary r files to `EPoCH/scripts` and makes a folder called `EPoCH/out` if it doesn’t already exist. And it deletes any old out files and results so you can start afresh.
 
 To make the `EPoCH/scripts` folder if it doesn’t already exist:
 
