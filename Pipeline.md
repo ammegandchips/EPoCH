@@ -1,9 +1,4 @@
----
-title: "Pipeline for running an EPoCH script"
-author: "Gemma Sharp"
-date: "09/12/2020"
-output: html_document
----
+#Pipeline for running an EPoCH script
 
 ## Step 1
 
@@ -89,4 +84,12 @@ Options for `cohort` are:
 ## Step 3
 
 **Move results back to RDSF**
+
+Run `after.sh` interactively to move keys/results from home directory to EPoCH project folder on the RDSF
+
+```
+wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/after.sh -P ~/EPoCH/scripts/
+chmod +x ~/EPoCH/scripts/after.sh
+~/EPoCH/scripts/after.sh
+```
 
