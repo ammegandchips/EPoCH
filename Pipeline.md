@@ -1,4 +1,4 @@
-#Pipeline for running an EPoCH script
+# Pipeline for running an EPoCH script
 
 ## Step 1
 
