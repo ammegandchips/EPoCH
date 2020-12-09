@@ -14,13 +14,13 @@ Please check out the EPoCH website for more information: https://epoch.blogs.bri
 
 ### 1. Data harmonisation and preparation
 
-Preparing and harmonising data between the main EPoCH cohorts: ALSPAC, Born in Bradford, Millenium Cohort Study, MoBa, the Cleft Collective
+Preparing and harmonising data between the main EPoCH cohorts: ALSPAC, Born in Bradford, Millenium Cohort Study, MoBa, the Cleft Collective.
 
-And the replication cohorts: Generation R, Danish National Birth Cohort
+And the replication cohorts: Generation R, Danish National Birth Cohort.
 
-Code for this stage is found in the [data_prep folder](https://github.com/ammegandchips/EPoCH/tree/main/data_prep)
+Code for this stage is found in the [data_prep folder](https://github.com/ammegandchips/EPoCH/tree/main/data_prep).
 
-The prepared data is summarised to check for strange distributions etc using code found in the [data_prep/check_prepared_data folder](https://github.com/ammegandchips/EPoCH/tree/main/data_prep/check_prepared_data)
+The prepared data is summarised to check for strange distributions etc using code found in the [data_prep/check_prepared_data folder](https://github.com/ammegandchips/EPoCH/tree/main/data_prep/check_prepared_data).
 
 ### 2. Running pheWAS analyses in each cohort
 
@@ -28,8 +28,8 @@ For each cohort, we run multivariable regression analyses of the association bet
 
 This stage involves:
 
-	*	 Making a pheWAS "key" to describe the covariates that should be adjusted for for each combination of exposure and outcome. The code for this is found in the [making_key folder](https://github.com/ammegandchips/EPoCH/tree/main/making_key).
-	*	Running the pheWAS. The code for this is found in the [phewas folder](https://github.com/ammegandchips/EPoCH/tree/main/phewas)
+* Making a pheWAS "key" to describe the covariates that should be adjusted for for each combination of exposure and outcome. The code for this is found in the [making_key folder](https://github.com/ammegandchips/EPoCH/tree/main/making_key).
+* Running the pheWAS. The code for this is found in the [phewas folder](https://github.com/ammegandchips/EPoCH/tree/main/phewas).
 
 ### 3. Meta-analysing the pheWAS results from each cohort
 
