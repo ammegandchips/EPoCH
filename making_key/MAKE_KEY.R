@@ -8,39 +8,45 @@
 
 ########################################
 
-# Arguments that need to be changed for each cohort
+# Read in arguments
 
 args <- commandArgs(trailingOnly = TRUE)
 cohort <- toString(args[1])
+
+# Set locations of scripts, data and save files
+
 location_of_dat <- paste0("EPoCH/data/",tolower(cohort),"_pheno.rds")
 location_of_extra_functions <-"https://github.com/ammegandchips/EPoCH/blob/main/making_key/"
 #location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/making_key/"
-save_directory <- paste0("EPoCH/results/",tolower(cohort),"_pheno.rds")
-
-################################################
-
-# the following lines should run without changes
+save_directory <- paste0("EPoCH/results/")
 
 # Load packages
 
+print("loading packages...")
 library(dplyr)
 library(devtools)
 library(stringr)
 
 # Read data and summarise size
 
+print("reading data...")
 dat<-readRDS(location_of_dat)
 print(paste0("There are ",nrow(dat)," observations and ",ncol(dat)," variables in the ",cohort," dataset"))
 
 # create lists of all exposures and outcomes
+
+print("creating lists of all exposures and outcomes...")
 source_url(paste0(location_of_extra_functions,"list_exposures_outcomes.R?raw=TRUE"))
 
 # cross all exposure/outcome combinations
+
+print("crossing all exposures and outcomes...")
 key <- bind_rows(lapply(all_exposures[all_exposures %in% colnames(dat)],function(x) tibble(x,all_outcomes[all_outcomes %in% colnames(dat)])))
 names(key)<-c("exposure","outcome")
 
 # add extra information about each exposure/outcome
 
+print("specifying exposure and outcome classes...")
 key$exposure_class <- NA
 key$exposure_subclass <- NA
 key$exposure_time <- NA
@@ -52,10 +58,11 @@ key$outcome_subclass1 <- NA
 key$outcome_subclass2<-NA
 key$outcome_time <- NA
 key$outcome_type <- NA
-
 source_url(paste0(location_of_extra_functions,"specify_classes.R?raw=TRUE"))
 
 # define model 1a covariates (age and sex of child, + genetic principal components if exposure is PRS)
+
+print("defining model 1a covariates...")
 
 ## child age at outcome
 ### might be an important source of variation for some outcomes. 
@@ -82,6 +89,8 @@ key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","
          ",",paste0(names(dat)[grep(names(dat),pattern="mumpc")],collapse=","))
 
 # define model 2a covariates 
+
+print("defining model 2a covariates...")
 ## most models: 1a + age, SEP, height, weight, parity if exposed parent = mother
 ## plus other health behaviours 
   ### (e.g. if exposure is smoking, adjust for alcohol and caffeine 
@@ -114,6 +123,8 @@ key$covariates_model2a[key$exposure_subclass=="polygenic risk score"]<-NA
 # define model 3a covariates (2a + exposure in previous timepoints where necessary)
 ## e.g. if the exposure is third trimester smoking, adjust for 1st and 2nd trimester smoking
 
+print("defining model 3a covariates...")
+
 key$previous_exposure_timepoints <- NA
 source_url(paste0(location_of_extra_functions,"define_previous_timepoints.R?raw=TRUE"))
 
@@ -127,6 +138,7 @@ key$covariates_model3a <- apply(key[,c("covariates_model2a","previous_exposure_t
 key$covariates_model3a[key$exposure_subclass=="polygenic risk score"]<-NA
 
 # define model 4a covariates (2a + possible mediators: gest age, birthweight, child passive smoke before 2, child caffeine before 2, child alcohol before 2)
+print("defining model 4a covariates...")
 
 key$potential_mediators<-NA
 source_url(paste0(location_of_extra_functions,"define_potential_mediators.R?raw=TRUE"))
@@ -137,6 +149,8 @@ key$covariates_model4a <- apply(key[,c("covariates_model2a","potential_mediators
 key$covariates_model4a[key$exposure_subclass=="polygenic risk score"]<-NA
 
 # define model 1b/2b/3b/4b covariates (1a/2b/3b/4b + other parent's exposure)
+
+print("defining model 1b/2b/3b/4b covariates...")
 
 key$other_parents_exposure <- NA
 source_url(paste0(location_of_extra_functions,"define_other_parents_exposure.R?raw=TRUE"))
@@ -156,6 +170,8 @@ key$covariates_model4b[key$exposure_subclass=="polygenic risk score"]<-NA
 
 # remove NAs in all lists of covariates
 
+print("tidying up key...")
+
 key$covariates_model1a <- unlist(lapply(lapply(str_split(key$covariates_model1a,pattern=","),function(x) x[!x=="NA"]),paste,collapse=","))
 key$covariates_model2a <- unlist(lapply(lapply(str_split(key$covariates_model2a,pattern=","),function(x) x[!x=="NA"]),paste,collapse=","))
 key$covariates_model3a <- unlist(lapply(lapply(str_split(key$covariates_model3a,pattern=","),function(x) x[!x=="NA"]),paste,collapse=","))
@@ -171,5 +187,8 @@ key <- key[,-which(colnames(key) %in% c("child_age_covariates","basic_covariates
 
 # save key
 
-saveRDS(key,paste0(save_directory,"/",tolower(cohort),"_key.rds"))
+print("saving key...")
 
+saveRDS(key,paste0(save_directory,tolower(cohort),"_key.rds"))
+
+print("done!")
