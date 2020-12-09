@@ -73,7 +73,7 @@ Options for `cohort` are:
 
 **Move results back to RDSF**
 
-Run `after.sh` interactively to move keys/results from home directory to EPoCH project folder on the RDSF
+When the job is complete (check using `qstat -u yourusername`), run `after.sh` interactively to move keys/results from home directory to EPoCH project folder on the RDSF
 
 ```
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/after.sh -P ~/EPoCH/scripts/
@@ -97,7 +97,7 @@ chmod +x ~/EPoCH/scripts/bash_master.sh
 
 qsub ~/EPoCH/scripts/bash_master.sh -v cohort=ALSPAC,scriptname=MAKE_KEY
 
-# STEP 3
+# STEP 3 [WAIT UNTIL THE JOB SUBMITTED IN STEP 2 IS COMPLETE]
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/after.sh -P ~/EPoCH/scripts/
 chmod +x ~/EPoCH/scripts/after.sh
 ~/EPoCH/scripts/after.sh
