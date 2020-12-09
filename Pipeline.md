@@ -38,16 +38,6 @@ To run `before.sh`:
 ~/EPoCH/scripts/before.sh
 ```
 
-Everything all together, to copy and paste quickly:
-
-```
-mkdir -p ~/EPoCH/scripts/
-rm -r ~/EPoCH/scripts/*
-wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/before.sh -P ~/EPoCH/scripts/
-chmod +x ~/EPoCH/scripts/before.sh
-~/EPoCH/scripts/before.sh
-```
-
 ## Step 2
 
 **Download and submit a job using `bash_master.sh`**
@@ -90,4 +80,27 @@ wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/after.sh -P ~/EP
 chmod +x ~/EPoCH/scripts/after.sh
 ~/EPoCH/scripts/after.sh
 ```
+
+## Everything all together, to copy and paste quickly:
+
+```
+# STEP 1
+mkdir -p ~/EPoCH/scripts/
+rm -r ~/EPoCH/scripts/*
+wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/before.sh -P ~/EPoCH/scripts/
+chmod +x ~/EPoCH/scripts/before.sh
+~/EPoCH/scripts/before.sh
+
+# STEP 2
+wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/bash_master.sh -P ~/EPoCH/scripts/
+chmod +x ~/EPoCH/scripts/bash_master.sh
+
+qsub ~/EPoCH/scripts/bash_master.sh -v cohort=ALSPAC,scriptname=MAKE_KEY
+
+# STEP 3
+wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/after.sh -P ~/EPoCH/scripts/
+chmod +x ~/EPoCH/scripts/after.sh
+~/EPoCH/scripts/after.sh
+```
+
 
