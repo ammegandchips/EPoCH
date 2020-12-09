@@ -18,4 +18,4 @@ wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/meta_analysis/RU
 mkdir -p ~/EPoCH/out/
 rm -r ~/EPoCH/out/*
 mkdir -p ~/EPoCH/results/
-rm -r ~/EPoCH/out/results/*
+rm -r ~/EPoCH/results/*
