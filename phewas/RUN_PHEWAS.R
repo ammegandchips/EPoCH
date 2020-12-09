@@ -35,13 +35,14 @@ print("loading packages...")
 library(tidyverse)
 library(haven)
 library(tableone)
+library(devtools)
 
 # load extra functions
 
 print("loading extra functions...")
 
-source(paste0(location_of_extra_functions,"summarise_reg_models.R"))
-source(paste0(location_of_extra_functions,"run_regression_models.R"))
+source_url(paste0(location_of_extra_functions,"summarise_reg_models.R?raw=TRUE"))
+source_url(paste0(location_of_extra_functions,"run_regression_models.R?raw=TRUE"))
 
 # Read key and data and summarise size
 
