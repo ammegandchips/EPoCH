@@ -77,9 +77,7 @@ Options for `cohort` are:
   *   ALSPAC
   *   BIB
   *   MCS
-  *   Or, when scriptname = RUN_META_ANALYSIS, cohort can be any combination of cohort names, separated by an underscore, e.g:
-    +   ALSPAC_BIB_MCS
-    +   MCS_BIB
+  *   Or, when scriptname = RUN_META_ANALYSIS, cohort can be any combination of cohort names, separated by an underscore, e.g: ALSPAC_BIB_MCS or MCS_BIB etc.
 
 ## Step 3
 

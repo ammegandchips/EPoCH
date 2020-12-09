@@ -16,4 +16,6 @@ wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/phewas/RUN_PHEWA
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/meta_analysis/RUN_META_ANALYSIS.R -P ~/EPoCH/scripts/
 
 mkdir -p ~/EPoCH/out/
+rm -r ~/EPoCH/out/*
 mkdir -p ~/EPoCH/results/
+rm -r ~/EPoCH/out/results/*
