@@ -2,28 +2,36 @@
 ##      Run the data check     ##
 #################################
 
-# Arguments that need to be changed for each cohort
+# Read in arguments
 
-cohort <- "ALSPAC"
-location_of_dat <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/",tolower(cohort),"/",tolower(cohort),"_pheno.rds")
-location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP3_data/3.5 preparation/common_scripts/"
-save_directory <- paste0("~/University of Bristol/grp-EPoCH - Documents/WP3_data/3.5 preparation/",tolower(cohort),"/data_checks")
+args <- commandArgs(trailingOnly = TRUE)
+cohort <- toString(args[1])
 
-################################################
+# Set locations of scripts, data and save files
 
-# the following lines should run without changes
+location_of_dat <- paste0("EPoCH/data/",tolower(cohort),"_pheno.rds")
+location_of_extra_functions <-"https://github.com/ammegandchips/EPoCH/blob/main/data_prep/check_prepared_data/"
+#location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/making_key/"
+save_directory <- paste0("EPoCH/results/")
 
 # Load packages
+
+print("loading packages...")
  
 library(ggplot2)
 library(gridExtra)
 library(grid)
+library(devtools)
 
 # Add extra functions
 
-source(paste0(location_of_extra_functions,"summarise_data_functions.r"))
+print("loading extra functions...")
+
+source_url(paste0(location_of_extra_functions,"summarise_data_functions.R?raw=TRUE"))
 
 # Read data and summarise size
+
+print("loading dat...")
 
 dat<-readRDS(location_of_dat)
 print(paste0("There are ",nrow(dat)," observations and ",ncol(dat)," variables in the ",cohort," dataset"))
@@ -31,61 +39,71 @@ print(paste0("There are ",nrow(dat)," observations and ",ncol(dat)," variables i
 # Check all variables:
 
 ## covariates
-pdf(paste0(save_directory,"/covariates.pdf"))
+print("checking covariates...")
+pdf(paste0(save_directory,tolower(cohort),"_checks_covariates.pdf"))
 try(check.variables("covs_","categorical"),silent = T)
 try(check.variables("covs_","numerical"),silent = T)
 dev.off()
 
 ## exposures: smoking
-pdf(paste0(save_directory,"/smoking.pdf"))
+print("checking smoking exposures...")
+pdf(paste0(save_directory,tolower(cohort),"_checks_smoking.pdf"))
 try(check.variables("smoking_","categorical"),silent = T)
 try(check.variables("smoking_","numerical"),silent = T)
 dev.off()
 
 ## exposures: alcohol
-pdf(paste0(save_directory,"/alcohol.pdf"))
+print("checking alcohol exposures...")
+pdf(paste0(save_directory,tolower(cohort),"_checks_alcohol.pdf"))
 try(check.variables("alcohol_","categorical"),silent = T)
 try(check.variables("alcohol_","numerical"),silent = T)
 dev.off()
 
 ## exposures: caffeine
-pdf(paste0(save_directory,"/caffeine.pdf"))
+print("checking caffeine exposures...")
+pdf(paste0(save_directory,tolower(cohort),"_checks_caffeine.pdf"))
 try(check.variables("caffeine_","categorical"),silent = T)
 try(check.variables("caffeine_","numerical"),silent = T)
 dev.off()
 
 ## exposures: physical activity
-pdf(paste0(save_directory,"/physact.pdf"))
+print("checking physical activity exposures...")
+pdf(paste0(save_directory,tolower(cohort),"_checks_physact.pdf"))
 try(check.variables("physact_","categorical"),silent = T)
 try(check.variables("physact_","numerical"),silent = T)
 dev.off()
 
 ## exposures: polygenic risk scores
-pdf(paste0(save_directory,"/prs.pdf"))
+print("checking PRSs...")
+pdf(paste0(save_directory,tolower(cohort),"_checks_prs.pdf"))
 try(check.variables("prs_","categorical"),silent = T)
 try(check.variables("prs_","numerical"),silent = T)
 dev.off()
 
 ## outcomes: cardiometabolic
-pdf(paste0(save_directory,"/cardiometabolic.pdf"))
+print("checking cardiometabolic outcomes...")
+pdf(paste0(save_directory,tolower(cohort),"_checks_cardiometabolic.pdf"))
 try(check.variables("cardio_","categorical"),silent = T)
 try(check.variables("cardio_","numerical"),silent = T)
 dev.off()
 
 ## outcomes: anthropometric/adiposity
-pdf(paste0(save_directory,"/anthropometric.pdf"))
+print("checking body size outcomes...")
+pdf(paste0(save_directory,tolower(cohort),"_checks_anthropometric.pdf"))
 try(check.variables("anthro_","categorical"),silent = T)
 try(check.variables("anthro_","numerical"),silent = T)
 dev.off()
 
 ## outcomes: immunological
-pdf(paste0(save_directory,"/immunological.pdf"))
+print("checking immunological outcomes...")
+pdf(paste0(save_directory,tolower(cohort),"_checks_immunological.pdf"))
 try(check.variables("immuno_","categorical"),silent = T)
 try(check.variables("immuno_","numerical"),silent = T)
 dev.off()
 
 ## outcomes: psychosocial
-pdf(paste0(save_directory,"/psychosocial.pdf"))
+print("checking psychosocial outcomes...")
+pdf(paste0(save_directory,tolower(cohort),"_checks_psychosocial.pdf"))
 try(check.variables("neuro_","categorical"),silent = T)
 try(check.variables("neuro_","numerical"),silent = T)
 dev.off()

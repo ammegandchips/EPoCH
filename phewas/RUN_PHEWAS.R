@@ -10,43 +10,50 @@
 # results for other models, exposure timepoints, doses, etc will be presented for specific exposure/outcome combinations identified by the pheWAS
 # However, the web app will enable users to see pheWAS results for any exposure
 
-# The code will likely take a long time to run and is probably best submitted as a job on bluecrystal
-# in which case, this script (RUN_PHEWAS.R) plus the two scripts it calls ("run_regression_models.R","summarise_reg_models.R") 
-# need to be uploaded to bluecrystal
+# The code will likely take a long time to run and is probably best submitted as a job on bluecrystal.
 
 ########################################
 
-# Arguments that need to be changed for each cohort
+# Read in arguments
 
-cohort <- "ALSPAC"
-location_of_dat <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/",tolower(cohort),"/",tolower(cohort),"_pheno.rds")
-location_of_key <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/",tolower(cohort),"/",tolower(cohort),"_key.rds")
-location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/phewas/"
-save_directory <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/",tolower(cohort),"/results/")
+args <- commandArgs(trailingOnly = TRUE)
+cohort <- toString(args[1])
 
-################################################
+# Set locations of scripts, data and save files
+
+location_of_dat <- paste0("EPoCH/data/",tolower(cohort),"_pheno.rds")
+location_of_key <- paste0("EPoCH/data/",tolower(cohort),"_key.rds")
+location_of_extra_functions <-"https://github.com/ammegandchips/EPoCH/blob/main/phewas/"
+#location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/making_key/"
+save_directory <- paste0("EPoCH/results/")
 
 # The following lines should run without changes
 
 # Load packages
 
+print("loading packages...")
 library(tidyverse)
 library(haven)
 library(tableone)
 
 # load extra functions
 
+print("loading extra functions...")
+
 source(paste0(location_of_extra_functions,"summarise_reg_models.R"))
 source(paste0(location_of_extra_functions,"run_regression_models.R"))
 
 # Read key and data and summarise size
 
+print("reading key...")
 key<-readRDS(location_of_key)
+print("reading data...")
 dat<-readRDS(location_of_dat)
 print(paste0("There are ",nrow(dat)," observations and ",ncol(dat)," variables in the ",cohort," dataset"))
 
 # select sample
 
+print("selecting sample...")
 #dat <- dat[dat$covs_biological_father=="bio_dad",] ##Not totally sure we need to do this. The rationale was that all mums are genetically related to their children so we wanted all included dads to be genetically related too (else the maternal effect may appear larger than the paternal effect due to non-paternity). Also for prenatal exposures we would expect all direct paternal effects to go via the sperm, so would want biological dads. However, we're also interested in indirect effects (via the mother), in which case paternity wouldn't be important. Also we don't have a perfect measure of paternity (just maternal-report). May be better to do a sensitivity analysis restricting to biological dads (n=13036), but use all dads in the main analysis.
 if("multiple_pregnancy" %in% colnames(dat)){
 dat <- dat[dat$multiple_pregnancy==1,] #select singleton pregnancies
@@ -56,6 +63,7 @@ dat <- dat[dat$multiple_pregnancy==1,] #select singleton pregnancies
 
 ## select exposures and outcomes
 
+print("selecting exposures and outcomes for pheWAS...")
 exposures <- unique(key$exposure)
 outcomes <- unique(key$outcome[grep(key$outcome,pattern="zscore|_sds|binary")])
 
@@ -64,6 +72,7 @@ outcomes <- unique(key$outcome[grep(key$outcome,pattern="zscore|_sds|binary")])
 models <- c(paste0("model",1:4,rep("a",4)),
             paste0("model",1:4,rep("b",4)))
 
+print("running pheWAS...")
 phewas_res <- lapply(models, 
                      run_analysis, 
                      exposures=exposures,
@@ -72,12 +81,16 @@ phewas_res <- lapply(models,
 
 # save full results
 
+print("saving all pheWAS results...")
+
 lapply(1:length(models),
        function(i){
        saveRDS(phewas_res[[i]],file=paste0(save_directory,cohort,"_",models[i],"_phewas.rds"))
        })
 
 # save a smaller version of the results for the web app
+
+print("saving pheWAS results with fewer columns for web app...")
 
 lapply(1:length(models),
        function(i){
@@ -88,10 +101,13 @@ lapply(1:length(models),
 
 ## select exposures and outcomes
 
+print("selecting exposures and outcomes for pheWAS data summaries...")
 exposures <- unique(key$exposure)
 outcomes <- unique(key$outcome[grep(key$outcome,pattern="zscore|_sds")]) # note: different to above, here we are removing standardised variables
 
-## summarise results for each model
+## summarise data input for each model
+
+print("summarising pheWAS data...")
 
 phewas_summary <- lapply(models, 
                      summarise_reg_models, 
@@ -100,6 +116,8 @@ phewas_summary <- lapply(models,
                      df=dat)
 
 # save summaries
+
+print("savind pheWAS data summaries...")
 
 lapply(1:length(models),
        function(i){
