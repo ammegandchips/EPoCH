@@ -8,18 +8,6 @@ output:
 # Introduction {.tabset}
 
 ## Description {.tabset}
-This is the annotated code to prepare the ALSPAC dataset for use in EPoCH. To run this code, copy and paste the relevant sections. Or, you can extract all the code in this file (without the documentation) using:
-```{r eval=FALSE, include=TRUE}
-library(knitr)
-purl("data_prep_alspac.Rmd")
-```
-You will then need to open it (e.g. in RStudio) and find and replace:
-
-* "## ----eval=FALSE, include=TRUE---------------------------------------------------
-" to blank
-* "## " to blank
-
-Then you can run the whole file using: source("data_prep_alspac.R") - this isn't the most efficient way of generating a phenotype file because we extract variables from the ALSPAC directory several times, but it does the job :)
 
 ## Connect to ALSPAC server {.tabset}
 Before you begin, you must be connected to the ALSPAC server. Command + K for "Connect to server" then smb://central-gpfs.isys.bris.ac.uk/ALSPAC-Data
@@ -2091,6 +2079,653 @@ dat$physact_mother_postnatal_ordinal<-factor(dat$physact_mother_postnatal_ordina
 ## Remove original variables
 ```{r eval=FALSE, include=TRUE}
 dat<-dat[,-which(colnames(dat)%in%phys_act_vars)]
+```
+
+# Parents' mediterranean diet
+
+The following code was developed in NutriPROGRAM so has a different format/approach to the rest of the code in this document. But it does the job.
+
+```{r eval=FALSE, include=TRUE}
+var.names <- c(#FFQ
+#start of weekly variables
+"c200", #FREQ of eating sausages or burgers
+"c201", # FREQ of eating pies or pasties
+"c202", #FREQ of eating meat
+"c203", #FREQ of eating poultry
+"c204", #FREQ of eating organ
+"c205", #FREQ of eating white fish
+"c206", #FREQ of eating oily fish
+"c207", #FREQ of eating shellfish
+"c208", #FREQ of eating eggs or quiche
+"c209", #FREQ of eating cheese
+"c210", #FREQ of eating pizza
+"c211", #FREQ of eating chips
+"c215", #FREQ of eating roast potatoes
+"c216", #FREQ of eating boiled or baked potatoes
+"c217", #FREQ of eating boiled rice
+"c218", #FREQ of eating pasta
+"c219", #FREQ of eating crisps
+"c220", #FREQ of eating fried food
+"c221", #Eat fat on meat
+"c222", #FREQ of eating baked beans
+"c223", #FREQ of eating peas corn or SIM
+"c224", #FREQ of eating cabbage or SIM
+"c225", #FREQ of eating other green VEG
+"c226", #FREQ of eating carrots
+"c227", #FREQ of eating root VEG not INC carrots
+"c228", #FREQ of eating salad
+"c229", #FREQ of eating fresh fruit
+"c230", #FREQ of drinking tinned juice
+"c231", #FREQ of drinking pure non tinned juice
+"c232", #FREQ of eating pudding
+"c233", #FREQ of eating oat cereals
+"c234", #FREQ of eating bran cereals
+"c235", #FREQ of eating other cereals
+"c236", #FREQ of eating cakes or buns
+"c237", #FREQ of eating crispbreads
+"c238", #FREQ of eating biscuits
+"c239", #FREQ of eating chocolate bars
+"c240", #FREQ of eating pulses
+"c241", #FREQ of eating nuts
+"c242", #FREQ of eating bean curd
+"c243", #FREQ of eating tahini
+"c244", #FREQ of eating soya or SIM non meat
+"c245", #FREQ of eating chocolate
+"c246", #FREQ of eating sweets
+#end of weekly variables
+"c247", #FREQ of choosing diet soft drink
+"c250", #Slices of bread eaten per day
+"c275", #Slices of bread with fat daily
+"c251", #Take away main meals per MTH
+"c252", #Eat white bread most days
+"c253", #Eat brown or granary bread
+"c254", #Eat wholemeal bread
+"c255", #Eat chappatis most days
+"c256", #Dont usually eat any bread
+"c260", #Mainly use butter etc on bread & VEG
+"c261", #Mainly use butter etc for frying
+"c263", #Mainly use hard or soft MARG on bread
+"c264", #Mainly use hard or soft MARG for frying
+"c265", #Mainly use POLYUNSAT MARG on bread & VEG
+"c266", #Mainly use POLYUNSAT MARG for frying
+"c267", #Mainly use low fat spread on bread & VEG
+"c268", #Mainly use low fat spread for frying
+"c269", #Mainly use sunflower oil or SIM on VEG
+"c270", #Mainly fry with sunflower oil or SIM
+"c271", #Mainly use other VEG oil on bread & VEG
+"c272", #Mainly use other VEG oil for frying
+"c273", #Other fat used mainly on bread & VEG
+"c274", #Other fat used mainly for frying
+"c276", #Use full fat milk
+"c277", #Use semi skimmed milk
+"c278", #Use skimmed milk
+"c279", #Use sterilised milk
+"c280", #Use dried milk
+"c281", #Use goat or sheep milk
+"c282", #Use soya milk
+"c283", #Use other milk
+#for "milkvol" - start
+"c284", #Milk in tea
+"c285", #Milk in coffee	
+"c287", #Milk as pudding
+"c288", #Milk to drink on its own
+"c289", #Milk as a milky drink
+"c286", #Milk on breakfast cereal
+#end
+"c300", #Cups of caffeinated tea per day
+"c301", #Spoons of sugar per cup of tea
+"c305", #Cups of coffee per day
+"c306", #Spoons of sugar per cup of coffee
+"c310", #Drinks of cola PWK
+"c373", #
+				#covariates
+				"kz021", ## gender; 1 =male; 2= female
+                "c3804",# DV: Daily energy intake (kJ) FFQ for mothers: 32-week gestation
+)
+
+#########################################
+# Read in data: 
+#########################################
+
+alspac.vars <- findVars(var.names) 
+
+#remove variables that appear more than once (keep the main version from Current data)
+alspac.vars<-alspac.vars[-which(alspac.vars$name%in%c("c645a", "c804","kz021", "mz010", "sex")&alspac.vars$cat1!="Current"),]
+
+raw_dat <- extractVars(alspac.vars)
+alspac.table <- raw_dat
+
+# From here on I assume alspac.table contains the relevant data: one row per mother and 
+# the columns aln and food freq variables c200-c373 listed above
+
+# NOTE: I only have aln as the id in my dataset. If this is not the 
+# correct identifier variable, you will need to change 
+# keep_vars at line 197 and the sample.id for food.gp at line 313
+
+# Check variable names: 
+colnames(alspac.table) <- tolower(colnames(alspac.table))
+names(alspac.table)
+
+
+#########################################
+# Missing Data
+#########################################
+
+# Missing data are negative values
+
+# set missings to 0 for these variables
+# (ie if missing assume not consumed at all)
+vars=c(
+"c200","c201","c202","c203","c204","c205","c206","c207","c208","c209",
+"c210","c211","c215","c216","c217","c218","c219","c220","c221","c222",
+"c223","c224","c225","c226","c227","c228","c229","c230","c231","c232",
+"c233","c234","c235","c236","c237","c238","c239","c240","c241","c242",
+"c243","c244","c245","c246","c247","c251","c252","c253","c254","c255",
+"c256","c260","c261","c263","c264","c265","c266","c267","c268","c269",
+"c270","c271","c272","c273","c274","c276","c277","c278","c279","c280",
+"c281","c282","c283","c284","c285","c286","c287","c288","c289","c300",
+"c301","c305","c306","c310","c373")
+
+# replace missing values with 0
+
+alspac.table[,vars]<-replace(alspac.table[,vars],alspac.table[,vars]<0,0)
+
+#########################################
+# Extract the relevant variables from ALSPAC data 
+# and set up food.data data frame for storing the 
+# interim variables - this keeps the orginal data 
+# untouched.
+#
+# Food.data consists of frequency of eating variables
+# recoded from cateogrical to midpoints, plus a couple 
+# of interim calculations 
+#
+
+# ALSPAC variables to keep
+keep_vars<-c("aln",
+    "c200","c201", "c202", "c203", "c204", 
+    "c205","c206", "c207", "c209","c210", 
+    "c217","c218", "c220", "c222", "c223", 
+    "c224", "c225", "c226", "c227", "c228", 
+    "c229", "c232", "c233", "c234", "c235", 
+    "c237", "c240", "c241", "c243", "c250", 
+    "c252", "c253", "c254", "c255", "c260",
+    "c261", "c263", "c264", "c265", "c266", 
+    "c267", "c268", "c269", "c270", "c271", 
+    "c272", "c273", "c274", "c275", "c284", 
+    "c285", "c286", "c287", "c288", "c289", 
+    "c300", "c305", "c373")
+
+food.data <- alspac.table[,keep_vars]
+#########################################################
+# convert all categorical frequency variables into number 
+# of times eaten per week
+#########################################################
+
+# FREQ
+# 1  Never or rarely    0
+# 2  Once in 2WKS       0.5
+# 3  1-3 times PWK      2
+# 4  4-7 times PWK      5.5
+# 5  >once a day        10
+
+vars<-c("c200","c201", "c202", "c203", "c204", 
+        "c205","c206", "c207", "c209", "c210", 
+        "c217","c218", "c222", "c223", "c224", 
+        "c225", "c226", "c227", "c228", "c229", 
+        "c232", "c233", "c234", "c235", "c237", 
+        "c240", "c241", "c243")
+
+food.data[,vars]<-sapply(alspac.table[,vars], recode,
+                         "1"=0,
+                         "2"=0.5,
+                         "3"=2,
+                         "4"=5.5,
+                         "5"=10)
+
+# c250 slices of bread
+# missing       1.5
+# 1 <1          0
+# 2 1-2         1.5
+# 3 3-4         3.5
+# 4 5 or more   6
+
+food.data$c250[alspac.table$c250<0] <- 1.5
+food.data$c250<-recode(alspac.table$c250, 
+                         "0"=0,
+                         "1"=0,
+                         "2"=1.5,
+                         "3"=3.5,
+                         "4"=6)
+
+# c275 slices of bread with fat 
+# missing   2
+# values>7  6
+food.data$c275[alspac.table$c275<0] <- 2
+food.data$c275[alspac.table$c275>7] <- 6
+
+# c252-255 eat types of bread
+# 1 Yes 1
+# 2 No  0
+food.data$c252[alspac.table$c252!=1] <- 0
+food.data$c253[alspac.table$c253!=1] <- 0
+food.data$c254[alspac.table$c254!=1] <- 0
+food.data$c255[alspac.table$c255!=1] <- 0
+
+#c284 c285 c287 c288 c289 - milk in tea, coffee, pudding, as drink, in milky drink
+# 0 (recoded from missing) 0
+# 1 Usually             1
+# 2 Sometimes           0.5
+# 3 Never               0
+vars=c("c284","c285","c287","c288","c289") 
+food.data[,vars]<-sapply(alspac.table[,vars], recode,
+                         "0"=0,
+                         "1"=1,
+                         "2"=0.5,
+                         "3"=0)
+
+#c286 milk in cereal
+# 0 (recoded from missing) 0
+# 1 Usually             1
+# 2 Sometimes           1
+# 3 Never               0
+food.data$c286 = recode(alspac.table$c286,
+                        "0"=0, "1"=1, "2"=1,"3"=0)
+
+# c269 & c270 oil on bread/for frying
+# 1 Yes 1
+# 2 No  0
+food.data$c269[alspac.table$c269!=1] <- 0
+food.data$c270[alspac.table$c270!=1] <- 0
+
+
+# variables in food.data now have appropriate frequencies
+
+
+###########################################                        
+#Set up a data frame for the output: food.gp
+
+# From EWAS Script:
+# 'Necessary variable names are: "sample.id","vegetables",
+# "legumes","fruitnuts","dairy","cereals","meat","fish",
+# "oliveoil","alcohol","sex","mat.edu","mat.age",
+# "mat.smoking","mat.bmi","mat.kcal","batch"
+# -in that order
+#
+# I don't have all these variables, so food.gp contains the 
+# first ten of these (ID plus nine food groups) in the correct 
+# order.
+# However, see (unchecked)  code at end from another file that 
+# purports to be the remaining variables needed
+
+food.gp=data.frame(aln=alspac.table$aln,
+                   qlet=alspac.table$qlet,
+                        vegetables=NA,
+                        legumes=NA,
+                        fruitnuts=NA,
+                        dairy=NA,
+                        cereals=NA,
+                        meat=NA,
+                        fish=NA,
+                        oliveoil=NA,
+                        alcohol=NA)
+
+###########################################
+
+
+###################### Vegetables
+# Use variables: 
+#   c224 leafy green    119g
+#   c225 other green    132g
+#   c226 carrots        60g
+#   c227 other root veg 87g
+#   c228 salad          80g
+#   c210 pizza toppings   54.8g
+
+food.gp$vegetables <- 119 * food.data$c224 +
+                      132 * food.data$c225 +
+                       60 * food.data$c226 +
+                       87 * food.data$c227 +
+                       80 * food.data$c228 +
+                     54.8 * food.data$c210
+# these are portions per week - convert to daily:
+food.gp$vegetables <- food.gp$vegetables/7
+
+
+###################### Legumes
+# c222 baked beans 135g
+# c223 legumes      74g
+# c240 pulses       120g
+
+food.gp$legumes <- 135 * food.data$c222 +
+ 			74 * food.data$c223 +
+ 			120 * food.data$c240 
+
+
+# these are portions per week - convert to daily:
+food.gp$legumes <- food.gp$legumes/7
+
+
+###################### Fruit & Nuts
+# c229 fresh fruit  118g
+# c241 nuts          52g
+# c243  tahini       10g
+
+food.gp$fruitnuts <- 118 * food.data$c229 +
+                      52 * food.data$c241 +
+                      10 * food.data$c243
+
+# these are portions per week - convert to daily:
+food.gp$fruitnuts <- food.gp$fruitnuts/7
+
+###################### Dairy
+
+### milk:
+# c284  in tea          30g per cup
+# c300 cups/tea per day
+# c285 in coffee        30g per cup
+# c305 cups/coffee per day
+# c286 in cereal        100g per cereal
+# c233, c234 c235 - oat, bran and other cereals /week
+# c287 in pudding       150g
+# c232 no. puddings /week
+# c288 as a drink       200g
+# c289 in milky drink   260g
+# no measure of frequency for these two beyond usually/sometimes -
+# previous code has a factor 2/3 which I think is
+# interpreting 'usually have a milk drink' as on 2 in 3 days
+# 'sometimes' has a value of 0.5, so is thus on 1 in 3 days
+
+# milk - do this as daily milk (so need to convert cer3al and puddings)
+food.data$milk <- 30 * food.data$c284 * food.data$c300 +
+        30 * food.data$c285 * food.data$c305 +
+        (100 * food.data$c286 * (food.data$c233 + food.data$c234 + food.data$c235) )/7+
+        (150 * food.data$c287 *food.data$c232)/7 +
+        200 * food.data$c288 * 2/3 +
+        260 * food.data$c289 * 2/3
+
+### Other dairy:
+# c209 cheese   46g
+# c210 pizza    60.3g
+
+
+# convert cheese and pizza to daily
+food.gp$dairy <- (46 * food.data$c209 +
+                60.3 * food.data$c210)/7 +
+                food.data$milk
+
+###################### Cereals
+
+
+### bread:
+# c250 portions eaten per day
+
+# Types of bread eaten
+# c252 white    36g
+# c253 brown    36g
+# c254 wholemeal    36g
+# c255 chapati    68g
+# c256 Dont usually eat any bread
+
+#vector of portion sizes for each type of bread
+b.portion <- matrix(c(36, 36, 36, 68),4,1)
+
+# matrix of bread types eaten: rows are observations, 4 cols for bread types
+# matrix contains 1 if type is eaten, 0 otherwise
+b.mat <- as.matrix(food.data[,c("c252","c253","c254","c255")] )
+# count number of different types of bread eaten
+n.btype <- apply(b.mat ,1,sum,na.rm=T)
+
+# scale bread matrix to be proportions  - 
+# so if eat two types of bread, then half for each
+# (avoid dividing by zero if there are none)
+b.mat[n.btype>0,] <- b.mat[n.btype>0,]/n.btype[n.btype>0]
+
+# calculate total portion size for a person, given the breads they eat
+food.data$bread <- b.mat %*% b.portion 
+
+# and calculate daily amount from portinos eaten per day
+food.data$bread <- food.data$bread * food.data$c250
+
+#### Other cereals
+
+# c217 rice     135g
+# c218 pasta    150g
+
+# c210 pizza    32.1g
+
+# c233 oat cereals      80g
+# c234 bran cereals     36g
+# c235 other cereals    33g
+
+# c237 crispbread   20g
+
+
+food.gp$cereals <- 135 * food.data$c217 +
+                   150 * food.data$c218 +
+                    32.1 * food.data$c210 +
+                    80 * food.data$c233 +
+                    36 * food.data$c234 +
+                    33 * food.data$c235 +
+                    20 * food.data$c237
+
+#convert to daily
+food.gp$cereals <- food.gp$cereals/7
+
+# add daily bread
+food.gp$cereals <- food.gp$cereals + food.data$bread
+
+
+###################### Meat
+# c200 sausages/burgers 80g
+# c201 pies/pasties    129g
+# c202 red meat         88g
+# c203 poultry          100g
+# c204 offal            98g
+
+# amount of fat - not relevant
+
+
+food.gp$meat <-  80 * food.data$c200 +
+                129 * food.data$c201 +
+                 88 * food.data$c202 +
+                100 * food.data$c203 +
+                 98 * food.data$c204
+
+# these are portions per week - convert to daily:
+food.gp$meat <- food.gp$meat/7
+
+
+###################### Fish
+
+# c205 white fish   130g
+# c206 oily fish    119g
+# c207 shellfish    89g
+
+food.gp$fish <- 130 * food.data$c205 +
+                119 * food.data$c206 +
+                 89 * food.data$c207
+
+# these are portions per week - convert to daily:
+food.gp$fish <- food.gp$fish/7
+
+###################### Olive Oil
+
+# c269 oil on bread         10g
+# c270 oil for frying       10g
+
+# ignore oil on bread
+
+#oil for frying:
+# sunflower/soya/corn/olive oil
+# Assume these occur in the proportions 30/30/30/10
+# - so 1/10 of oil is assumed to be olive oil
+
+# c261 butter for frying
+# c264 marg for frying
+# c266 polyunsat marg for frying
+# c268 low fat spread for frying
+# c270 sun/olive/etc oil for frying   <==========
+# c272 other oil for frying
+# c274 other fat for frying
+#  - assume these are used for frying proportionately
+
+# c220 freq eat fried food
+
+# matrix of frying fats used: rows are observations, 7 cols for fat types
+# matrix contains 1 if fat is used, 0 otherwise
+f.mat <- as.matrix(food.data[,c("c261","c264","c266","c268", "c270", "c272", "c274")] )
+# count number of different types of fat used
+n.ftype <- apply(f.mat ,1,sum)
+# scale fat matrix to be proportions  - 
+f.mat[which(n.ftype>0),] <- f.mat[which(n.ftype>0),]/n.ftype[which(n.ftype>0)]
+
+#only interested in the oil proportion:
+oil.p <- f.mat[,5]
+
+#assume 1/10 of this is olive oil:
+oil.p <- oil.p/10
+
+# calculate  total olive oil as 10g per portion each fried food occasion:
+food.gp$oliveoil <- 10 * oil.p * food.data$c220
+
+###################### Alcohol
+
+# c373 alcohol units/wk 8g/unit
+
+food.gp$alcohol  <- food.data$c373 * 8              
+# convert to daily
+food.gp$alcohol  <- food.gp$alcohol/7
+
+
+############################################
+# End of Med Diet calculations
+############################################
+
+# tidy up
+# remove interim variables
+rm(list=c("keep_vars","vars","nmiss","v",
+     "b.mat","n.btype","b.portion",
+     "f.mat","n.ftype","oil.p"))
+
+############################################
+# Additional code
+
+pheno <- food.gp
+pheno$mat.kcal <- alspac.table$c3804
+pheno$mat.kcal[pheno$mat.kcal<0]<-NA
+pheno$mat.kcal <- pheno$mat.kcal/4.184 # convert kj to kcal
+
+################
+# Construct food group tertiles
+# Please comment out (using # at beginning of each line) if your cohort does not have sufficient variation (not a normal distribution) in consumption of a food item (e.g. legumes or olive oil)
+# In that case, please see the next step of constructing alternative cut-offs
+################
+
+# first check the distribution of food items
+require(ggplot2)
+df <- melt(pheno[,-c(1:2)])
+fooditems_hist <- ggplot(df,aes(value))+
+  geom_histogram()+
+  facet_wrap(.~variable,scales="free")
+fooditems_summary <- df %>% group_by(variable) %>%
+  summarise(mean=mean(value,na.rm=T),sd=sd(value,na.rm=T),median=median(value,na.rm=T),lowerQ=quantile(value,0.25,na.rm=T),upperQ=quantile(value,0.75,na.rm=T)) %>%
+  kable()
+
+# Now generate tertiles
+
+# Vegetables
+pheno$veg1000kcal <- (pheno$vegetables / pheno$mat.kcal * 1000)
+pheno$vegrmed <- with(pheno, factor(findInterval(pheno$veg1000kcal, c(-Inf, quantile(pheno$veg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$vegrmed <- revalue(as.character(pheno$vegrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$vegrmed <- as.numeric(pheno$vegrmed)
+
+# Legumes
+pheno$leg1000kcal <- (pheno$legumes / pheno$mat.kcal * 1000)
+pheno$legrmed <- with(pheno, factor(findInterval(pheno$leg1000kcal, c(-Inf, quantile(pheno$leg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$legrmed <- revalue(as.character(pheno$legrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$legrmed <- as.numeric(pheno$legrmed)
+
+# Fruit incl nuts	
+pheno$fruit1000kcal <- (pheno$fruitnuts / pheno$mat.kcal * 1000)
+pheno$fruitrmed <- with(pheno, factor(findInterval(pheno$fruit1000kcal, c(-Inf, quantile(pheno$fruit1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$fruitrmed <- revalue(as.character(pheno$fruitrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$fruitrmed <- as.numeric(pheno$fruitrmed)
+
+# Fish and seafood								
+pheno$fish1000kcal <- (pheno$fish / pheno$mat.kcal * 1000)
+pheno$fishrmed <- with(pheno, factor(findInterval(pheno$fish1000kcal, c(-Inf, quantile(pheno$fish1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$fishrmed <- revalue(as.character(pheno$fishrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$fishrmed <- as.numeric(pheno$fishrmed)
+
+# Cereals								
+pheno$cereal1000kcal <- (pheno$cereals / pheno$mat.kcal * 1000)
+pheno$cerealrmed <- with(pheno, factor(findInterval(pheno$cereal1000kcal, c(-Inf, quantile(pheno$cereal1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$cerealrmed <- revalue(as.character(pheno$cerealrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$cerealrmed <- as.numeric(pheno$cerealrmed)
+
+# Meat								
+pheno$meat1000kcal <- (pheno$meat / pheno$mat.kcal * 1000)
+pheno$meatrmed <- with(pheno, factor(findInterval(pheno$meat1000kcal, c(-Inf, quantile(pheno$meat1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$meatrmed <- revalue(as.character(pheno$meatrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
+pheno$meatrmed <- as.numeric(pheno$meatrmed)
+
+# Dairy								
+pheno$dairy1000kcal <- (pheno$dairy / pheno$mat.kcal * 1000)
+pheno$dairyrmed <- with(pheno, factor(findInterval(pheno$dairy1000kcal, c(-Inf, quantile(pheno$dairy1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$dairyrmed <- revalue(as.character(pheno$dairyrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
+pheno$dairyrmed <- as.numeric(pheno$dairyrmed)
+
+# Olive oil [does not show a normal distribution in ALSPAC, so this code not used]
+##pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$mat.kcal * 1000)
+##pheno$oliveoilrmed <- with(pheno, factor(findInterval(pheno$oliveoil1000kcal, c(-Inf, quantile(pheno$oliveoil1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+##pheno$oliveoilrmed <- revalue(as.character(pheno$oliveoilrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+##pheno$oliveoilrmed <- as.numeric(pheno$oliveoilrmed)
+
+# Alcohol
+pheno$alcoholrmed <- 0
+pheno$alcoholrmed[pheno$alcohol>=5 & pheno$alcohol<=25] <- 2
+
+################
+# Construct alternative cut-offs if >33% has same intake, e.g. >33% of women in Generation R consumes no legumes
+# In this case remove this specific food group above from "Construct food group tertiles"
+################
+# in ALSPAC, we have to do this for oliveoil
+## Please note that the first "tertile" will be those with no oliveoil consumption, since >33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
+pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$mat.kcal * 1000)
+pheno$oliveoilrmed_notzero <- ifelse(pheno$oliveoil1000kcal == 0, NA, pheno$oliveoil1000kcal)
+pheno$oliveoilrmed <- with(pheno, factor(findInterval(pheno$oliveoilrmed_notzero, c(0.0000001, quantile(pheno$oliveoilrmed_notzero, probs=c(0.5), na.rm=T), Inf)), labels=c("1","2"))) ## CHECK WITH LEANNE AS I HAD TO CHANGE 0.01 TO 0.0000001
+pheno$oliveoilrmed <- as.numeric(pheno$oliveoilrmed)
+pheno$oliveoilrmed[pheno$oliveoil1000kcal==0] <- 0 #because more than 33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
+pheno$oliveoilrmed_notzero <-NULL
+
+## Check tertiles
+df <- melt(pheno[,grep("rmed",colnames(pheno))])
+tertile.table <- kable(table(df$variable, df$value))
+
+################
+# Construct rMED
+################
+pheno$rmed <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed + pheno$cerealrmed + pheno$meatrmed + pheno$dairyrmed + pheno$oliveoilrmed + pheno$alcoholrmed
+
+################
+# Construct rMED2
+################
+pheno$rmed2 <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed + pheno$cerealrmed + pheno$meatrmed + pheno$dairyrmed + pheno$oliveoilrmed
+
+# check distribution of med diet indices
+require(ggplot2)
+df <- melt(pheno[,c("rmed","rmed2")])
+rmed_hist <- ggplot(df,aes(value))+
+  geom_histogram()+
+  facet_wrap(.~variable,scales="free")
+rmed_summary <- df %>% group_by(variable) %>%
+  summarise(mean=mean(value,na.rm=T),sd=sd(value,na.rm=T),median=median(value,na.rm=T),lowerQ=quantile(value,0.25,na.rm=T),upperQ=quantile(value,0.75,na.rm=T)) %>%
+  kable()
+
+names(pheno) <- c("aln","qlet",paste0("diet_mother_",names(pheno)[3:ncol(pheno)],"_ever_pregnancy_continuous"))
+dat <- left_join(dat,pheno,by=c("aln","qlet"),all.x=T)
+
 ```
 
 # Child's anthropometry & adiposity {.tabset}
@@ -4660,6 +5295,7 @@ immuno_vars <-c(immuno_vars, "ka497", "kb879a","kd990","kf999", "kj999a","kk998a
 cov_vars <- c("c800","c801","c804","pa910","pc996","c666a","c645a","c755","c765","b032","a525","pa065","a522","a524","b040","b041","b042","pa064","pa173a","d153a","pa174a","d154a","pa210","d190","d040","b613","pb202","c768","b560","pa189a","d169a","d152a","pa172a","pa190a","d170a","pa191a","d171a","pa192a","d172a","b140","b141","b142","b143","b144","b149","c110","c111","c112","c113","c114","c115","dw021","dw002","paw002","paw010","b700","b701","b702","b706","b707","b708","b709","b710","b711","b712","b713","b714","pb088","pb089","pb090","pb091","pb092","pb093","pb094","pb095","pb096","pb097","pb098","bestgest","kb277","kc403","kb280","kc404","kg475","kk800","kq885","kt6400","HDP","pregnancy_diabetes","kb390","kb390a","kb387","kb387a","kc514", "kc544","kc541","kc572","kc574","kc570","ke341","ke350","ke352","ke354","ke339","ke321","kc363","ke195","ke195a","ke196","ke196a","kb549","kb551","kb388","kb385","kb361","kc542","kc539","kc361","ke340","ke338","ke320","kg423","kg420","kg369a","kk645","kk640","kk598","kq830","kq823","kq798a","kt6290","kt6280","kt6193","kg174","kk312","km3030","km3031","kp5090","kp5091","kt1210","kt1211","kc512")
 negcon_vars <- c("g572","g572a","h462","h462a","g571","g571a","h461","h461a","kf527","kf528","kj517","kj518")
 cardiomet_vars <- c("cf124", "cf134", "cf144", "f7sa022", "f9sa022", "fdar118","cf143", "cf133", "cf123", "f7sa021", "f9sa021", "fdar117","trig_cord", "Trig_CIF31", "Trig_CIF43", "TRIG_F7", "trig_f9","HDL_cord", "HDL_CIF31", "HDL_CIF43", "HDL_F7", "HDL_f9","LDL_cord", "LDL_CIF31", "LDL_CIF43", "LDL_F7", "LDL_f9","chol_cord", "Chol_CIF31", "Chol_CIF43", "CHOL_F7", "CHOL_f9","Glc_F7","Insulin_cord", "insulin_F9","CRP_cord", "CRP_f9","ApoAI_f9","ApoB_f9","ApoA1_F7","ApoB_F7","IL6_f9")
+## NEED TO ADD FFQ VARIABLES TOO
 
 all_vars<-unique(c(unlist(lapply(ls()[grep(ls(),pattern="vars")],get))))
 

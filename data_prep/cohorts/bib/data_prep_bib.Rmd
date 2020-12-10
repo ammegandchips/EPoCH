@@ -83,15 +83,14 @@ colnames(Var) <- str_replace_all(colnames(Var), "X_", paste0(variable,"_"))
 Var
 }
 # Then I just applied this function to all the variables we're interested in from this file and combined them all together into one dataset in wide format.
-child_follow_up_chgcom_wide <- lapply(c("cabdo","cbmi","chead","cheight","cweight","czbmiuk90","czbmiwho06","czweiwho06"),
-                                      spread_chgcom)
+child_follow_up_chgcom_wide <- lapply(c("cabdo","cbmi","chead","cheight","cweight","czbmiuk90","czbmiwho06","czweiwho06"),spread_chgcom)
 child_follow_up_chgcom_wide <- bind_cols(child_follow_up_chgcom_wide)
 child_follow_up_chgcom_wide <- child_follow_up_chgcom_wide[-grep("ChildID",names(child_follow_up_chgcom_wide))[-1]]
 # Finally, I took out any variables that are completely NA (i.e. if no children were measured in a particular month)
 child_follow_up_chgcom_wide <- child_follow_up_chgcom_wide[colSums(!is.na(child_follow_up_chgcom_wide)) > 0]
 
 # This could then be merged with the other child-level data:
-raw_dat_child <- merge(raw_dat_child,child_follow_up_chgcom_wide,by="ChildID",all=TRUE)
+raw_dat_child <- merge(raw_dat_child,child_follow_up_chgcom_wide,by.x="ChildID",by.y=colnames(child_follow_up_chgcom_wide)[grep(pattern="ChildID",colnames(child_follow_up_chgcom_wide))],all=TRUE)
 
 # merge pregnancy level data with child level data:
 raw_dat <- merge(raw_dat_parents,raw_dat_child[,-which(colnames(raw_dat_child) %in% c("MotherID","FatherID","has_bib1kc"))],by="PregnancyID",all=TRUE)
@@ -394,7 +393,7 @@ dat$alcohol_mother_secondtrim_ordinal<-factor(dat$alcohol_mother_secondtrim_ordi
 Third trimester
 
 ```{r eval= FALSE, include= TRUE}
-#NOTE: The second are third timester variables are identical, due to how the question was asked "since 4th month of pregnancy"
+#NOTE: The second are third trimester variables are identical, due to how the question was asked "since 4th month of pregnancy"
 dat$alcohol_mother_thirdtrim_ordinal <- dat$alcohol_mother_secondtrim_ordinal
 dat$alcohol_mother_thirdtrim_binary <- dat$alcohol_mother_secondtrim_binary
 ```
@@ -658,7 +657,7 @@ select_oldest_measure <- function(prefix,stage_min,stage_max){
   df <- raw_dat[,which(colnames(raw_dat) %in% col_names)]
   oldest_measure <- apply(df,1,function(x) ifelse(all(is.na(x)),NA,tail(na.omit(x),1)))
   timepoint <- apply(df,1,function(x) ifelse(all(is.na(x)),NA,names(tail(na.omit(x),1))))
-timepoint<-str_remove(timepoint,prefix)
+timepoint<-as.numeric(str_remove(timepoint,prefix))
 list(oldest_measure,timepoint)
 }
 
@@ -998,7 +997,7 @@ datwb <- dat[which(dat$covs_ethnicityBIB_mother=="white british"),]
 datsa <- dat[which(dat$covs_ethnicityBIB_mother=="south asian"),]
 ```
 
-## Create Z scores
+## Create Z scores for each ethnic grouping separately
 ```{r eval=FALSE, include=TRUE}
 #white british
 datwb$anthro_birthweight_zscore <-scale(datwb$anthro_birthweight)
