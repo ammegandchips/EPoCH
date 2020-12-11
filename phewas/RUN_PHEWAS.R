@@ -118,7 +118,7 @@ phewas_summary <- lapply(models,
 
 # save summaries
 
-print("savind pheWAS data summaries...")
+print("saving pheWAS data summaries...")
 
 lapply(1:length(models),
        function(i){

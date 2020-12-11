@@ -10,9 +10,9 @@ summarise_reg_models <- function(exposures,outcomes,model_number,df){
     df_here <- zap_labels(df[,c(exposure,outcome,adjustment_vars)])
     df_here <- na.omit(df_here)
     if(x[3]%in%c("binary","ordinal")){
-      print(CreateTableOne(vars=c(outcome,adjustment_vars),strata=exposure,data=df_here,factorVars=c(outcome,adjustment_vars)[grep("sex|ethnicity|edu|occup|binary",c(outcome,adjustment_vars))],test=F,smd=F,addOverall=T))  
+      try(print(CreateTableOne(vars=c(outcome,adjustment_vars),strata=exposure,data=df_here,factorVars=c(outcome,adjustment_vars)[grep("sex|ethnicity|edu|occup|binary",c(outcome,adjustment_vars))],test=F,smd=F,addOverall=T)))  
     }else{
-      print(CreateTableOne(vars=c(exposure,outcome,adjustment_vars),data=df_here,factorVars=c(exposure,outcome,adjustment_vars)[grep("sex|ethnicity|edu|occup|binary",c(exposure,outcome,adjustment_vars))],test=F,smd=F))
+      try(print(CreateTableOne(vars=c(exposure,outcome,adjustment_vars),data=df_here,factorVars=c(exposure,outcome,adjustment_vars)[grep("sex|ethnicity|edu|occup|binary",c(exposure,outcome,adjustment_vars))],test=F,smd=F)))
     }
   })
   names(list_of_summaries)<-apply(key_here,1,function(x){

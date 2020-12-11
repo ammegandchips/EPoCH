@@ -91,10 +91,11 @@ key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","
 # define model 2a covariates 
 
 print("defining model 2a covariates...")
-## most models: 1a + age, SEP, height, weight, parity if exposed parent = mother
+## most models: 1a + age + SEP (+ parity if exposed parent = mother)
 ## plus other health behaviours 
   ### (e.g. if exposure is smoking, adjust for alcohol and caffeine 
-  ### at any point in pregnancy or postnatal) No need to adjust for physical activity now 
+  ### at preconception or any time in pregnancy
+  ### No need to adjust for physical activity now 
   ### (seems unlikely it would influence caffeine for example), 
   ### but if/when we add the dietary exposures, we should adjust for PA then. 
   ### However, it is necessary to adjust for alcohol and smoking when looking at physical activity as the main exposure.
