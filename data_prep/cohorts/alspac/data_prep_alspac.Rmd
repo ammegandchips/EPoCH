@@ -3459,8 +3459,8 @@ dat$neuro_conduct_stage3<-dat$kq348d
 dat$neuro_conduct_stage3[dat$kq348d<0]<-NA
 dat$neuro_conduct_stage3_zscore <- scale(dat$neuro_conduct_stage3)
 dat$neuro_conduct_stage3_binary <- NA
-dat$neuro_conduct_stage3_binary[dat$neuro_conduct_stage2>=3]<-1
-dat$neuro_conduct_stage3_binary[dat$neuro_conduct_stage2<3]<-0
+dat$neuro_conduct_stage3_binary[dat$neuro_conduct_stage2>=4]<-1
+dat$neuro_conduct_stage3_binary[dat$neuro_conduct_stage2<4]<-0
 #Stage 4
 dat$neuro_conduct_stage4<-dat$ku708b
 dat$neuro_conduct_stage4[dat$ku708b<0]<-NA

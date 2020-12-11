@@ -551,7 +551,6 @@ dat$anthro_birthweight_low_binary[dat$anthro_birthweight<2500]<-1
 dat$anthro_birthweight_low_binary[dat$anthro_birthweight>=2500&dat$anthro_birthweight<=4500]<-0
 
 
-
 * SGA
 * LGA
 * Birth length (cm)
@@ -559,6 +558,8 @@ dat$anthro_birthweight_low_binary[dat$anthro_birthweight>=2500&dat$anthro_birthw
 * Height (cm)
 * Waist circumference (cm)
 * Weight (kg)
+
+
 * BMI (kg/m2)
 * WHO categories of overweight/obese/underweight vs normal weight
 * Fat mass index
@@ -594,6 +595,126 @@ childhood stage 2 (around age 4; >=3 to <5)
 childhood stage 3 (around age 6; >=5 to <8)
 childhood stage 4 (around age 9; >=8 to <11)
 
+```{r eval=FALSE, include=TRUE}
+
+#Total behavioural difficulties (SDQ) - maternal report, continuous and dichotomised at >=17 [this is a combination of 4 subscales - excluding prosocial behaviour]
+#Stage 2
+dat$neuro_totalsdq_stage2<-raw_dat$bdebdta0
+dat$neuro_totalsdq_stage2[raw_dat$bdebdta0<0]<-NA
+dat$neuro_totalsdq_stage2_zscore <- scale(dat$neuro_totalsdq_stage2)
+dat$neuro_totalsdq_stage2_binary <- NA
+dat$neuro_totalsdq_stage2_binary[dat$neuro_totalsdq_stage2>=17]<-1
+dat$neuro_totalsdq_stage2_binary[dat$neuro_totalsdq_stage2<17]<-0
+#Stage 3
+dat$neuro_totalsdq_stage3<-raw_dat$ddebdta0
+dat$neuro_totalsdq_stage3[raw_dat$ddebdta0<0]<-NA
+dat$neuro_totalsdq_stage3_zscore <- scale(dat$neuro_totalsdq_stage3)
+dat$neuro_totalsdq_stage3_binary <- NA
+dat$neuro_totalsdq_stage3_binary[dat$neuro_totalsdq_stage3>=17]<-1
+dat$neuro_totalsdq_stage3_binary[dat$neuro_totalsdq_stage3<17]<-0
+
+#Hyperactivity (SDQ) - maternal report, continuous and dichotomised at >=17
+#Stage 2
+dat$neuro_hyperactivity_stage2<-raw_dat$bdhypea0
+dat$neuro_hyperactivity_stage2[raw_dat$bdhypea0<0]<-NA
+dat$neuro_hyperactivity_stage2_zscore <- scale(dat$neuro_hyperactivity_stage2)
+dat$neuro_hyperactivity_stage2_binary <- NA
+dat$neuro_hyperactivity_stage2_binary[dat$neuro_hyperactivity_stage2>=7]<-1
+dat$neuro_hyperactivity_stage2_binary[dat$neuro_hyperactivity_stage2<7]<-0
+#Stage 3
+dat$neuro_hyperactivity_stage3<-raw_dat$ddhypea0
+dat$neuro_hyperactivity_stage3[raw_dat$ddhypea0<0]<-NA
+dat$neuro_hyperactivity_stage3_zscore <- scale(dat$neuro_hyperactivity_stage3)
+dat$neuro_hyperactivity_stage3_binary <- NA
+dat$neuro_hyperactivity_stage3_binary[dat$neuro_hyperactivity_stage3>=7]<-1
+dat$neuro_hyperactivity_stage3_binary[dat$neuro_hyperactivity_stage3<7]<-
+
+#Emotional symptoms (SDQ) - maternal report, continuous and dichotomised at >=5
+#Stage 2
+dat$neuro_emotional_stage2<-raw_dat$bdemota0
+dat$neuro_emotional_stage2[raw_dat$bdemota0<0]<-NA
+dat$neuro_emotional_stage2_zscore <- scale(dat$neuro_emotional_stage2)
+dat$neuro_emotional_stage2_binary <- NA
+dat$neuro_emotional_stage2_binary[dat$neuro_emotional_stage2>=5]<-1
+dat$neuro_emotional_stage2_binary[dat$neuro_emotional_stage2<5]<-0
+#Stage 3  
+dat$neuro_emotional_stage3<-raw_dat$ddemota0
+dat$neuro_emotional_stage3[raw_dat$ddemota0<0]<-NA
+dat$neuro_emotional_stage3_zscore <- scale(dat$neuro_emotional_stage3)
+dat$neuro_emotional_stage3_binary <- NA
+dat$neuro_emotional_stage3_binary[dat$neuro_emotional_stage3>=5]<-1
+dat$neuro_emotional_stage3_binary[dat$neuro_emotional_stage3<5]<-0
+
+#Conduct problems (SDQ) - maternal report, continuous and dichotomised at >=4
+#Stage 2
+dat$neuro_conduct_stage2<-raw_dat$bdconda0
+dat$neuro_conduct_stage2[raw_dat$bdconda0<0]<-NA
+dat$neuro_conduct_stage2_zscore <- scale(dat$neuro_conduct_stage2)
+dat$neuro_conduct_stage2_binary <- NA
+dat$neuro_conduct_stage2_binary[dat$neuro_conduct_stage2>=4]<-1
+dat$neuro_conduct_stage2_binary[dat$neuro_conduct_stage2<4]<-0
+#Stage 3
+dat$neuro_conduct_stage3<-raw_dat$ddconda0
+dat$neuro_conduct_stage3[raw_dat$ddconda0<0]<-NA
+dat$neuro_conduct_stage3_zscore <- scale(dat$neuro_conduct_stage3)
+dat$neuro_conduct_stage3_binary <- NA
+dat$neuro_conduct_stage3_binary[dat$neuro_conduct_stage3>=4]<-1
+dat$neuro_conduct_stage3_binary[dat$neuro_conduct_stage3<4]<-0
+
+#Peer problems (SDQ) - maternal report, continuous and dichotomised at >=4
+#Stage 2
+dat$neuro_peer_stage2<-raw_dat$bdpeera0
+dat$neuro_peer_stage2[raw_dat$bdpeera0<0]<-NA
+dat$neuro_peer_stage2_zscore <- scale(dat$neuro_peer_stage2)
+dat$neuro_peer_stage2_binary <- NA
+dat$neuro_peer_stage2_binary[dat$neuro_peer_stage2>=4]<-1
+dat$neuro_peer_stage2_binary[dat$neuro_peer_stage2<4]<-0
+#Stage 3
+dat$neuro_peer_stage3<-raw_dat$ddpeera0
+dat$neuro_peer_stage3[raw_dat$ddpeera0<0]<-NA
+dat$neuro_peer_stage3_zscore <- scale(dat$neuro_peer_stage3)
+dat$neuro_peer_stage3_binary <- NA
+dat$neuro_peer_stage3_binary[dat$neuro_peer_stage3>=4]<-1
+dat$neuro_peer_stage3_binary[dat$neuro_peer_stage3<4]<-0
+
+#Prosocial behaviour (SDQ) - maternal report, continuous and dichotomised at <=6
+#Stage 2
+dat$neuro_prosocial_stage2<-raw_dat$bdprosa0
+dat$neuro_prosocial_stage2[raw_dat$bdprosa0<0]<-NA
+dat$neuro_prosocial_stage2_zscore <- scale(dat$neuro_prosocial_stage2)
+dat$neuro_prosocial_stage2_binary <- NA
+dat$neuro_prosocial_stage2_binary[dat$neuro_prosocial_stage2<=6]<-1
+dat$neuro_prosocial_stage2_binary[dat$neuro_prosocial_stage2>6]<-0
+#Stage 3
+dat$neuro_prosocial_stage3<-raw_dat$ddprosa0
+dat$neuro_prosocial_stage3[raw_dat$ddprosa0<0]<-NA
+dat$neuro_prosocial_stage3_zscore <- scale(dat$neuro_prosocial_stage3)
+dat$neuro_prosocial_stage3_binary <- NA
+dat$neuro_prosocial_stage3_binary[dat$neuro_prosocial_stage3<=6]<-1
+dat$neuro_prosocial_stage3_binary[dat$neuro_prosocial_stage3>6]<-0
+
+#Internalising problems (SDQ) - maternal report, combination of emotional symptoms and peer problems
+#Stage 2
+dat$neuro_internalising_stage2 <- rowSums(dat[,c("neuro_emotional_stage2","neuro_peer_stage2")])
+dat$neuro_internalising_stage2_zscore <- scale(dat$neuro_internalising_stage2)
+
+#Stage 3
+dat$neuro_internalising_stage3 <- rowSums(dat[,c("neuro_emotional_stage3","neuro_peer_stage3")])
+dat$neuro_internalising_stage3_zscore <- scale(dat$neuro_internalising_stage3)
+
+#Externalising problems (SDQ) - maternal report, combination of hyperactivity and conduct problems
+#Stage 2
+dat$neuro_externalising_stage2 <- rowSums(dat[,c("neuro_emotional_stage2","neuro_peer_stage2")])
+dat$neuro_externalising_stage2_zscore <- scale(dat$neuro_externalising_stage2)
+#Stage 3
+dat$neuro_externalising_stage3 <- rowSums(dat[,c("neuro_hyperactivity_stage3","neuro_conduct_stage3")])
+dat$neuro_externalising_stage3_zscore <- scale(dat$neuro_externalising_stage3)
+
+#SCDC (Skuse Social Communication Score) - not available
+#Depressive symptoms (Moods and Feelings questionnaire - MFQ) - not available
+#IQ and/or other or composite measures of intelligence/cognitive performance - not available
+#Educational attainment - not available
+```
 # Immunological
 
 Ideal harmonised immunological health measures for offspring are:
