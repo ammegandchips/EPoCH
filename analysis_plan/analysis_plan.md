@@ -18,7 +18,6 @@ We are using data from multiple European cohorts:
 	* MoBa
 	* Born in Bradford
 
-
 * In the hypothesis-testing replication stage:
 	* GenerationR
 	* DNBC
@@ -204,6 +203,11 @@ Generation R and the DNBC will be used to replicate findings. Once we have a lis
 
 Qualitative triangulation of findings from the observational pheWAS, MR pheWAS (and formal MR and sensitivity analyses), replication analysis, timing/dose analyses, cross-cohort comparisons.
 
+**Research question: (How) do maternal and paternal prenatal exposures mediate or interact with each other to affect offspring health outcomes?**
+
+Where multiple lines of evidence point towards a causal effect, we will conduct additional mediation analyses to explore the relative direct and indirect effects of the maternal and paternal exposures. This will involve using multivariable MR where possible.
+
+
 ## Dissemination of findings
 
 ### Web tool (R Shiny app)
@@ -236,4 +240,14 @@ Finally, we aim to publish additional methods/summary papers:
 
 * "Potential selection bias in studies of paternal effects that use birth cohort data"
 * "A web-tool to explore results from a multi-cohort study of maternal and paternal prenatal health behaviours and child health"
+
+## Organisation of code and data
+
+All prepared data (for ALSPAC, BiB and MCS) is stored in the EPoCH folder on the RDSF at the University of Bristol, except MoBa data which is stored and analysed on the servers at the Norwegian Institute for Public Health in Oslo.
+
+All code is in this GitHub repository.
+
+Most stages in EPoCH (all except the cohort-specific data preparation) can be run using a single bash script (`bash_master.sh`), which takes two arguments: `cohort` and `scriptname`. Before and after running this script (as a job on bluecrystal), it is necessary to run two other scripts (`before.sh` and `after.sh`). This is explained in the file [pipeline.md](https://github.com/ammegandchips/EPoCH/blob/main/analysis_plan/pipeline.md).
+
+
 
