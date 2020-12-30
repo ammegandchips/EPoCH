@@ -550,15 +550,30 @@ dat$anthro_birthweight_low_binary <- NA
 dat$anthro_birthweight_low_binary[dat$anthro_birthweight<2500]<-1
 dat$anthro_birthweight_low_binary[dat$anthro_birthweight>=2500&dat$anthro_birthweight<=4500]<-0
 
+#SGA
+#LGA
+#Birth length (cm)
+#Head circumference (cm)
+#Height (cm)
 
-* SGA
-* LGA
-* Birth length (cm)
-* Head circumference (cm)
-* Height (cm)
-* Waist circumference (cm)
-* Weight (kg)
+hecm ?
+dat$anthro_height_birth <- raw_dat$
 
+#Waist circumference (cm)
+#Weight (kg)
+
+dat$anthro_weight_stage2 <- raw_dat$bpwgtk00
+dat$anthro_weight_stage2[dat$anthro_weight_stage2<28]<-NA
+dat$anthro_weight_stage2_zscore <- scale(dat$anthro_weight_stage2)
+
+  ! # couldn't see these below weight measures variables in the documentation, but should make logical sense from the earlier measurement - GS may want to check
+dat$anthro_weight_stage3 <- raw_dat$cpwgtk00
+dat$anthro_weight_stage3[dat$anthro_weight_stage3<38]<-NA
+dat$anthro_weight_stage3_zscore <- scale(dat$anthro_weight_stage3)
+
+dat$anthro_weight_stage4 <- raw_dat$dpwgtk00
+dat$anthro_weight_stage4[dat$anthro_weight_stage4<44]<-NA
+dat$anthro_weight_stage4_zscore <- scale(dat$anthro_weight_stage4)
 
 * BMI (kg/m2)
 * WHO categories of overweight/obese/underweight vs normal weight
@@ -725,6 +740,14 @@ Doctor diagnosed eczema
 Eczema-like rash
 Allergies (pet, pollen, mite/dust, bee/wasp, food)
 
+```{r eval=FALSE, include=TRUE}
+#Doctor diagnosed asthma
+#Wheeze
+#Doctor diagnosed eczema
+#Eczema-like rash
+#Allergies (pet, pollen, mite/dust, bee/wasp, food)
+
+```
 # Covariates
 
 Demographics
@@ -784,8 +807,6 @@ dat$covs_occup_father[raw_dat$apd05s00==5]<-0 #semi-routine or routine
 dat$covs_sex <- NA
 dat$covs_sex[raw_dat$ahcsexa0==1]<-"male"
 dat$covs_sex[raw_dat$ahcsexa0==2]<-"female"
-
-
 
 ```
 
@@ -901,6 +922,7 @@ Child’s health
 
 
 ```{r eval=FALSE, include=TRUE}
+#Gestage
 dat$covs_gestage <- raw_dat$adgesta0
 dat$covs_gestage[dat$covs_gestage <0]<-NA
 dat$covs_gestage <- dat$covs_gestage/7
@@ -914,6 +936,11 @@ amsmkr00
 
 amhpwmaa 5=wheezing or asthma, 61=eczema, 62=other allergy, 70=CHD, 79=cleft
 
+#Duration of breastfeeding
+#Child’s own smoking
+#Child’s own drinking of alcohol
+#Child’s own consumption of caffeine
+#Child’s exposure to passive smoke
 ```
 
 

@@ -1943,9 +1943,9 @@ dat$caffeine_father_coffee_secondtrim_continuous<-dat$pb058 #cups of coffee per 
 dat$caffeine_father_coffee_secondtrim_continuous[dat$pb058<0]<-NA
 dat$caffeine_father_coffee_secondtrim_continuous[dat$pb060a==1]<-0#set to no caffeine if say always or usually drink decaf
 dat$caffeine_father_coffee_secondtrim_continuous[dat$pb060==1]<-0#set to no caffeine if say always or usually drink decaf
-dat$pb057[dat$pb060a==3]<-0#set decaf to 0 if say never drink decaf
-dat$pb057[dat$pb060==3]<-0#set decaf to 0 if say never drink decaf
-dat$pb057[dat$pb061<0]<-NA #set missing to NA in n decaf cups 
+dat$pb061[dat$pb060a==3]<-0#set decaf to 0 if say never drink decaf
+dat$pb061[dat$pb060==3]<-0#set decaf to 0 if say never drink decaf
+dat$pb061[dat$pb061<0]<-NA #set missing to NA in n decaf cups 
 dat$caffeine_father_coffee_secondtrim_continuous<-dat$caffeine_father_coffee_secondtrim_continuous-dat$pb061
 dat$caffeine_father_coffee_secondtrim_continuous[dat$caffeine_father_coffee_secondtrim_continuous<0] <-NA
 dat$caffeine_father_coffee_secondtrim_continuous<-dat$caffeine_father_coffee_secondtrim_continuous*57 #transform cups to mg per day
@@ -1958,9 +1958,9 @@ dat$caffeine_father_cola_secondtrim_continuous<-dat$pb064 #cups of cola per weel
 dat$caffeine_father_cola_secondtrim_continuous[dat$pb064<0]<-NA
 dat$caffeine_father_cola_secondtrim_continuous[dat$pb065a==1]<-0#set to no caffeine if say always or usually drink decaf
 dat$caffeine_father_cola_secondtrim_continuous[dat$pb065==1]<-0#set to no caffeine if say always or usually drink decaf
-dat$pb057[dat$pb065a==3]<-0#set decaf to 0 if say never drink decaf
-dat$pb057[dat$pb065==3]<-0#set decaf to 0 if say never drink decaf
-dat$pb057[dat$pb066<0]<-NA #set missing to NA in n decaf cups 
+dat$pb066[dat$pb065a==3]<-0#set decaf to 0 if say never drink decaf
+dat$pb066[dat$pb065==3]<-0#set decaf to 0 if say never drink decaf
+dat$pb066[dat$pb066<0]<-NA #set missing to NA in n decaf cups 
 dat$caffeine_father_cola_secondtrim_continuous<-dat$caffeine_father_cola_secondtrim_continuous-dat$pb066
 dat$caffeine_father_cola_secondtrim_continuous[dat$caffeine_father_cola_secondtrim_continuous<0] <-NA
 dat$caffeine_father_cola_secondtrim_continuous<-dat$caffeine_father_cola_secondtrim_continuous*20 #tranform cups to mg per week

@@ -3,13 +3,14 @@
 
 
 #options(shiny.error = function() {
-#  stop("Cannot create plot. Please check your selections.")
+#  stop("")
 #})
 
 
 library(shiny)
 library(shinyjs)
 library(ggplot2)
+library(plotly)
 library(psych)
 #devtools::install_github('cttobin/ggthemr')
 #devtools::install_github("shinyTree/shinyTree",force=T)
@@ -22,4 +23,3 @@ library(egg)
 library(dplyr)
 
 key<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno_key.rds")
-#df<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/test_res_1a_1b.rds")
