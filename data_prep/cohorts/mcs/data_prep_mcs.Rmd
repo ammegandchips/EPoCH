@@ -95,6 +95,10 @@ We can look at the correlates of partner non-response by combining the Child Ben
 6. Partners where the main respondent’s educational qualifications are below degree level are less likely to respond (odds = 0.82).
 7. There is variation from ward to ward in partner non-response that is not explained by the Child Poverty Index.
 
+**Deriving variables**
+
+This (found too late) was an absolute godsend in finding variable names and information: http://cls.nemisys3.uk.com/datadictionary/page.asp?section=000100010003000300020001&sectionTitle=A%2E+Main+Interview
+
 # Loading and merging data
 
 ```{r eval=FALSE, include=TRUE}
@@ -140,7 +144,6 @@ raw_dat <- merge(raw_dat,mcs4_parent_interview,by="mcsid",all.x=T)
 names(mcs5_parent_interview)<-tolower(names(mcs5_parent_interview))
 raw_dat <- merge(raw_dat,mcs5_parent_interview[mcs5_parent_interview$epnum00==1,],by="mcsid",all=T)
 
-raw_dat <- raw_dat[,names(raw_dat) %in% c(names(family_file),names(raw_dat)[grep(names(raw_dat),pattern="nocmhh|hcsex|hcnuma0|smus|cipr|smma|piof|smty|smev|smbv|smch|whch|cich|drof|puwk|puda|aldr|unwk|unda|bsex|asth|eczm|diab|diwt|dean|ilwt|ilwm|ilpr|lain|dewt|dewm|loil|lowt|mhpwm")])]
 
 names(mcs1_derived)<-tolower(names(mcs1_derived))
 names(mcs2_derived)<-tolower(names(mcs2_derived))
@@ -185,20 +188,19 @@ For 13165 records, the "partner respondent" is the natural father (interviewed; 
 
 ```{r eval=FALSE, include=TRUE}
 
-raw_dat <- raw_dat[which(raw_dat$amdres00==1&is.na(raw_dat$amdres00)==FALSE),] # select only those where the natural mother is the main respondent (vast majority of cases)
+raw_dat <- raw_dat[which(raw_dat$amdres00==1&is.na(raw_dat$amdres00)==FALSE),] # select only those where the natural mother is the main respondent (vast majority of cases, lose 55)
 
-raw_dat <- raw_dat[raw_dat$nocmhh==1,]#select singletons/first borns in cohort
-
+raw_dat <- raw_dat[raw_dat$nocmhh==1,]#select singletons/first borns in cohort (lose 251 + 11)
 
 raw_dat$covs_biological_father<-"not_bio_dad"
 raw_dat$covs_biological_father[raw_dat$apdres00%in%c(2,12,16,24)]<-"bio_dad"
 raw_dat$covs_biological_father[raw_dat$apdres00==(-1)]<-"no_partner"
 raw_dat$covs_biological_father[is.na(raw_dat$apdres00)]<-"missing"
 
-# Paternal participation is defined as a natural father completing the interview themselves (i.e. not by proxy)
+# Paternal participation is defined as a partner (bio dad, foster/adoptive/step, male/female partner) completing the interview themselves (i.e. not by proxy)
 raw_dat$paternal_participation <- NA
-raw_dat$paternal_participation[raw_dat$apdres00==2]<-1
-raw_dat$paternal_participation[raw_dat$apdres00%in%c(-1,16,12,24)]<-0
+raw_dat$paternal_participation[raw_dat$apdres00%in%c(2,4,6,8,26,25,31)]<-1
+raw_dat$paternal_participation[raw_dat$apdres00%in%c(-1,7,21,22,16,12,24,22,28,30)]<-0
 
 dat<- raw_dat[,c(names(raw_dat)[1:7],"covs_biological_father","paternal_participation")]
 
@@ -552,32 +554,116 @@ dat$anthro_birthweight_low_binary[dat$anthro_birthweight>=2500&dat$anthro_birthw
 
 #SGA
 #LGA
-#Birth length (cm)
-#Head circumference (cm)
+
+#Birth length (cm) - not available
+#Waist circumference (cm)
+
+raw_dat$waist_measurement_1 <- raw_dat$cywsma00
+raw_dat$waist_measurement_1[raw_dat$waist_measurement_1<0]<-NA
+raw_dat$waist_measurement_2 <- raw_dat$cywsmb00
+raw_dat$waist_measurement_2[raw_dat$waist_measurement_2<0]<-NA
+raw_dat$waist_measurement_3 <- raw_dat$cywsmc00
+raw_dat$waist_measurement_3[raw_dat$waist_measurement_3<0]<-NA
+
+dat$anthro_waist_stage3 <- rowMeans(raw_dat[,c("waist_measurement_1","waist_measurement_2","waist_measurement_3")],na.rm = T)
+dat$anthro_waist_stage3_zscore <- scale(dat$anthro_waist_stage3)
+
+#Head circumference (cm) - not available
+
 #Height (cm)
 
-hecm ?
-dat$anthro_height_birth <- raw_dat$
+dat$anthro_height_stage2 <- raw_dat$bdhcmc00
+dat$anthro_height_stage2[dat$anthro_height_stage2<0]<-NA
+dat$anthro_height_stage2_zscore <- scale(dat$anthro_height_stage2)
 
-#Waist circumference (cm)
+dat$anthro_height_stage3 <- raw_dat$cyhtcm00
+dat$anthro_height_stage3[dat$anthro_height_stage3<0]<-NA
+dat$anthro_height_stage3_zscore <- scale(dat$anthro_height_stage3)
+
+  ## according to the documentation, wave 4 (d, i.e. stage 3 age 7) seems to have child
+  ## anthropometry data, but the variables don't appear in the datasets...
+
+dat$anthro_height_stage4 <- raw_dat$echtcma0
+dat$anthro_height_stage4[dat$anthro_height_stage4<0]<-NA
+dat$anthro_height_stage4_zscore <- scale(dat$anthro_height_stage4)
+
 #Weight (kg)
 
-dat$anthro_weight_stage2 <- raw_dat$bpwgtk00
-dat$anthro_weight_stage2[dat$anthro_weight_stage2<28]<-NA
+dat$anthro_weight_stage0 <- raw_dat$adlstwa0
+dat$anthro_weight_stage0[dat$anthro_weight_stage0<0]<-NA
+dat$anthro_weight_stage0_zscore <- scale(dat$anthro_weight_stage0)
+
+dat$anthro_weight_stage2 <- raw_dat$bdwtkc00 + (raw_dat$bdwtgc00/10) # kg + g
+dat$anthro_weight_stage2[dat$anthro_weight_stage2<0]<-NA
 dat$anthro_weight_stage2_zscore <- scale(dat$anthro_weight_stage2)
 
-  ! # couldn't see these below weight measures variables in the documentation, but should make logical sense from the earlier measurement - GS may want to check
-dat$anthro_weight_stage3 <- raw_dat$cpwgtk00
-dat$anthro_weight_stage3[dat$anthro_weight_stage3<38]<-NA
+dat$anthro_weight_stage3 <- raw_dat$cywtcm00
+dat$anthro_weight_stage3[dat$anthro_weight_stage3<0]<-NA
 dat$anthro_weight_stage3_zscore <- scale(dat$anthro_weight_stage3)
 
-dat$anthro_weight_stage4 <- raw_dat$dpwgtk00
-dat$anthro_weight_stage4[dat$anthro_weight_stage4<44]<-NA
+  ## according to the documentation, wave 4 (d, i.e. stage 3 age 7) seems to have child      anthropometry data, but the variables don't appear in the datasets...
+
+dat$anthro_weight_stage4 <- raw_dat$ecwtcma0
+dat$anthro_weight_stage4[dat$anthro_weight_stage4<0]<-NA
 dat$anthro_weight_stage4_zscore <- scale(dat$anthro_weight_stage4)
 
-* BMI (kg/m2)
-* WHO categories of overweight/obese/underweight vs normal weight
-* Fat mass index
+
+#BMI and WHO categories of overweight/obese/underweight vs normal weight
+
+dat$anthro_bmi_stage2 <- dat$anthro_weight_stage2 / ((dat$anthro_height_stage2/100)^2)
+dat$anthro_bmi_stage3 <- dat$anthro_weight_stage3 / ((dat$anthro_height_stage3/100)^2)
+dat$anthro_bmi_stage4 <- dat$anthro_weight_stage4 / ((dat$anthro_height_stage4/100)^2)
+
+# (first need to derive age at each stage/sweep):
+
+dat$covs_age_child_stage0 <- raw_dat$adaglwa0
+dat$covs_age_child_stage0[dat$covs_age_child_stage0<0]<-NA
+
+## can't find age at sweep for other stages (this at stage 0 refers to age at which weight measurement was taken, but I can't find a similar variable for later sweeps. From looking at the MCS documentation, it seems possible that families were interviewed when their children turned a particular age, so we might expect all children to be within a few months of their birthdays - i.e 9 months for sweep 1, 3 for sweep 2, 5 for sweep 3, 7 for sweep 4, 11 for sweep 5. That is what I've assumed below. I checked the likelihood this assumption was correct by looking at how close dat$covs_age_child_stage0 is to 9 months, 61 % were within 1 month of 9 months, 85% within 2 months - so reasonably accurate, but note this variable describes age at last weight measurement NOT age at interview so we would expect some to be <9 months - only 28% were over 9 months, 4.2% are over 10 months, 0.3% over 11 months, so it seems reasonable to assume that the vast majority of interviews took place close to a child's birthday)
+
+dat$covs_age_child_stage2 <- 3
+dat$covs_age_child_stage3 <- 5 # sweep 3 (age 5) and 4 (age 7) fall under stage 3, but the sweep 4 datasets did not include weight and height measurements, so we have used sweep 3 only
+dat$covs_age_child_stage4 <- 11
+
+dat$covs_sex <- NA
+dat$covs_sex[raw_dat$ahcsexa0==1]<-"male"
+dat$covs_sex[raw_dat$ahcsexa0==2]<-"female"
+
+
+library(childsds)
+
+dat$anthro_bmi_stage2_sds <- sds(value = dat$anthro_bmi_stage2,
+		      age = dat$covs_age_child_stage2,
+		      sex = dat$covs_sex, male = "male", female = "female",
+		      ref = ukwho.ref, item = "bmi")
+
+dat$anthro_bmi_stage3_sds <- sds(value = dat$anthro_bmi_stage3,
+		      age = dat$covs_age_child_stage3,
+		      sex = dat$covs_sex, male = "male", female = "female",
+		      ref = ukwho.ref, item = "bmi")
+
+dat$anthro_bmi_stage4_sds <- sds(value = dat$anthro_bmi_stage4,
+		      age = dat$covs_age_child_stage4,
+		      sex = dat$covs_sex, male = "male", female = "female",
+		      ref = ukwho.ref, item = "bmi")
+
+dat$anthro_obese_stage2_binary <- NA
+dat$anthro_obese_stage2_binary[which(dat$anthro_bmi_stage2_sds>2)] <-1
+dat$anthro_obese_stage2_binary[which(dat$anthro_bmi_stage2_sds<=1 &dat$anthro_bmi_stage2_sds>=(-2))] <-0
+
+dat$anthro_obese_stage3_binary <- NA
+dat$anthro_obese_stage3_binary[which(dat$anthro_bmi_stage3_sds>2)] <-1
+dat$anthro_obese_stage3_binary[which(dat$anthro_bmi_stage3_sds<=1 &dat$anthro_bmi_stage3_sds>=(-2))] <-0
+
+dat$anthro_obese_stage4_binary <- NA
+dat$anthro_obese_stage4_binary[which(dat$anthro_bmi_stage4_sds>2)] <-1
+dat$anthro_obese_stage4_binary[which(dat$anthro_bmi_stage4_sds<=1 &dat$anthro_bmi_stage4_sds>=(-2))] <-0
+
+#Body fat PERCENT (note, not fat mass index)
+
+dat$anthro_fatpc_stage4 <- raw_dat$ecbfpc00
+dat$anthro_fatpc_stage4[dat$anthro_fatpc_stage4<0]<-NA
+dat$anthro_fatpc_stage4_zscore <- scale(dat$anthro_fatpc_stage4)
 
 
 ```
@@ -595,9 +681,9 @@ Prosocial behaviour (SDQ) - maternal report, continuous and dichotomised at <=6
 Internalising problems (SDQ) - maternal report, combination of emotional symptoms and peer problems
 Externalising problems (SDQ) - maternal report, combination of hyperactivity and conduct problems
 
-SCDC (Skuse Social Communication Score)
+Social Communication, e.g. SCDC (Skuse Social Communication Score)
 
-Depressive symptoms (Moods and Feelings questionnaire - MFQ)
+Depressive symptoms (e.g. Moods and Feelings questionnaire - MFQ)
 
 IQ and/or other or composite measures of intelligence/cognitive performance
 Educational attainment
@@ -620,6 +706,7 @@ dat$neuro_totalsdq_stage2_zscore <- scale(dat$neuro_totalsdq_stage2)
 dat$neuro_totalsdq_stage2_binary <- NA
 dat$neuro_totalsdq_stage2_binary[dat$neuro_totalsdq_stage2>=17]<-1
 dat$neuro_totalsdq_stage2_binary[dat$neuro_totalsdq_stage2<17]<-0
+
 #Stage 3
 dat$neuro_totalsdq_stage3<-raw_dat$ddebdta0
 dat$neuro_totalsdq_stage3[raw_dat$ddebdta0<0]<-NA
@@ -725,27 +812,147 @@ dat$neuro_externalising_stage2_zscore <- scale(dat$neuro_externalising_stage2)
 dat$neuro_externalising_stage3 <- rowSums(dat[,c("neuro_hyperactivity_stage3","neuro_conduct_stage3")])
 dat$neuro_externalising_stage3_zscore <- scale(dat$neuro_externalising_stage3)
 
-#SCDC (Skuse Social Communication Score) - not available
+#SCDC (Skuse Social Communication Score) - not available, but CSBQ Child Social Behaviour Questionnaire is available - is this comparable?
+
+dat$neuro_csbqindependence_stage3 <- raw_dat$cdcsbia0
+dat$neuro_csbqindependence_stage3[dat$neuro_csbqindependence_stage3<0]<-NA
+dat$neuro_csbqindependence_stage3_zscore <- scale(dat$neuro_csbqindependence_stage3)
+
+dat$neuro_csbqemotionaldysreg_stage3 <- raw_dat$cdcsbea0
+dat$neuro_csbqemotionaldysreg_stage3[dat$neuro_csbqemotionaldysreg_stage3<0]<-NA
+dat$neuro_csbqemotionaldysreg_stage3_zscore <- scale(dat$neuro_csbqemotionaldysreg_stage3)
+
 #Depressive symptoms (Moods and Feelings questionnaire - MFQ) - not available
-#IQ and/or other or composite measures of intelligence/cognitive performance - not available
-#Educational attainment - not available
+
+#IQ and/or other or composite measures of intelligence/cognitive performance 
+# using the British Ability Scales (BAS):
+#The British Ability Scales (BAS) is a battery of individually administered tests of
+#cognitive abilities and educational achievements suitable for use with children and
+#adolescents aged from 2 years 6 months to 7 years 11 months.
+
+#The Naming Vocabulary is a verbal scale for children aged 2 years 6 months to 7
+#years 11 months. It assesses the spoken vocabulary of young children.
+#Naming Vocabulary scores may reflect:
+# Expressive language skills
+# Vocabulary knowledge of nouns
+# Ability to attach verbal labels to pictures
+# General knowledge
+# General language development
+# Retrieval of names from long-term memory
+# Level of language stimulation.
+
+dat$neuro_cognition_namingvocab_stage3 <- raw_dat$cdnvabil
+dat$neuro_cognition_namingvocab_stage3[raw_dat$neuro_cognition_namingvocab_stage3<0]<-NA
+dat$neuro_cognition_namingvocab_stage3_zscore <- scale(dat$neuro_cognition_namingvocab_stage3)
+
+dat$neuro_cognition_namingvocab_stage2 <- raw_dat$bdbasa00
+dat$neuro_cognition_namingvocab_stage2[raw_dat$neuro_cognition_namingvocab_stage2<0]<-NA
+dat$neuro_cognition_namingvocab_stage2_zscore <- scale(dat$neuro_cognition_namingvocab_stage2)
+
+# ability score for pattern construction (british ability score)
+#The child constructs a design by putting together flat squares or solid cubes with
+#black and yellow patterns on each side. The child’s score is based on accuracy and
+#speed. This assessment tests spatial awareness but can also be used to observe
+#dexterity and coordination, as well as traits like perseverance and determination.
+
+dat$neuro_cognition_spatialawareness_stage3 <- raw_dat$cdpcabil
+dat$neuro_cognition_spatialawareness_stage3[raw_dat$neuro_cognition_spatialawareness_stage3<0]<-NA
+dat$neuro_cognition_spatialawareness_stage3_zscore <- scale(dat$neuro_cognition_spatialawareness_stage3)
+
+# ability score for picture similarity (BAS)
+#Children are shown a row of 4 pictures on a page and asked to place a card with a
+#fifth picture under the picture most similar to it. This assessment measures children’s
+#problem solving abilities.
+
+dat$neuro_cognition_problemsolving_stage3 <- raw_dat$cdpsabil
+dat$neuro_cognition_problemsolving_stage3[raw_dat$neuro_cognition_problemsolving_stage3<0]<-NA
+dat$neuro_cognition_problemsolving_stage3_zscore <- scale(dat$neuro_cognition_problemsolving_stage3)
+
+# Word Reading is an assessment from the British Ability Scales: Second Edition (BAS
+# 2) which assesses children’s English reading ability.
+
+dat$neuro_cognition_reading_stage3 <- raw_dat$dcwrab00
+dat$neuro_cognition_reading_stage3[raw_dat$neuro_cognition_reading_stage3<0]<-NA
+dat$neuro_cognition_reading_stage3_zscore <- scale(dat$neuro_cognition_reading_stage3)
+
+# School Readiness (Bracken)
+
+# The Bracken Basic Concept Scale – Revised (BBCS-R) is used to assess the basic
+# concept development in children in the age range of 2 years 6 months to 7 years 11
+# months. BBCS–R measures the comprehension of 308 functionally relevant
+# educational concepts in 11 subtests or concept categories. Following consultation
+# with advisers and piloting, only subtests 1-6 were administered by interviewers to the
+# members of the cohort during the MCS2 data collection.
+
+dat$neuro_cognition_schoolreadiness_stage2 <- raw_dat$bdbsrc00
+dat$neuro_cognition_schoolreadiness_stage2[dat$neuro_cognition_schoolreadiness_stage2<0]<-NA
+dat$neuro_cognition_schoolreadiness_stage2_zscore  <- dat$neuro_cognition_schoolreadiness_stage2
+
+# Number skills
+# This test was adapted from the NFER Progress in Maths test which is aimed for 7-
+# year-olds and was originally developed and nationally UK standardised in 2004. The
+# whole test has a maximum raw score of 28. The national mean raw score in 2004
+# was 19.3 with a standard deviation of 5.3.
+
+dat$neuro_cognition_numberskills_stage3 <- raw_dat$maths7sc
+dat$neuro_cognition_numberskills_stage3[dat$neuro_cognition_numberskills_stage3<0]<-NA
+dat$neuro_cognition_numberskills_stage3_zscore  <- dat$neuro_cognition_numberskills_stage3
+
+#Educational attainment
+
+
 ```
 # Immunological
 
 Ideal harmonised immunological health measures for offspring are:
 
-Doctor diagnosed asthma
+asthma
 Wheeze
-Doctor diagnosed eczema
+eczema
 Eczema-like rash
 Allergies (pet, pollen, mite/dust, bee/wasp, food)
 
 ```{r eval=FALSE, include=TRUE}
-#Doctor diagnosed asthma
-#Wheeze
-#Doctor diagnosed eczema
-#Eczema-like rash
-#Allergies (pet, pollen, mite/dust, bee/wasp, food)
+# asthma
+dat$immuno_asthma_stage2_binary <- NA
+dat$immuno_asthma_stage2_binary[raw_dat$bmasmaa0 ==2 ] <- 0
+dat$immuno_asthma_stage2_binary[raw_dat$bmasmaa0 ==1 ] <- 1
+
+dat$immuno_asthma_stage3_binary <- NA
+dat$immuno_asthma_stage3_binary[raw_dat$cmasmaa0 ==2 | raw_dat$dmasmaa0 ==2 ] <- 0
+dat$immuno_asthma_stage3_binary[raw_dat$cmasmaa0 ==1 | raw_dat$dmasmaa0 ==1] <- 1
+
+dat$immuno_asthma_allstages_binary <- NA 
+dat$immuno_asthma_allstages_binary[dat$immuno_asthma_stage2_binary==0 | dat$immuno_asthma_stage3_binary ==0 ] <- 0
+dat$immuno_asthma_allstages_binary[dat$immuno_asthma_stage2_binary==1 | dat$immuno_asthma_stage3_binary ==1 ] <- 1
+
+# wheeze
+dat$immuno_wheeze_stage2_binary <- NA
+dat$immuno_wheeze_stage2_binary[raw_dat$bmwhlya0 ==2 | raw_dat$bmwheea0 ==2] <- 0
+dat$immuno_wheeze_stage2_binary[raw_dat$bmwhlya0 ==1 | raw_dat$bmwheea0 ==1] <- 1
+
+dat$immuno_wheeze_stage3_binary <- NA 
+dat$immuno_wheeze_stage3_binary[raw_dat$cmwhlya0 ==2 | raw_dat$dmwhlya0 ==2 | raw_dat$cmwheea0 ==2 | raw_dat$dmwheea0 ==2] <- 0
+dat$immuno_wheeze_stage3_binary[raw_dat$cmwhlya0  ==1 | raw_dat$dmwhlya0 ==1 |raw_dat$cmwheea0  ==1 | raw_dat$dmwheea0 ==1] <- 1
+
+dat$immuno_wheeze_allstages_binary <- NA 
+dat$immuno_wheeze_allstages_binary[dat$immuno_wheeze_stage2_binary==0 | dat$immuno_wheeze_stage3_binary ==0 ] <- 0
+dat$immuno_wheeze_allstages_binary[dat$immuno_wheeze_stage2_binary==1 | dat$immuno_wheeze_stage3_binary ==1 ] <- 1
+
+#eczema (question for stage 2 was about eczema OR hayfever, so have dropped this question)
+dat$immuno_eczema_stage3_binary <- NA 
+dat$immuno_eczema_stage3_binary[raw_dat$cmeczma0 ==2 | raw_dat$dmeczma0 ==2 ] <- 0
+dat$immuno_eczema_stage3_binary[raw_dat$cmeczma0  ==1 | raw_dat$dmeczma0 ==1] <- 1
+
+dat$immuno_eczema_allstages_binary <- dat$immuno_eczema_stage3_binary
+
+#allergy
+
+dat$immuno_allergy_hay_stage3_binary <- NA 
+dat$immuno_allergy_hay_stage3_binary[raw_dat$cmhafva0 ==2 | raw_dat$dmhafva0 ==2 ] <- 0
+dat$immuno_allergy_hay_stage3_binary[raw_dat$cmhafva0  ==1 | raw_dat$dmhafva0 ==1] <- 1
+
+dat$immuno_allergy_hay_allstages_binary <- dat$immuno_allergy_hay_stage3_binary
 
 ```
 # Covariates
@@ -761,17 +968,35 @@ Demographics
 
 ```{r eval=FALSE, include=TRUE}
 
+dat$covs_ethnicity_mother<- NA
+dat$covs_ethnicity_mother[raw_dat$amdeea00%in%c(1,2,3)]<-"white"
+dat$covs_ethnicity_mother[raw_dat$amdeea00%in%c(4,5,6,7,95)]<-"mixed or other"
+dat$covs_ethnicity_mother[raw_dat$amdeea00%in%c(8,9,10,11,15)]<-"asian"
+dat$covs_ethnicity_mother[raw_dat$amdeea00%in%c(12,13,14)]<-"black"
+
 dat$covs_ethnicity_mother_binary <- NA
-dat$covs_ethnicity_mother_binary[raw_dat$amd06e00==1]<-"white"
-dat$covs_ethnicity_mother_binary[raw_dat$amd06e00%in%c(2,3,4,5,6)]<-"not white"
+dat$covs_ethnicity_mother_binary[dat$covs_ethnicity_mother%in%c("white")]<-"white"
+dat$covs_ethnicity_mother_binary[dat$covs_ethnicity_mother%in%c("asian","black","mixed or other")]<-"not white"
+
+dat$covs_ethnicity_father<- NA
+dat$covs_ethnicity_father[raw_dat$apdeea00%in%c(1,2,3)]<-"white"
+dat$covs_ethnicity_father[raw_dat$apdeea00%in%c(4,5,6,7,95)]<-"mixed or other"
+dat$covs_ethnicity_father[raw_dat$apdeea00%in%c(8,9,10,11,15)]<-"asian"
+dat$covs_ethnicity_father[raw_dat$apdeea00%in%c(12,13,14)]<-"black"
 
 dat$covs_ethnicity_father_binary <- NA
-dat$covs_ethnicity_father_binary[raw_dat$apd06e00==1]<-"white"
-dat$covs_ethnicity_father_binary[raw_dat$apd06e00%in%c(2,3,4,5,6)]<-"not white"
+dat$covs_ethnicity_father_binary[dat$covs_ethnicity_father%in%c("white")]<-"white"
+dat$covs_ethnicity_father_binary[dat$covs_ethnicity_father%in%c("asian","black","mixed or other")]<-"not white"
+
+dat$covs_ethnicity_child<- NA
+dat$covs_ethnicity_child[raw_dat$adceeaa0%in%c(1,2,3)]<-"white"
+dat$covs_ethnicity_child[raw_dat$adceeaa0%in%c(4,5,6,7,95)]<-"mixed or other"
+dat$covs_ethnicity_child[raw_dat$adceeaa0%in%c(8,9,10,11,15)]<-"asian"
+dat$covs_ethnicity_child[raw_dat$adceeaa0%in%c(12,13,14)]<-"black"
 
 dat$covs_ethnicity_child_binary <- NA
-dat$covs_ethnicity_child_binary[raw_dat$adc06ea0==1]<-"white"
-dat$covs_ethnicity_child_binary[raw_dat$adc06ea0%in%c(2,3,4,5,6)]<-"not white"
+dat$covs_ethnicity_child_binary[dat$covs_ethnicity_child%in%c("white")]<-"white"
+dat$covs_ethnicity_child_binary[dat$covs_ethnicity_child%in%c("asian","black","mixed or other")]<-"not white"
 
 dat$covs_age_mother_delivery <- raw_dat$amdagb00
 dat$covs_age_mother_delivery[dat$covs_age_mother_delivery<0]<-NA
@@ -804,9 +1029,6 @@ dat$covs_occup_father[raw_dat$apd05s00%in%c(2,3)]<-2 #intermediate and small emp
 dat$covs_occup_father[raw_dat$apd05s00==4]<-1 #low supervisory and technical
 dat$covs_occup_father[raw_dat$apd05s00==5]<-0 #semi-routine or routine
 
-dat$covs_sex <- NA
-dat$covs_sex[raw_dat$ahcsexa0==1]<-"male"
-dat$covs_sex[raw_dat$ahcsexa0==2]<-"female"
 
 ```
 
@@ -913,12 +1135,14 @@ dat$covs_glycosuria_binary[dat$covs_diabetes_mother_binary==1]<-1
 
 Child’s health
 
+Look at http://cls.nemisys3.uk.com/datadictionary/page.asp?section=000100010003000300020001&sectionTitle=A%2E+Main+Interview for coding
+
 * Gestational age at delivery
-* Duration of breastfeeding
-* Child’s own smoking
+* Duration of breastfeeding (e.g. ambfeaa0)
+* Child’s own smoking 
 * Child’s own drinking of alcohol
 * Child’s own consumption of caffeine
-* Child’s exposure to passive smoke
+* Child’s exposure to passive smoke (e.g. amsmkr00)
 
 
 ```{r eval=FALSE, include=TRUE}
@@ -930,11 +1154,6 @@ dat$covs_gestage <- dat$covs_gestage/7
 dat$covs_preterm_binary <- NA
 dat$covs_preterm_binary[dat$covs_gestage<37]<-1
 dat$covs_preterm_binary[dat$covs_gestage>=37]<-0
-
-ambfeaa0
-amsmkr00
-
-amhpwmaa 5=wheezing or asthma, 61=eczema, 62=other allergy, 70=CHD, 79=cleft
 
 #Duration of breastfeeding
 #Child’s own smoking
