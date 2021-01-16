@@ -1213,7 +1213,6 @@ dat$covs_passivesmk_child_stage3_binary[raw_dat$cmsmkr00==1|raw_dat$dmsmkr00==1]
 
 ```
 
-
 # Save
 ```{r eval=FALSE, include=TRUE}
 saveRDS(dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rds")
