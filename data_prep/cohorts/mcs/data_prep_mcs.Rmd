@@ -7,14 +7,6 @@ output: rmdformats::material
 
 # Introduction
 
-**STILL TO DO:**
-
-Code starts around line 1156:
-
-* child's own smoking/alcohol/caffeine
-* breastfeeding duration
-* child passive smoking
-
 All datasets were downloaded from the UK data service website and are stored in the EPoCH folder on the RDSF. Documentation is stored alongside the data.
 
 Folder names are not intuitive, so here is a key:
@@ -82,12 +74,12 @@ The sample of births selected for the first survey of the MCS was clustered, geo
 | Disadvantaged | 1.09    | 0.23  | 0.57     | 0.25      |
 | Ethnic        | 0.37    |       |          |           |
 
-There's information on weighting using Stata here: https://cls.ucl.ac.uk/wp-content/uploads/2017/07/User-Guide-to-Analysing-MCS-Data-using-Stata.pdf (I haven't seen information on how to do it using R).
+There's information on weighting using Stata here: https://cls.ucl.ac.uk/wp-content/uploads/2017/07/User-Guide-to-Analysing-MCS-Data-using-Stata.pdf (I haven't seen information on how to do it using R - it uses a specific command in STATA, svy).
 
 This document [https://cls.ucl.ac.uk/wp-content/uploads/2017/07/MCS-Guide-to-the-Datasets-022014.pdf] contains the following recommendation:
 "Analysts wanting to estimate coefficients of regression models should include the stratum design variable (pttype2) as dummy variables in the model and unweighted methods can then be used to estimate model parameters. In order to properly estimate standard errors, the clustering of the MCS sample should be taken into account in any analysis by using the STATA svy commands or robust cluster option with PSU identifier if clustering is a nuisance or using a multilevel (hierarchical) model if the clustering is of substantive interest."
 
-I think this means we can just adjust for PTTYPE2, potentially as a random effect if we think it's necessary.
+I think this means we can just adjust for PTTYPE2 to adjust the coefficients. To get standard errors that take clustering into account, I'm not sure what we could do...
  
 **Partner response**
 
@@ -120,9 +112,7 @@ hhg1 <- read_dta("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mc
 mcs1_parent_interview <- read_dta("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/UKDA-4683-stata11/UKDA-4683-stata11/stata11/mcs1_parent_interview.dta")
 mcs1_derived <- read_dta("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/UKDA-4683-stata11/UKDA-4683-stata11/stata11/mcs1_derived_variables.dta")
 
-#mcs1 <- mcs1_parent_interview[,c("mcsid",names(mcs1_parent_interview)[grep(names(mcs1_parent_interview),pattern="hcsex|hcnuma0|smus|cipr|smma|piof|smty|smev|smbv|smch|whch|cich|drof|puwk|puda|aldr|unwk|unda|bsex|asth|eczm|diab|diwt|dean|ilwt|ilwm|ilpr|lain|dewt|dewm|loil|lowt|mhpwm")])]
 names(mcs1_derived)<-tolower(names(mcs1_derived))
-#mcs1_d <- mcs1_derived[,c("mcsid",names(mcs1_derived)[grep(names(mcs1_derived),pattern="dres|drel|typ|natf|natm|drsp|dagb|d06e|d07c|d05s|dhinc|donbe|dnvq|hgt|d05shgtm|wgtk|wgbk|dbmi|bwgt|gesta|lstw|c06e")])]
 
 mcs2_parent_interview <- read_dta("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/UKDA-5350-stata11_se/stata11_se/mcs2_parent_interview.dta")
 mcs2_child_assessment <- read_dta("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/UKDA-5350-stata11_se/stata11_se/mcs2_child_assessment_data.dta")
@@ -145,13 +135,14 @@ mcs5_child_measurement <- read_dta("/Volumes/MRC-IEU-research/projects/ieu2/p5/0
 
 mcs1_parent_interview <- zap_labels(mcs1_parent_interview)
 
-raw_dat <- merge(family_file,mcs1_parent_interview,by="mcsid",all=T)
+# merge parent level datasets (sweeps 1-4 are in wide format, sweep 5 is in long format)
+
+raw_dat <- merge(family_file,mcs1_parent_interview,by="mcsid",all=T)# family file contains one row per family, includes data on weights, mcsid is family id, pnum is adult id, cnum is child id
 raw_dat <- merge(raw_dat,mcs2_parent_interview,by="mcsid",all.x=T)
 raw_dat <- merge(raw_dat,mcs3_parent_interview,by="mcsid",all.x=T)
-raw_dat <- merge(raw_dat,mcs4_parent_interview,by="mcsid",all.x=T)
+raw_dat <- merge(raw_dat,mcs4_parent_interview[,-which(colnames(mcs4_parent_interview) %in% "daoutc00")],by="mcsid",all.x=T)
 names(mcs5_parent_interview)<-tolower(names(mcs5_parent_interview))
-raw_dat <- merge(raw_dat,mcs5_parent_interview[mcs5_parent_interview$epnum00==1,],by="mcsid",all=T)
-
+raw_dat <- merge(raw_dat,mcs5_parent_interview[mcs5_parent_interview$eelig00==1,],by="mcsid",all=T) # by selecting eelig==1, we're selecting data from just one respondent, the one that has been eligible for the role of main respondent - this is fine as we're not actually selecting any parent data by this point, we just want to get the dataset at the family level
 
 names(mcs1_derived)<-tolower(names(mcs1_derived))
 names(mcs2_derived)<-tolower(names(mcs2_derived))
@@ -160,25 +151,51 @@ names(mcs4_derived)<-tolower(names(mcs4_derived))
 names(mcs5_cm_derived)<-tolower(names(mcs5_cm_derived))
 names(mcs5_parent_derived)<-tolower(names(mcs5_parent_derived))
 
+duplicated_variables <- intersect(colnames(raw_dat),c(colnames(mcs1_derived),colnames(mcs2_derived),colnames(mcs3_derived),colnames(mcs4_derived),colnames(mcs5_parent_derived)))[-1]
+
 raw_dat <- merge(raw_dat,mcs1_derived,by="mcsid",all.x=T)
-raw_dat <- merge(raw_dat,mcs2_derived,by="mcsid",all.x=T)
+raw_dat <- merge(raw_dat,mcs2_derived[,-which(colnames(mcs2_derived)%in%duplicated_variables)],by="mcsid",all.x=T)
 raw_dat <- merge(raw_dat,mcs3_derived,by="mcsid",all.x=T)
-raw_dat <- merge(raw_dat,mcs4_derived,by="mcsid",all.x=T)
-raw_dat <- merge(raw_dat,mcs5_parent_derived[mcs5_parent_derived$epnum00==1,],by="mcsid",all.x=T)
+raw_dat <- merge(raw_dat,mcs4_derived[,-which(colnames(mcs4_derived)%in%duplicated_variables)],by="mcsid",all.x=T)
+mcs5_parent_derived2 <- mcs5_parent_derived[mcs5_parent_derived$eelig00==1,]
+raw_dat <- merge(raw_dat,mcs5_parent_derived2[,-which(colnames(mcs5_parent_derived2)%in%duplicated_variables)],by="mcsid",all.x=T)
 
-raw_dat <- merge(raw_dat,mcs2_child_measurement[mcs2_child_measurement$bhcnum00==1,],by="mcsid",all.x=T)
-raw_dat <- merge(raw_dat,mcs2_child_assessment[mcs2_child_assessment$bhcnum00==1,],by="mcsid",all.x=T)
-
-raw_dat <- merge(raw_dat,mcs3_child_assessment[mcs3_child_assessment$chcnum00==1,],by="mcsid",all.x=T)
+# add child-level data (select just cohort member 1)
 
 names(mcs4_child_assessment)<-tolower(names(mcs4_child_assessment))
-raw_dat <- merge(raw_dat,mcs4_child_assessment[mcs4_child_assessment$dccnum00==1,],by="mcsid",all.x=T)
-
 names(mcs5_child_assessment)<-tolower(names(mcs5_child_assessment))
-raw_dat <- merge(raw_dat,mcs5_child_assessment[mcs5_child_assessment$ecnum00==1,],by="mcsid",all.x=T)
 names(mcs5_child_measurement)<-tolower(names(mcs5_child_measurement))
-raw_dat <- merge(raw_dat,mcs5_child_measurement[mcs5_child_measurement$ecnum00==1,],by="mcsid",all.x=T)
-raw_dat <- merge(raw_dat,mcs5_cm_derived[mcs5_cm_derived$ecnum00==1,],by="mcsid",all.x=T)
+names(mcs5_cm_derived)<-tolower(names(mcs5_cm_derived))
+
+mcs2_child_assessment <- mcs2_child_assessment[mcs2_child_assessment$bhcnum00==1,]
+mcs2_child_measurement <- mcs2_child_measurement[mcs2_child_measurement$bhcnum00==1,]
+mcs3_child_assessment <- mcs3_child_assessment[mcs3_child_assessment$chcnum00==1,]
+mcs4_child_assessment <- mcs4_child_assessment[mcs4_child_assessment$dccnum00==1,]
+mcs5_child_measurement <- mcs5_child_measurement[mcs5_child_measurement$ecnum00==1,]
+mcs5_child_assessment <- mcs5_child_assessment[mcs5_child_assessment$ecnum00==1,]
+mcs5_cm_derived <- mcs5_cm_derived[mcs5_cm_derived$ecnum00==1,]
+
+duplicated_variables <- c("cddatrel","bhcnum00","chcnum00","dccnum00","ecnum00")
+
+raw_dat <- merge(raw_dat,mcs2_child_measurement[-which(colnames(mcs2_child_measurement)%in%duplicated_variables)],by="mcsid",all.x=T)
+duplicated_variables2 <- c(duplicated_variables,intersect(colnames(raw_dat),colnames(mcs2_child_assessment)))
+duplicated_variables2 <-duplicated_variables2[-which(duplicated_variables2=="mcsid")]
+raw_dat <- merge(raw_dat,mcs2_child_assessment[-which(colnames(mcs2_child_assessment)%in%duplicated_variables2)],by="mcsid",all.x=T)
+duplicated_variables2 <- c(duplicated_variables,intersect(colnames(raw_dat),colnames(mcs3_child_assessment)))
+duplicated_variables2 <-duplicated_variables2[-which(duplicated_variables2=="mcsid")]
+raw_dat <- merge(raw_dat,mcs3_child_assessment[-which(colnames(mcs3_child_assessment)%in%duplicated_variables2)],by="mcsid",all.x=T)
+duplicated_variables2 <- c(duplicated_variables,intersect(colnames(raw_dat),colnames(mcs4_child_assessment)))
+duplicated_variables2 <-duplicated_variables2[-which(duplicated_variables2=="mcsid")]
+raw_dat <- merge(raw_dat,mcs4_child_assessment[-which(colnames(mcs4_child_assessment)%in%duplicated_variables2)],by="mcsid",all.x=T)
+duplicated_variables2 <- c(duplicated_variables,intersect(colnames(raw_dat),colnames(mcs5_child_assessment)))
+duplicated_variables2 <-duplicated_variables2[-which(duplicated_variables2=="mcsid")]
+raw_dat <- merge(raw_dat,mcs5_child_assessment[-which(colnames(mcs5_child_assessment)%in%duplicated_variables2)],by="mcsid",all.x=T)
+duplicated_variables2 <- c(duplicated_variables,intersect(colnames(raw_dat),colnames(mcs5_child_measurement)))
+duplicated_variables2 <-duplicated_variables2[-which(duplicated_variables2=="mcsid")]
+raw_dat <- merge(raw_dat,mcs5_child_measurement[-which(colnames(mcs5_child_measurement)%in%duplicated_variables2)],by="mcsid",all.x=T)
+duplicated_variables2 <- c(duplicated_variables,intersect(colnames(raw_dat),colnames(mcs5_cm_derived)))
+duplicated_variables2 <-duplicated_variables2[-which(duplicated_variables2=="mcsid")]
+raw_dat <- merge(raw_dat,mcs5_cm_derived[-which(colnames(mcs5_cm_derived)%in%duplicated_variables2)],by="mcsid",all.x=T)
 
 raw_dat <- zap_labels(raw_dat)
 
@@ -198,7 +215,7 @@ For 13165 records, the "partner respondent" is the natural father (interviewed; 
 
 raw_dat <- raw_dat[which(raw_dat$amdres00==1&is.na(raw_dat$amdres00)==FALSE),] # select only those where the natural mother is the main respondent (vast majority of cases, lose 55)
 
-raw_dat <- raw_dat[raw_dat$nocmhh==1,]#select singletons/first borns in cohort (lose 251 + 11)
+raw_dat <- raw_dat[raw_dat$nocmhh==1,]#select singletons/first borns in cohort (lose 246 + 10)
 
 raw_dat$covs_biological_father<-"not_bio_dad"
 raw_dat$covs_biological_father[raw_dat$apdres00%in%c(2,12,16,24)]<-"bio_dad"
@@ -624,19 +641,27 @@ dat$anthro_bmi_stage4 <- dat$anthro_weight_stage4 / ((dat$anthro_height_stage4/1
 
 # (first need to derive age at each stage/sweep):
 
-dat$covs_age_child_stage0 <- raw_dat$adaglwa0
+dat$covs_age_child_stage0wt <- raw_dat$adaglwa0 # age when weight measurement taken
+dat$covs_age_child_stage0wt[dat$covs_age_child_stage0wt<0]<-NA
+
+dat$covs_age_child_stage0 <- raw_dat$ahbage00 #age at interview
 dat$covs_age_child_stage0[dat$covs_age_child_stage0<0]<-NA
 
-## can't find age at sweep for other stages (this at stage 0 refers to age at which weight measurement was taken, but I can't find a similar variable for later sweeps. From looking at the MCS documentation, it seems possible that families were interviewed when their children turned a particular age, so we might expect all children to be within a few months of their birthdays - i.e 9 months for sweep 1, 3 for sweep 2, 5 for sweep 3, 7 for sweep 4, 11 for sweep 5. That is what I've assumed below. I checked the likelihood this assumption was correct by looking at how close dat$covs_age_child_stage0 is to 9 months, 61 % were within 1 month of 9 months, 85% within 2 months - so reasonably accurate, but note this variable describes age at last weight measurement NOT age at interview so we would expect some to be <9 months - only 28% were over 9 months, 4.2% are over 10 months, 0.3% over 11 months, so it seems reasonable to assume that the vast majority of interviews took place close to a child's birthday)
+dat$covs_age_child_stage2 <- raw_dat$bhcagea0
+dat$covs_age_child_stage2[dat$covs_age_child_stage2<0]<-NA
 
-dat$covs_age_child_stage2 <- 3
-dat$covs_age_child_stage3 <- 5 # sweep 3 (age 5) and 4 (age 7) fall under stage 3, but the sweep 4 datasets did not include weight and height measurements, so we have used sweep 3 only
-dat$covs_age_child_stage4 <- 11
+dat$covs_age_child_stage3c <- raw_dat$chcagea0
+dat$covs_age_child_stage3c[dat$covs_age_child_stage3c<0]<-NA
+
+dat$covs_age_child_stage3d <- raw_dat$dhcagea0
+dat$covs_age_child_stage3d[dat$covs_age_child_stage3d<0]<-NA
+
+dat$covs_age_child_stage4 <- raw_dat$emcs5age
+dat$covs_age_child_stage4[dat$covs_age_child_stage4<0]<-NA
 
 dat$covs_sex <- NA
 dat$covs_sex[raw_dat$ahcsexa0==1]<-"male"
 dat$covs_sex[raw_dat$ahcsexa0==2]<-"female"
-
 
 library(childsds)
 
@@ -646,7 +671,7 @@ dat$anthro_bmi_stage2_sds <- sds(value = dat$anthro_bmi_stage2,
 		      ref = ukwho.ref, item = "bmi")
 
 dat$anthro_bmi_stage3_sds <- sds(value = dat$anthro_bmi_stage3,
-		      age = dat$covs_age_child_stage3,
+		      age = dat$covs_age_child_stage3c,
 		      sex = dat$covs_sex, male = "male", female = "female",
 		      ref = ukwho.ref, item = "bmi")
 
@@ -1150,7 +1175,7 @@ Look at http://cls.nemisys3.uk.com/datadictionary/page.asp?section=0001000100030
 * Child’s own smoking 
 * Child’s own drinking of alcohol
 * Child’s own consumption of caffeine
-* Child’s exposure to passive smoke (e.g. amsmkr00)
+* Child’s exposure to passive smoke (e.g. amsmkr00, CMSMKR00, BMSMKR00, DMSMKR00)
 
 
 ```{r eval=FALSE, include=TRUE}
@@ -1164,10 +1189,28 @@ dat$covs_preterm_binary[dat$covs_gestage<37]<-1
 dat$covs_preterm_binary[dat$covs_gestage>=37]<-0
 
 #Duration of breastfeeding
-#Child’s own smoking
-#Child’s own drinking of alcohol
-#Child’s own consumption of caffeine
+
+dat$covs_breastfeeding_ordinal <- NA
+dat$covs_breastfeeding_ordinal[raw_dat$ambfeva0==2 | raw_dat$ambfeaa0==1] <-0 #never tried
+dat$covs_breastfeeding_ordinal[raw_dat$ambfeaa0==2 | raw_dat$ambfeda0 %in% 1:89 | raw_dat$ambfewa0 %in% 1:11 | raw_dat$ambfema0 %in% 1:2 | raw_dat$cmbfema0%in% 1:2] <-1 #less than 3 months (variables are less than 1 day, duration in days, duration in weeks, duration in months)
+dat$covs_breastfeeding_ordinal[raw_dat$ambfeda0 %in% 90:180 | raw_dat$ambfewa0 %in% 12:23 | raw_dat$ambfema0 %in% 3:5 | raw_dat$cmbfema0%in% 3:5] <-2 #3- <6 months
+dat$covs_breastfeeding_ordinal[raw_dat$ambfeda0 %in% 180:10000| raw_dat$ambfewa0 %in% 24:10000 | raw_dat$ambfema0 %in% 6:10000|
+                              raw_dat$cmbfema0%in% 6:10000 | raw_dat$cmbfeya0>=1  | raw_dat$bmbfeaa0==3 | raw_dat$cmbfeaa0==3 ] <-3 #6+ months (duration in days, duration in weeks, duration in months, years, still breastfeeding))
+
 #Child’s exposure to passive smoke
+
+dat$covs_passivesmk_child_stage0_binary <- NA
+dat$covs_passivesmk_child_stage0_binary[raw_dat$amsmkr00==2] <- 0
+dat$covs_passivesmk_child_stage0_binary[raw_dat$amsmkr00==1] <- 1
+
+dat$covs_passivesmk_child_stage2_binary <- NA
+dat$covs_passivesmk_child_stage2_binary[raw_dat$bmsmkr00==2] <- 0
+dat$covs_passivesmk_child_stage2_binary[raw_dat$bmsmkr00==1] <- 1
+
+dat$covs_passivesmk_child_stage3_binary <- NA
+dat$covs_passivesmk_child_stage3_binary[raw_dat$cmsmkr00==2|raw_dat$dmsmkr00==2] <- 0
+dat$covs_passivesmk_child_stage3_binary[raw_dat$cmsmkr00==1|raw_dat$dmsmkr00==1] <- 1
+
 ```
 
 
@@ -1176,7 +1219,4 @@ dat$covs_preterm_binary[dat$covs_gestage>=37]<-0
 saveRDS(dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rds")
 
 ```
-
-
-
 
