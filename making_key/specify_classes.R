@@ -125,11 +125,11 @@ key$outcome_subclass2[key$outcome %in% insect_allergy_outcomes] <-"insect allerg
 key$outcome_subclass2[key$outcome %in% any_allergy_outcomes] <-"any allergy"
  
 ## timing of outcome
-key$outcome_time[grep(key$outcome,pattern="stage0|birth")]<-"at birth"
+key$outcome_time[grep(key$outcome,pattern="stage0|birth")]<-"first year"
 key$outcome_time[grep(key$outcome,pattern="stage1")]<-"age 1 or 2"
 key$outcome_time[grep(key$outcome,pattern="stage2")]<-"age 3 or 4"
 key$outcome_time[grep(key$outcome,pattern="stage3")]<-"age 5, 6 or 7"
-key$outcome_time[grep(key$outcome,pattern="stage4")]<-"age 8, 9 or 10"
+key$outcome_time[grep(key$outcome,pattern="stage4")]<-"age 8, 9, 10 or 11"
 key$outcome_time[grep(key$outcome,pattern="allstages|negcon")]<-"any time in childhood"
  
 ## type of outcome variable

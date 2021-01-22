@@ -23,7 +23,6 @@ purl("data_prep_bib.Rmd")
 We are using tidyverse, which is a set of packages that work in harmony. The tidyverse package is designed to make it easy to install and load core packages from the tidyverse in a single command.
 
 ```{r eval=FALSE, include=TRUE}
-#Handy way in R to download many packages at once)
 packages <- c("dplyr", "purrr", "data.table","tidyverse","tinytex","rmarkdown")
 lapply(packages, require, character.only=T)
 ```
@@ -870,19 +869,34 @@ dat$covs_parity_mother_binary[raw_dat$eclregpart==0]<-0
 dat$covs_parity_mother_binary[raw_dat$eclregpart>0]<-1
 
 # Maternal ethnicity
-dat$covs_ethnicity_mother_binary<-NA
-dat$covs_ethnicity_mother_binary[raw_dat$eth0eth9gp%in%c("White British","White Other")]<-"white"
-dat$covs_ethnicity_mother_binary[raw_dat$eth0eth9gp%in%c("Mixed-White and Black", "Mixed-White and South Asian", "Black", "Indian", "Pakistani", "Bangladeshi", "Other")]<-"not white"
+
+dat$covs_ethnicity_mother<-NA
+dat$covs_ethnicity_mother[raw_dat$eth0eth9gp%in%c("White British","White Other")]<-"white"
+dat$covs_ethnicity_mother[raw_dat$eth0eth9gp%in%c("Mixed-White and Black", "Mixed-White and South Asian", "Other")]<-"mixed or other"
+dat$covs_ethnicity_mother[raw_dat$eth0eth9gp%in%c("Pakistani", "Indian", "Bangladeshi")]<-"asian"
+dat$covs_ethnicity_mother[raw_dat$eth0eth9gp%in%c("Black")]<-"black"
 
 dat$covs_ethnicityBIB_mother <-NA
-dat$covs_ethnicityBIB_mother[raw_dat$eth0eth9gp=="White British"]<-"white british"
+dat$covs_ethnicityBIB_mother[raw_dat$eth0eth9gp%in%c("White British","White Other")]<-"white european"
 dat$covs_ethnicityBIB_mother[raw_dat$eth0eth9gp%in%c("Pakistani","Indian","Bangladeshi")]<-"south asian"
 dat$covs_ethnicityBIB_mother[raw_dat$eth0eth9gp%in%c("Other","Mixed-White and Black","Mixed-White and South Asian","White Other","Black")]<-"other"
 
-# Paternal ethncity
-dat$covs_ethnicity_father_binary<-NA
-dat$covs_ethnicity_father_binary[raw_dat$fbqethnicgrp=="White"]<-"white"
-dat$covs_ethnicity_father_binary[raw_dat$fbqethnicgrp%in%c("Mixed","Black/Black British", "Asian/Asian British","Chinese", "Other")]<-"not white"
+dat$covs_ethnicity_mother_binary <- NA
+dat$covs_ethnicity_mother_binary[dat$covs_ethnicityBIB_mother == "white european"] <- "white"
+dat$covs_ethnicity_mother_binary[dat$covs_ethnicityBIB_mother %in% c("other","south asian")] <- "not white"
+
+# Paternal ethnicity
+
+dat$covs_ethnicity_father<-NA
+dat$covs_ethnicity_father[raw_dat$fbqethnicgrp%in%c("White")]<-"white"
+dat$covs_ethnicity_father[raw_dat$fbqethnicgrp%in%c("Mixed", "Other")]<-"mixed or other"
+dat$covs_ethnicity_father[raw_dat$fbqethnicgrp%in%c("Asian/Asian British","Chinese")]<-"asian"
+dat$covs_ethnicity_father[raw_dat$fbqethnicgrp%in%c("Black/Black British")]<-"black"
+
+dat$covs_ethnicity_father_binary <- NA
+dat$covs_ethnicity_father_binary[dat$covs_ethnicity_father == "white"] <- "white"
+dat$covs_ethnicity_father_binary[dat$covs_ethnicity_father %in% c("mixed or other","black","asian")] <- "not white"
+
 
 # Maternal education (other/don't know/foreign unknown all coded as NA)
 dat$covs_edu_mother<-NA
@@ -993,37 +1007,40 @@ Negative control variables are not available
 
 I have stratified by the two major ethnic groups in BiB: South Asian (n=5910) and white British (n=4545). This means 1058 pregnancies are excluded because they involve a mother from a different ethnic group, including mixed heritage south asian and white british. The other option is to stratify by white/all other ethnic groups, but it looks like most previous research involving BiB has stratified by south asian/white British.
 ```{r eval=FALSE, include=TRUE}
-datwb <- dat[which(dat$covs_ethnicityBIB_mother=="white british"),]
+datwe <- dat[which(dat$covs_ethnicityBIB_mother=="white european"),]
 datsa <- dat[which(dat$covs_ethnicityBIB_mother=="south asian"),]
 ```
 
 ## Create Z scores for each ethnic grouping separately
+
+For stratified analyses
+
 ```{r eval=FALSE, include=TRUE}
-#white british
-datwb$anthro_birthweight_zscore <-scale(datwb$anthro_birthweight)
-datwb$anthro_head_circ_birth_zscore <-scale(datwb$anthro_head_circ_birth)
-datwb$anthro_crown_heel_birth_zscore <-scale(datwb$anthro_crown_heel_birth)
+#white european
+datwe$anthro_birthweight_zscore <-scale(datwe$anthro_birthweight)
+datwe$anthro_head_circ_birth_zscore <-scale(datwe$anthro_head_circ_birth)
+datwe$anthro_crown_heel_birth_zscore <-scale(datwe$anthro_crown_heel_birth)
 
-datwb$anthro_height_stage1_zscore <-scale(datwb$anthro_height_stage1)
-datwb$anthro_height_stage2_zscore <-scale(datwb$anthro_height_stage2)
-datwb$anthro_height_stage3_zscore <-scale(datwb$anthro_height_stage3)
+datwe$anthro_height_stage1_zscore <-scale(datwe$anthro_height_stage1)
+datwe$anthro_height_stage2_zscore <-scale(datwe$anthro_height_stage2)
+datwe$anthro_height_stage3_zscore <-scale(datwe$anthro_height_stage3)
 
-datwb$anthro_weight_stage1_zscore <-scale(datwb$anthro_weight_stage1)
-datwb$anthro_weight_stage2_zscore <-scale(datwb$anthro_weight_stage2)
-datwb$anthro_weight_stage3_zscore <-scale(datwb$anthro_weight_stage3)
+datwe$anthro_weight_stage1_zscore <-scale(datwe$anthro_weight_stage1)
+datwe$anthro_weight_stage2_zscore <-scale(datwe$anthro_weight_stage2)
+datwe$anthro_weight_stage3_zscore <-scale(datwe$anthro_weight_stage3)
 
-datwb$anthro_bmi_stage1_zscore <-scale(datwb$anthro_bmi_stage1)
-datwb$anthro_bmi_stage2_zscore <-scale(datwb$anthro_bmi_stage2)
-datwb$anthro_bmi_stage3_zscore <-scale(datwb$anthro_bmi_stage3)
+datwe$anthro_bmi_stage1_zscore <-scale(datwe$anthro_bmi_stage1)
+datwe$anthro_bmi_stage2_zscore <-scale(datwe$anthro_bmi_stage2)
+datwe$anthro_bmi_stage3_zscore <-scale(datwe$anthro_bmi_stage3)
 
-datwb$anthro_head_circ_stage1_zscore <-scale(datwb$anthro_head_circ_stage1)
-datwb$anthro_head_circ_stage2_zscore <-scale(datwb$anthro_head_circ_stage2)
+datwe$anthro_head_circ_stage1_zscore <-scale(datwe$anthro_head_circ_stage1)
+datwe$anthro_head_circ_stage2_zscore <-scale(datwe$anthro_head_circ_stage2)
 
-datwb$anthro_waist_stage1_zscore <-scale(datwb$anthro_waist_stage1)
-datwb$anthro_waist_stage2_zscore <-scale(datwb$anthro_waist_stage2)
+datwe$anthro_waist_stage1_zscore <-scale(datwe$anthro_waist_stage1)
+datwe$anthro_waist_stage2_zscore <-scale(datwe$anthro_waist_stage2)
 
-datwb$covs_bmi_father_zscore <-scale(datwb$covs_bmi_father)
-datwb$covs_bmi_mother_zscore <- scale(datwb$covs_bmi_mother)
+datwe$covs_bmi_father_zscore <-scale(datwe$covs_bmi_father)
+datwe$covs_bmi_mother_zscore <- scale(datwe$covs_bmi_mother)
 
 #south asian
 datsa$anthro_birthweight_zscore <-scale(datsa$anthro_birthweight)
@@ -1050,15 +1067,41 @@ datsa$anthro_waist_stage2_zscore <-scale(datsa$anthro_waist_stage2)
 
 datsa$covs_bmi_father_zscore <-scale(datsa$covs_bmi_father)
 datsa$covs_bmi_mother_zscore <- scale(datsa$covs_bmi_mother)
-```
 
+# all together
+
+dat$anthro_birthweight_zscore <-scale(dat$anthro_birthweight)
+dat$anthro_head_circ_birth_zscore <-scale(dat$anthro_head_circ_birth)
+dat$anthro_crown_heel_birth_zscore <-scale(dat$anthro_crown_heel_birth)
+
+dat$anthro_height_stage1_zscore <-scale(dat$anthro_height_stage1)
+dat$anthro_height_stage2_zscore <-scale(dat$anthro_height_stage2)
+dat$anthro_height_stage3_zscore <-scale(dat$anthro_height_stage3)
+
+dat$anthro_weight_stage1_zscore <-scale(dat$anthro_weight_stage1)
+dat$anthro_weight_stage2_zscore <-scale(dat$anthro_weight_stage2)
+dat$anthro_weight_stage3_zscore <-scale(dat$anthro_weight_stage3)
+
+dat$anthro_bmi_stage1_zscore <-scale(dat$anthro_bmi_stage1)
+dat$anthro_bmi_stage2_zscore <-scale(dat$anthro_bmi_stage2)
+dat$anthro_bmi_stage3_zscore <-scale(dat$anthro_bmi_stage3)
+
+dat$anthro_head_circ_stage1_zscore <-scale(dat$anthro_head_circ_stage1)
+dat$anthro_head_circ_stage2_zscore <-scale(dat$anthro_head_circ_stage2)
+
+dat$anthro_waist_stage1_zscore <-scale(dat$anthro_waist_stage1)
+dat$anthro_waist_stage2_zscore <-scale(dat$anthro_waist_stage2)
+
+dat$covs_bmi_father_zscore <-scale(dat$covs_bmi_father)
+dat$covs_bmi_mother_zscore <- scale(dat$covs_bmi_mother)
+```
 
 # Save files {.tabset}
 You must be connected to the server: smb://rdsfcifs.acrc.bris.ac.uk/MRC-IEU-research/
 ```{r eval=FALSE, include=TRUE}
 saveRDS(dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_all_pheno.rds")
 saveRDS(datsa,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_sa_pheno.rds")
-saveRDS(datwb,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_wb_pheno.rds")
+saveRDS(datwe,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_we_pheno.rds")
 ```
 
 # Short cut to working on this dataset

@@ -66,7 +66,7 @@ print("defining model 1a covariates...")
 
 ## child age at outcome
 ### might be an important source of variation for some outcomes. 
-### Not necessry for binary things like asthma and eczema since we're 
+### Not necessary for binary things like asthma and eczema since we're 
 ### already splitting outcomes into age stages, 
 ### but important for things where there's likely to be variation within stage, 
 ### like BMI, height, weight, waist circumference, head circumference, IQ, SDQ measures, SCDC and  MFQ.
