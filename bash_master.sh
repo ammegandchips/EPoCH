@@ -12,7 +12,7 @@ outfile="EPoCH/out/${cohort}_${scriptname}.out"
 echo $scriptlocation
 echo $outfile
 
-module add languages/R-4.0.3-gcc9.1.0
+#module add languages/R-4.0.3-gcc9.1.0
 
 rscriptcommand="Rscript --verbose ${scriptlocation} ${cohort} >> ${outfile} 2>&1"
 
