@@ -1,7 +1,9 @@
 #!/bin/bash
-#
-#
-#PBS -l nodes=1:ppn=1,walltime=12:00:00
+
+#PBS -N bash_master
+#PBS -l select=1:ncpus=1:mem=100M
+#PBS -l walltime=06:00:00
+
 
 scriptname=echo "$scriptname"
 cohort=echo "$cohort"
