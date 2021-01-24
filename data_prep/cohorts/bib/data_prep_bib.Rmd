@@ -57,9 +57,9 @@ child_follow_up_schlbp <- get(load("/Volumes/MRC-IEU-research/data/bib/_latest/B
 # merge together raw data (note that we don't want loads of instances of MotherID and FatherID (and ChildID when we're adding child-level variables) so we take those out of the data frames as we merge them (all other variable names should be unique):
 
 # First merge anything at the pregnancy level (data mums, dads and pregnancies) by PregnancyID
-raw_dat_parents <- merge(mothers_baseline,fathers_baseline[,-which(colnames(fathers_baseline) %in% c("MotherID","FatherID"))],by="PregnancyID",all=TRUE)
-raw_dat_parents <- merge(raw_dat_parents,preg_birth_eclprg[,-which(colnames(preg_birth_eclprg) %in% c("MotherID","FatherID"))],by="PregnancyID",all=TRUE)
-raw_dat_parents <- merge(raw_dat_parents,preg_birth_prnprg[,-which(colnames(preg_birth_prnprg) %in% c("MotherID","FatherID"))],by="PregnancyID",all=TRUE)
+raw_dat_parents <- merge(mothers_baseline,fathers_baseline[,-which(colnames(fathers_baseline) %in% c("MotherID","FatherID"))],by="PregnancyID",all.x=TRUE,all.y=FALSE)
+raw_dat_parents <- merge(raw_dat_parents,preg_birth_eclprg[,-which(colnames(preg_birth_eclprg) %in% c("MotherID","FatherID"))],by="PregnancyID",all.x=TRUE,all.y=FALSE)
+raw_dat_parents <- merge(raw_dat_parents,preg_birth_prnprg[,-which(colnames(preg_birth_prnprg) %in% c("MotherID","FatherID"))],by="PregnancyID",all.x=TRUE,all.y=FALSE)
 
 # Next merge anything at the child level (data on children) by ChildID
 raw_dat_child <- merge(preg_birth_eclbby,preg_birth_prninf[,-which(colnames(preg_birth_prninf) %in% c("MotherID","FatherID","PregnancyID"))],by="ChildID",all=TRUE)
@@ -91,8 +91,11 @@ child_follow_up_chgcom_wide <- child_follow_up_chgcom_wide[colSums(!is.na(child_
 # This could then be merged with the other child-level data:
 raw_dat_child <- merge(raw_dat_child,child_follow_up_chgcom_wide,by.x="ChildID",by.y=colnames(child_follow_up_chgcom_wide)[grep(pattern="ChildID",colnames(child_follow_up_chgcom_wide))],all=TRUE)
 
-# merge pregnancy level data with child level data:
-raw_dat <- merge(raw_dat_parents,raw_dat_child[,-which(colnames(raw_dat_child) %in% c("MotherID","FatherID","has_bib1kc"))],by="PregnancyID",all=TRUE)
+# merge pregnancy level data with child level data to get a dataset at the child level:
+## first get rid of any children whose mothers didn't complete the baseline questionnaire for their pregnancies (2613)
+raw_dat_child <- raw_dat_child[raw_dat_child$PregnancyID %in% raw_dat_parents$PregnancyID,]
+## merge to the child level, but keep any parents who didn't have child data (keep all in raw_dat_parents)
+raw_dat <- merge(raw_dat_parents,raw_dat_child[,-which(colnames(raw_dat_child) %in% c("MotherID","FatherID","has_bib1kc"))],by="PregnancyID",all.x=TRUE,all.y=FALSE)
 
 #set up new dat object:
 dat<-raw_dat[,c("MotherID","FatherID","PregnancyID","ChildID")]
@@ -392,7 +395,7 @@ dat$alcohol_mother_secondtrim_ordinal<-factor(dat$alcohol_mother_secondtrim_ordi
 Third trimester
 
 ```{r eval= FALSE, include= TRUE}
-#NOTE: The second are third trimester variables are identical, due to how the question was asked "since 4th month of pregnancy"
+#NOTE: The second and third trimester variables are identical, due to how the question was asked "since 4th month of pregnancy"
 dat$alcohol_mother_thirdtrim_ordinal <- dat$alcohol_mother_secondtrim_ordinal
 dat$alcohol_mother_thirdtrim_binary <- dat$alcohol_mother_secondtrim_binary
 ```
@@ -915,7 +918,7 @@ dat$covs_edu_father[raw_dat$edu0fthede=="Higher than A-level"] <-3
 # Maternal occupation
 # mother's occupation not recorded in the data currently in Bristol. Lifecycle have used variables 	bib6f06 (etc) from the BiB1000 sub study and all24e7 etc (from ALL-IN sub study). We have employment status, but this isn't the same as occupation and can't be used in its place.
 
-# Paternal occupation
+# Paternal occupation (note the typos in raw_dat variables are real, not mistakes in the EPoCH code)
 dat$covs_occup_father <- NA
 dat$covs_occup_father[raw_dat$job0fthwrk %in% c("Modern professional occupations","Senior managers or administrators","Traditional professional occupations")] <- 3 #professional or managerial
 dat$covs_occup_father[raw_dat$job0fthwrk %in% c("Clerical and intermediate occupations","Middle or junior managers")] <- 2 #skilled non-manual
