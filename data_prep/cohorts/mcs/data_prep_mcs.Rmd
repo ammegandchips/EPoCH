@@ -58,7 +58,7 @@ It is the anonymised identifier for each family. The MCSID identifies a family a
 
 DUALBFAM
 
-These families are the cases where a mother gave birth to two Cohort Members within the sample selection period. Both of the children are Cohort Members, however they were not part of a multiple birth (like twins and triplets).
+These families are the cases where a mother gave birth to two Cohort Members within the sample selection period. Both of the children are Cohort Members, however they were not part of a multiple birth (like twins and triplets). There are only 10 families where this is the case.
 
 SENTRY
 
@@ -94,6 +94,10 @@ We can look at the correlates of partner non-response by combining the Child Ben
 5. Partners of Asian and Black main respondents are less likely to respond (odds = 0.64 and 0.47 respectively).
 6. Partners where the main respondent’s educational qualifications are below degree level are less likely to respond (odds = 0.82).
 7. There is variation from ward to ward in partner non-response that is not explained by the Child Poverty Index.
+
+**Multiple pregnancies and siblings**
+
+It looks like there are about 261 siblings in MCS. I think most are from multiple pregnancies (dualbfam suggests 10 might be from instances where a mother has had more than one child during the recruitment window). For simplicity (and to get an independent dataset and because I don't think 261 will give us sufficient power for any discordant sibling analyses), so far, I have only selected the first child (cohort member a) for the EPoCH dataset. It would be possible to extract data for other cohort members though.
 
 **Deriving variables**
 
@@ -213,9 +217,9 @@ For 13165 records, the "partner respondent" is the natural father (interviewed; 
 
 ```{r eval=FALSE, include=TRUE}
 
-raw_dat <- raw_dat[which(raw_dat$amdres00==1&is.na(raw_dat$amdres00)==FALSE),] # select only those where the natural mother is the main respondent (vast majority of cases, lose 55)
+raw_dat <- raw_dat[which(raw_dat$amdres00==1&is.na(raw_dat$amdres00)==FALSE),] # select only those where the natural mother is the main respondent (vast majority of cases, lose 55 non-mothers, 691 missing status)
 
-raw_dat <- raw_dat[raw_dat$nocmhh==1,]#select singletons/first borns in cohort (lose 246 + 10)
+raw_dat <- raw_dat[raw_dat$nocmhh==1,]#select singletons/first borns in cohort (lose 251 children of a twin pair + 10 children of a triplet trio)
 
 raw_dat$covs_biological_father<-"not_bio_dad"
 raw_dat$covs_biological_father[raw_dat$apdres00%in%c(2,12,16,24)]<-"bio_dad"
