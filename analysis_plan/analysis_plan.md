@@ -142,11 +142,11 @@ Directed Acyclic Graphs (DAGs) were used to select the covariates for adjustment
 
 **Model 2a**
 
-* As Model 1a but with additional adjustment for exposed parent's age, SEP, (parity if exposed parent is mother), correlated health behaviours (in the current and previous timepoints where exposures are time-specific).
+* As Model 1a but with additional adjustment for exposed parent's ethnicity, age, SEP, (parity if exposed parent is mother), correlated health behaviours (in the current and previous timepoints where exposures are time-specific).
 
 **Model 2b**
 
-* As Model 1b but with additional adjustment for the other parent's age, SEP, and correlated health behaviours in previous timepoints IF they can have a direct effect (or via secondhandsmoke) on fetal development. 
+* As Model 1b but with additional adjustment for the other parent's ethnicity, age, SEP, and correlated health behaviours in previous timepoints IF they can have a direct effect (or via secondhandsmoke) on fetal development. 
 
 **Model 3a**
 

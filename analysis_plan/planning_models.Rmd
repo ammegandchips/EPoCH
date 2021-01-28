@@ -1,9 +1,26 @@
-## The following code uses DAGs to choose and explain selection of adjustment variables for models
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+## Choosing models
 
+The following code uses DAGs to choose and explain selection of adjustment variables for models
+
+### DAG1: maternal and paternal preconception smoking on birthweight
+
+```{r}
 library(dagitty)
 
-# DAG1: maternal and paternal preconception smoking on birthweight
+
 g1 <- dagitty( "dag {
+mEth -> mAlc
+mEth -> mBMI
+mEth -> mPar
+mEth -> mSm
+mEth -> oBW
+mEth -> mAge
+mEth <-> pEth
 mAge -> mAlc
 mAge -> mBMI
 mAge -> mPar
@@ -30,6 +47,11 @@ pAge -> oBW
 pAge -> pAlc
 pAge -> pBMI
 pAge -> pSm
+pEth -> oBW
+pEth -> pAlc
+pEth -> pBMI
+pEth -> pSm
+pEth -> pAge
 pAlc -> oBW
 pAlc -> pBMI
 pAlc <-> pSm
@@ -45,17 +67,20 @@ pSm -> pBMI
 
 plot(graphLayout(g1))
 
-adjustmentSets(g1,"pSm","oBW") #maternal age, alc, parity, sep, smoking; paternal age, alcohol, SEP
-adjustmentSets(g1,"mSm","oBW") #maternal age, alc, parity, sep; paternal age, alcohol, SEP, smoking
+adjustmentSets(g1,"pSm","oBW") #maternal age, alc, eth, parity, sep, smoking; paternal age, alcohol, eth, SEP
+adjustmentSets(g1,"mSm","oBW") #maternal age, eth, alc, parity, sep; paternal age, alcohol, SEP, eth, smoking
 adjustmentSets(g1,"pAlc","oBW") #maternal age, alc, parity, sep, smoking; paternal age, smoking, SEP
 adjustmentSets(g1,"mAlc","oBW") #maternal age, smoking, parity, sep; paternal age, smoking, SEP, alcohol
+```
 
-## SUMMARY OF DAG1: adjust for both parents' age and SEP and maternal parity
-## also adjust for other health behaviours correlated with the main exposure
-## so if exposure is maternal smoking, adjust for maternal alcohol PLUS paternal alcohol and smoking
+SUMMARY OF DAG1: adjust for both parents' age and SEP and maternal parity
+also adjust for other health behaviours correlated with the main exposure
 
-#DAG2: considering timing of exposure (maternal exposures)
+so if exposure is maternal smoking, adjust for maternal alcohol PLUS paternal alcohol and smoking
 
+### DAG2: considering timing of exposure (maternal exposures)
+
+```{r}
 g2 <- dagitty( "dag {
   mAge -> mAlc_preconception
   mAge -> mAlc_secondtrim
@@ -103,15 +128,19 @@ adjustmentSets(g2,"mSm_pregnancy","oBW") #age, parity, alcohol preconception, al
 adjustmentSets(g2,"mAlc_preconception","oBW") #age, parity, smoking preconception, SEP
 adjustmentSets(g2,"mAlc_secondtrim","oBW") #returns nothing, but this is because it doesn't know that third trim alcohol is a time-dependent variable that doesn't "exist" at second trim
 adjustmentSets(g2,"mAlc_thirdtrim","oBW") #age, parity, alcohol preconception, alcohol in previous trimesters, smoking preconception, smoking in pregnancy, SEP)
+```
 
-## SUMMARY OF DAG2: adjust for age and SEP and maternal parity
-## also adjust for correlated health behaviours in the current and previous timepoints
+SUMMARY OF DAG2: adjust for age and SEP and maternal parity
 
-#DAG3: considering timing of exposure (paternal exposures)
-## no direct effect of paternal alcohol during pregnancy on offspring birthweight
-## possible indirect effect on mothers' alcohol consumption during pregnancy
-## possible direct effect of paternal smoking on offspring birthweight ("direct" according to the DAG, but actually via exposing mother to secondhand smoke)
+also adjust for correlated health behaviours in the current and previous timepoints
 
+### DAG3: considering timing of exposure (paternal exposures)
+
+*    no direct effect of paternal alcohol during pregnancy on offspring birthweight
+*    possible indirect effect on mothers' alcohol consumption during pregnancy
+*    possible direct effect of paternal smoking on offspring birthweight ("direct" according to the DAG, but actually via exposing mother to secondhand smoke)
+
+```{r}
 g3 <- dagitty( "dag {
   pAge -> pAlc_preconception
   pAge -> pAlc_secondtrim
@@ -202,15 +231,21 @@ adjustmentSets(g3,"pAlc_preconception","oBW") # mother: age, parity, smoking pre
 adjustmentSets(g3,"pAlc_secondtrim","oBW") # mother: age, parity, alcohol preconception, alcohol in pregnancy, smoking preconception, smoking in pregnancy, SEP; father: age, SEP, smoking preconception, smoking in pregnancy, alcohol preconception
 adjustmentSets(g3,"pAlc_thirdtrim","oBW") # mother: age, parity, alcohol preconception, alcohol in pregnancy, smoking preconception, smoking in pregnancy, SEP; father: age, SEP, smoking preconception, smoking in pregnancy, alcohol preconception
 
+```
 
-## SUMMARY OF DAG3: adjust for age and SEP and maternal parity
-## also adjust for correlated health behaviours in the current and previous timepoints (for the exposed parent)
-## for the adjusted parent, adjust for the same and correlated health behaviours in the current and previous timepoints IF they can have a direct effect (or via secondhand smoke) on fetal development
-## only smoking is the only paternal exposure that can affect the fetus DURING PREGNANCY 
+SUMMARY OF DAG3: adjust for age and SEP and maternal parity
 
-## DAG 4 (adjusting for parents' health - genetic/familial confounding)
-## The following DAG is the same as DAG3 but with the addition of maternal and paternal asthma, and birthweight has been swapped for child asthma
+also adjust for correlated health behaviours in the current and previous timepoints (for the exposed parent)
 
+for the adjusted parent, adjust for the same and correlated health behaviours in the current and previous timepoints IF they can have a direct effect (or via secondhand smoke) on fetal development
+
+only smoking is the only paternal exposure that can affect the fetus DURING PREGNANCY 
+
+### DAG 4 (adjusting for parents' health - genetic/familial confounding)
+
+The following DAG is the same as DAG3 but with the addition of maternal and paternal asthma, and birthweight has been swapped for child asthma
+
+```{r}
 g4 <- dagitty( "dag {
   pAge -> pAlc_preconception
   pAge -> pAlc_secondtrim
@@ -299,3 +334,4 @@ adjustmentSets(g4,"pSm_preconception","oAsthma") # all as DAG3 plus maternal and
 adjustmentSets(g4,"pAlc_preconception","oAsthma") # all as DAG3 plus maternal and paternal asthma
 adjustmentSets(g4,"pAlc_secondtrim","oAsthma") # as DAG3 BUT NO MATERNAL OR PATERNAL ASTHMA...
 adjustmentSets(g4,"pAlc_thirdtrim","oAsthma") # as DAG3 BUT NO MATERNAL OR PATERNAL ASTHMA..
+```
