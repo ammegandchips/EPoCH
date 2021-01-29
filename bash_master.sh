@@ -1,9 +1,12 @@
 #!/bin/bash
 
-#PBS -N bash_master
+#PBS -N epoch_master
+#PBS -o epoch_master_out
 #PBS -l select=1:ncpus=1:mem=100M
-#PBS -l walltime=06:00:00
+#PBS -l walltime=06:0:00
 
+echo 'epoch_master'
+hostname
 
 scriptname=echo "$scriptname"
 cohort=echo "$cohort"
@@ -21,3 +24,7 @@ rscriptcommand="Rscript --verbose ${scriptlocation} ${cohort} >> ${outfile} 2>&1
 echo $rscriptcommand
 
 eval $rscriptcommand
+
+resultslocation='~/EPoCH/results/'
+
+mv * $resultslocation
