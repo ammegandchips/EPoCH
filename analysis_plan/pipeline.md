@@ -49,10 +49,10 @@ wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/epoch_master.sh 
 chmod +x ~/EPoCH/scripts/epoch_master.sh
 ```
 
-The arguments to `epoch_master.sh` are `scriptname` and `cohort`. The submission script can be used to submit any of the R scripts stored in `~/EPoCH/scripts/` as a job. 
+The arguments to `epoch_master.sh` are `scriptname` and `cohortORmodel`. The submission script can be used to submit any of the R scripts stored in `~/EPoCH/scripts/` as a job. 
 
 ```
-qsub  -v cohort="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
 ```
 
 options for `scriptname` are:
@@ -62,12 +62,12 @@ options for `scriptname` are:
   *   RUN_PHEWAS
   *   RUN_META_ANALYSIS
 
-Options for `cohort` are:
+Options for `cohortORmodel` are:
 
   *   ALSPAC
   *   BIB
   *   MCS
-  *   Or, when scriptname = RUN_META_ANALYSIS, cohort can be any combination of cohort names, separated by an underscore, e.g: ALSPAC_BIB_MCS or MCS_BIB etc.
+  *   Or, when scriptname = RUN_META_ANALYSIS, cohortORmodel is model name (e.g. model1a)
 
 ## Step 3
 
@@ -94,7 +94,7 @@ chmod +x ~/EPoCH/scripts/before.sh
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/epoch_master.sh -P ~/EPoCH/scripts/
 chmod +x ~/EPoCH/scripts/epoch_master.sh
 
-qsub  -v cohort="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
 
 # STEP 3 [WAIT UNTIL THE JOB SUBMITTED IN STEP 2 IS COMPLETE]
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/after.sh -P ~/EPoCH/scripts/

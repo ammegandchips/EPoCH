@@ -1,5 +1,5 @@
 ###########################################
-# Perform a meta-analysis for each phewas #
+# Perform a meta-analysis for each pheWAS #
 ###########################################
 
 # NEED TO DO THIS FOR EACH MODEL AND CHANGE CODE BELOW TO APPLY TO ALL EXPOSURES
@@ -7,7 +7,7 @@
 # Arguments that need to be changed for each model
 
 model <- "model1a"
-cohorts <- c("ALSPAC","BIB")
+cohorts <- c("ALSPAC","BIB_sa","BIB_we","MCS")
 location_of_key <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/",tolower(cohorts),"/",tolower(cohorts),"_key.rds")
 location_of_phewas_res <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/",tolower(cohorts),"/results/",cohorts)
 location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/meta_analysis/"

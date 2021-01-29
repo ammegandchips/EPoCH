@@ -9,7 +9,7 @@ echo 'epoch_master'
 hostname
 
 scriptname=echo "$scriptname"
-cohort=echo "$cohort"
+cohort=echo "$cohortORmodel"
 
 scriptlocation="~/EPoCH/scripts/${scriptname}.R"
 outfile="~/EPoCH/out/${cohort}_${scriptname}.out"
@@ -19,8 +19,9 @@ echo $outfile
 
 module add lang/r/4.0.3-bioconductor-gcc
 
-rscriptcommand="Rscript --verbose ${scriptlocation} ${cohort} >> ${outfile} 2>&1"
+rscriptcommand="Rscript --verbose ${scriptlocation} ${cohortORmodel} >> ${outfile} 2>&1"
 
 echo $rscriptcommand
 
 eval $rscriptcommand
+
