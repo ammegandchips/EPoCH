@@ -1,7 +1,7 @@
 # function for selecting exposed parent's other health behaviours
 
 select_other_health_behaviours <- function(expclass, exptime, expparent, exptype, expsource, expsubclass){
-  if(expsubclass=="polygenic risk score"|expclass=="snps"){
+  if(expsubclass=="polygenic risk score"|expclass=="snps"|expclass=="socioeconomic position"){
     res<-NA
   }else{
     if(expclass=="physical activity"){
