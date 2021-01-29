@@ -8,13 +8,13 @@
 scriptname=echo "$scriptname"
 cohort=echo "$cohort"
 
-scriptlocation="EPoCH/scripts/${scriptname}.R"
-outfile="EPoCH/out/${cohort}_${scriptname}.out"
+scriptlocation="~/EPoCH/scripts/${scriptname}.R"
+outfile="~/EPoCH/out/${cohort}_${scriptname}.out"
 
 echo $scriptlocation
 echo $outfile
 
-module add languages/R-4.0.3-gcc9.1.0
+module add lang/r/4.0.3-bioconductor-gcc
 
 rscriptcommand="Rscript --verbose ${scriptlocation} ${cohort} >> ${outfile} 2>&1"
 
