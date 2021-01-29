@@ -1,6 +1,7 @@
 # Specify classes and other information for each exposure/outcome 
 
 ## exposure class
+key$exposure_class[key$exposure %in% sep_exposures]<-"socioeconomic position"
 key$exposure_class[key$exposure %in% smoking_exposures]<-"smoking"
 key$exposure_class[key$exposure %in% alcohol_exposures]<-"alcohol consumption"
 key$exposure_class[key$exposure %in% caffeine_exposures]<-"caffeine consumption"
@@ -9,6 +10,8 @@ key$exposure_class[key$exposure %in% snps_exposures]<-"snps"
 
 ## exposure subclass
 key$exposure_subclass <-"basic"
+key$exposure_subclass[key$exposure %in% c("covs_edu_father","covs_edu_mother")]<-"highest education"
+key$exposure_subclass[key$exposure %in% c("covs_occup_father","covs_occup_mother")]<-"occupation"
 key$exposure_subclass[key$exposure %in% coffee_exposures]<-"coffee"
 key$exposure_subclass[key$exposure %in% tea_exposures]<-"tea"
 key$exposure_subclass[key$exposure %in% cola_exposures]<-"cola"
@@ -18,6 +21,7 @@ key$exposure_subclass[key$exposure %in% prs_exposures]<-"polygenic risk score"
 key$exposure_subclass[key$exposure %in% snps_exposures]<-"snps"
 
 ## timing of exposure
+key$exposure_time[grep(key$exposure,pattern="edu|occup")]<-"at study recruitment"
 key$exposure_time[grep(key$exposure,pattern="before11")]<-"early onset"
 key$exposure_time[grep(key$exposure,pattern="life")]<-"ever in life"
 key$exposure_time[grep(key$exposure,pattern="ever_pregnancy|bingepreg|mother_passive")]<-"ever in pregnancy"

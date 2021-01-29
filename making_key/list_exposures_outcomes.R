@@ -1,5 +1,7 @@
 # Create list of exposures and outcomes
 
+sep_exposures <- names(dat)[grep(names(dat),pattern="covs_edu|covs_occu")]
+
 smoking_exposures <- names(dat)[grep(names(dat),pattern="smoking_m|smoking_f|_smoking_")]
 prs_smoking_exposures <- names(dat)[grep(names(dat),pattern="mother_smoking|child_smoking")]
 alcohol_exposures <- names(dat)[grep(names(dat),pattern="alcohol_m|alcohol_f|score_child_alcohol|score_mother_alcohol")]
@@ -15,7 +17,7 @@ physact_exposures <- names(dat)[grep(names(dat),pattern="physact_m|physact_f|_pa
 prs_physact_exposures <- names(dat)[grep(names(dat),pattern="_pa_")]
 prs_exposures <- names(dat)[grep(names(dat),pattern="prs")]
 snps_exposures <- names(dat)[grep(names(dat),pattern="snp")]
-all_exposures <- na.omit(c(smoking_exposures,alcohol_exposures,caffeine_exposures,physact_exposures))
+all_exposures <- na.omit(c(sep_exposures,smoking_exposures,alcohol_exposures,caffeine_exposures,physact_exposures))
 
 anthro_outcomes <- names(dat)[grep(names(dat),pattern="anthro_")]
 neuro_outcomes <- names(dat)[grep(names(dat),pattern="neuro_")]
