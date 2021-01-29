@@ -2,7 +2,7 @@
 
 #PBS -N epoch_master
 #PBS -o epoch_master_out
-#PBS -l select=1:ncpus=1:mem=100M
+#PBS -l select=1:ncpus=1:mem=800M
 #PBS -l walltime=06:0:00
 
 echo 'epoch_master'
