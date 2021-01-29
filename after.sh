@@ -1,5 +1,7 @@
 cp ~/EPoCH/results/alspac_key.rds /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/
-cp ~/EPoCH/results/bib_key.rds /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/
+cp ~/EPoCH/results/bib_all_key.rds /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/
+cp ~/EPoCH/results/bib_sa_key.rds /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/
+cp ~/EPoCH/results/bib_we_key.rds /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/
 cp ~/EPoCH/results/mcs_key.rds /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/
 
 mkdir -p /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/
