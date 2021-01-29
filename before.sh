@@ -7,7 +7,9 @@ cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_we_pheno
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rds ~/EPoCH/data/
 
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/alspac_key.rds ~/EPoCH/data/
-cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_key.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_all_key.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_sa_key.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_we_key.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_key.rds ~/EPoCH/data/
 
 mkdir -p ~/EPoCH/scripts/

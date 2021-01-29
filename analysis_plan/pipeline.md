@@ -4,7 +4,7 @@
 
 **Download and run `before.sh` interactively (i.e. do not submit as a job)**
 
-This script moves all the phenotype data and key files from the RDSF folder to a folder in your home directory on bluecrystal called `EPoCH/data`.
+This script moves all the phenotype data and key files from the RDSF folder to a folder in your home directory on blue pebble called `EPoCH/data`.
 
 It also downloads all necessary r files to `EPoCH/scripts` and makes a folder called `EPoCH/out` if it doesn’t already exist. And it deletes any old out files and results so you can start afresh.
 
@@ -40,19 +40,19 @@ To run `before.sh`:
 
 ## Step 2
 
-**Download and submit a job using `bash_master.sh`**
+**Download and submit a job using `epoch_master.sh`**
 
 To download, run the following interactively:
 
 ```
-wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/bash_master.sh -P ~/EPoCH/scripts/
-chmod +x ~/EPoCH/scripts/bash_master.sh
+wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/epoch_master.sh -P ~/EPoCH/scripts/
+chmod +x ~/EPoCH/scripts/epoch_master.sh
 ```
 
-The arguments to `bash_master.sh` are `scriptname` and `cohort`. The bash script can be used to submit any of the R scripts stored in `~/EPoCH/scripts/` as a job. 
+The arguments to `epoch_master.sh` are `scriptname` and `cohort`. The submission script can be used to submit any of the R scripts stored in `~/EPoCH/scripts/` as a job. 
 
 ```
-qsub ~/EPoCH/scripts/bash_master.sh -v cohort=ALSPAC,scriptname=MAKE_KEY
+qsub  -v cohort="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
 ```
 
 options for `scriptname` are:
@@ -91,11 +91,10 @@ wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/before.sh -P ~/E
 chmod +x ~/EPoCH/scripts/before.sh
 ~/EPoCH/scripts/before.sh
 
-# STEP 2
-wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/bash_master.sh -P ~/EPoCH/scripts/
-chmod +x ~/EPoCH/scripts/bash_master.sh
+wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/epoch_master.sh -P ~/EPoCH/scripts/
+chmod +x ~/EPoCH/scripts/epoch_master.sh
 
-qsub ~/EPoCH/scripts/bash_master.sh -v cohort=ALSPAC,scriptname=MAKE_KEY
+qsub  -v cohort="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
 
 # STEP 3 [WAIT UNTIL THE JOB SUBMITTED IN STEP 2 IS COMPLETE]
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/after.sh -P ~/EPoCH/scripts/

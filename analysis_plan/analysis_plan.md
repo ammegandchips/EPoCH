@@ -247,7 +247,7 @@ All prepared data (for ALSPAC, BiB and MCS) is stored in the EPoCH folder on the
 
 All code is in this GitHub repository.
 
-Most stages in EPoCH (all except the cohort-specific data preparation) can be run using a single bash script (`bash_master.sh`), which takes two arguments: `cohort` and `scriptname`. Before and after running this script (as a job on bluecrystal), it is necessary to run two other scripts (`before.sh` and `after.sh`). This is explained in the file [pipeline.md](https://github.com/ammegandchips/EPoCH/blob/main/analysis_plan/pipeline.md).
+Most stages in EPoCH (all except the cohort-specific data preparation) can be run using a single bash script (`bash_master.sh`), which takes two arguments: `cohort` and `scriptname`. Before and after running this script (as a job on blue pebble), it is necessary to run two other scripts (`before.sh` and `after.sh`). This is explained in the file [pipeline.md](https://github.com/ammegandchips/EPoCH/blob/main/analysis_plan/pipeline.md).
 
 
 

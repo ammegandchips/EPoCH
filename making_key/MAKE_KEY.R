@@ -15,10 +15,10 @@ cohort <- toString(args[1])
 
 # Set locations of scripts, data and save files
 
-location_of_dat <- paste0("EPoCH/data/",tolower(cohort),"_pheno.rds")
+location_of_dat <- paste0("~/EPoCH/data/",tolower(cohort),"_pheno.rds")
 location_of_extra_functions <-"https://github.com/ammegandchips/EPoCH/blob/main/making_key/"
 #location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/making_key/"
-save_directory <- paste0("EPoCH/results/")
+save_directory <- paste0("~/EPoCH/results/")
 
 # Load packages
 
