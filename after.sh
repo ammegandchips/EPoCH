@@ -19,3 +19,5 @@ mkdir -p /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/data_c
 cp ~/EPoCH/results/alspac_checks* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/data_checks/
 cp ~/EPoCH/results/bib_checks* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/data_checks/
 cp ~/EPoCH/results/mcs_checks* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/data_checks/
+
+rm ~/epoch_master*
