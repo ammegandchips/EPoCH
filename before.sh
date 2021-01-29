@@ -1,7 +1,9 @@
 mkdir -p ~/EPoCH/data/
 
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds ~/EPoCH/data/
-cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_pheno.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_all_pheno.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_sa_pheno.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_we_pheno.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rds ~/EPoCH/data/
 
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/alspac_key.rds ~/EPoCH/data/
