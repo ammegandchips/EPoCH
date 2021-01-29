@@ -3,47 +3,52 @@
 ###########################################
 
 # NEED TO DO THIS FOR EACH MODEL AND CHANGE CODE BELOW TO APPLY TO ALL EXPOSURES
+# NEED TO CREATE A COPY OF THIS FILE FOR WHEN BIB IS STRATIFIED
 
-# Arguments that need to be changed for each model
+# Read in arguments
 
-model <- "model1a"
-cohorts <- c("ALSPAC","BIB_sa","BIB_we","MCS")
-location_of_key <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/",tolower(cohorts),"/",tolower(cohorts),"_key.rds")
-location_of_phewas_res <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/",tolower(cohorts),"/results/",cohorts)
-location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/meta_analysis/"
-save_directory <- paste0("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis/results/")
-
-# The following lines should run without changes
+args <- commandArgs(trailingOnly = TRUE)
+model <- toString(args[1])
 
 # Load packages
 
+print("loading packages...")
 library(tidyverse)
 library(dplyr)
+library(stringr)
 library(metafor)
+
+# Set locations of scripts, data and save files
+
+cohorts <- c("ALSPAC","BIB_ALL","MCS")
+location_of_key <- paste0("~/EPoCH/data/",str_replace(tolower(cohorts),"bib_all|bib_sa|bib_we","bib"),"/",tolower(cohorts),"_key.rds")
+location_of_phewas_res <- paste0("~/EPoCH/data/",str_replace(tolower(cohorts),"bib_all|bib_sa|bib_we","bib"),"/results/",cohorts)
+location_of_extra_functions <- "https://github.com/ammegandchips/EPoCH/blob/main/meta_analysis/"
+save_directory <- paste0("~/EPoCH/results/")
 
 # load extra functions
 
-source(paste0(location_of_extra_functions,"XX.R"))
-source(paste0(location_of_extra_functions,"XX.R"))
+source(paste0(location_of_extra_functions,"prepare_results.R"))
 
 # Read cohort results and prepare data
 
-alspac_res <- readRDS(paste0(location_of_phewas_res[1],"_",model,"_phewas.rds"))
-key <- readRDS(location_of_key[1])
+cohort_results <- lapply(1:length(location_of_phewas_res),function(x){
+  res <- readRDS(paste0(location_of_phewas_res[x],"_",model,"_phewas.rds"))
+  res <- res[,c("regression_term","outcome","est","se")]
+  key <- readRDS(location_of_key[x])
+  list(res,key)
+})
 
-bib_res <- readRDS(paste0(location_of_phewas_res[2],"_",model,"_phewas.rds"))
-key <- readRDS(location_of_key[2])
+cohort_phewas <- lapply(cohort_results,function(x)x[[1]])
+cohort_keys <- lapply(cohort_results,function(x)x[[2]])
 
-cohort_results <- list(alspac_res[,c("regression_term","outcome","est","se")],bib_res[,c("regression_term","outcome","est","se")])
-names(cohort_results) <- cohorts
+all_cohort_phewas <- cohort_phewas %>% reduce(left_join, by = c("regression_term","outcome"), suffix=paste0(".",cohorts) )
 
-res <- cohort_results %>% reduce(left_join, by = c("regression_term","outcome"), suffix=paste0(".",cohorts) )
-
-ests <- res[,c("regression_term","outcome",paste0("est.",cohorts))]
+ests <- all_cohort_phewas[,c("regression_term","outcome",paste0("est.",cohorts))]
 names(ests)<-c("regression_term","outcome",cohorts)
 ests <- melt(ests,id.vars = c("regression_term","outcome"))
 
-ses <- res[,c("regression_term","outcome",paste0("se.",cohorts))]
+ses <- all_cohort_phewas[,c("regression_term","outcome",paste0("se.",cohorts))]
 names(ses)<-c("regression_term","outcome",cohorts)
 ses <- melt(ses,id.vars = c("regression_term","outcome"))
 
@@ -53,7 +58,6 @@ names(data.long)<-c("regression_term","outcome","cohort","est","se")
   meta_res = lapply(meta_res, function(x) try(rma.uni(slab=x$cohort,yi=x$est,sei=x$se,method="FE",weighted=TRUE)))
   meta_res
 
-  
   extract.and.merge.meta.analysis <-function(meta_res,res){
     require(plyr)
     data_meta = ldply(lapply(meta_res, function(x) 
