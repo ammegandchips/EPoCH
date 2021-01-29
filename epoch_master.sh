@@ -24,7 +24,3 @@ rscriptcommand="Rscript --verbose ${scriptlocation} ${cohort} >> ${outfile} 2>&1
 echo $rscriptcommand
 
 eval $rscriptcommand
-
-resultslocation='~/EPoCH/results/'
-
-mv * $resultslocation
