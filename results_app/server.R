@@ -81,20 +81,29 @@ shinyServer(function(input, output, session) {
           if(nrow(key_here)!=0){
               if(input$selected_model_tab1 == "Model 1"){ 
                 models <- c("model1a","model1b")
-                df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_1a_forapp.rds")
-                df_a$model <- "model1a"
-                df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_1b_forapp.rds")
-                df_b$model <- "model1b"}
+          #      df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model1a_extracted.RDS")
+                df_a <- df_model1a
+          #      df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model1b_extracted.RDS")
+                df_b <- df_model1b
+                 }
               if(input$selected_model_tab1 == "Model 2"){ models <- c("model2a","model2b")
-              df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_2a_forapp.rds")
-              df_a$model <- "model2a"
-              df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_2b_forapp.rds")
-              df_b$model <- "model2b"}
+              #      df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model2a_extracted.RDS")
+              df_a <- df_model2a
+              #      df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model2b_extracted.RDS")
+              df_b <- df_model2b
+              }
               if(input$selected_model_tab1 == "Model 3"){ models <- c("model3a","model3b")
-              df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_3a_forapp.rds")
-              df_a$model <- "model3a"
-              df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_3b_forapp.rds")
-              df_b$model <- "model3b"}
+              #      df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model3a_extracted.RDS")
+              df_a <- df_model3a
+              #      df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model3b_extracted.RDS")
+              df_b <- df_model3b
+                           }
+            if(input$selected_model_tab1 == "Model 4"){ models <- c("model4a","model4b")
+            #      df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model4a_extracted.RDS")
+            df_a <- df_model4a
+            #      df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model4b_extracted.RDS")
+            df_b <- df_model4b
+             }
             df<-bind_rows(df_a,df_b)
             rm(df_a,df_b)
           }
@@ -168,22 +177,31 @@ make_tab2_plot_data<- reactive({
                           key$outcome_time == unlist(outcome_selected_slice()[[1]])[2] &
                           key$outcome_type == unlist(outcome_selected_slice()[[1]])[1]),]
   if(nrow(key_here)!=0){
-    if(input$selected_model_tab2 == "Model 1"){ 
+    if(input$selected_model_tab1 == "Model 1"){ 
       models <- c("model1a","model1b")
-      df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_1a_forapp.rds")
-      df_a$model <- "model1a"
-      df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_1b_forapp.rds")
-      df_b$model <- "model1b"}
-    if(input$selected_model_tab2 == "Model 2"){ models <- c("model2a","model2b")
-    df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_2a_forapp.rds")
-    df_a$model <- "model2a"
-    df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_2b_forapp.rds")
-    df_b$model <- "model2b"}
-    if(input$selected_model_tab2 == "Model 3"){ models <- c("model3a","model3b")
-    df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_3a_forapp.rds")
-    df_a$model <- "model3a"
-    df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/results/obs_pheWAS_3b_forapp.rds")
-    df_b$model <- "model3b"}
+      #      df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model1a_extracted.RDS")
+      df_a <- df_model1a
+      #      df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model1b_extracted.RDS")
+      df_b <- df_model1b
+    }
+    if(input$selected_model_tab1 == "Model 2"){ models <- c("model2a","model2b")
+    #      df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model2a_extracted.RDS")
+    df_a <- df_model2a
+    #      df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model2b_extracted.RDS")
+    df_b <- df_model2b
+    }
+    if(input$selected_model_tab1 == "Model 3"){ models <- c("model3a","model3b")
+    #      df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model3a_extracted.RDS")
+    df_a <- df_model3a
+    #      df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model3b_extracted.RDS")
+    df_b <- df_model3b
+    }
+    if(input$selected_model_tab1 == "Model 4"){ models <- c("model4a","model4b")
+    #      df_a<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model4a_extracted.RDS")
+    df_a <- df_model4a
+    #      df_b<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/metaphewas_biball_model4b_extracted.RDS")
+    df_b <- df_model4b
+    }
     df<-bind_rows(df_a,df_b)
     rm(df_a,df_b)
   }
@@ -221,7 +239,6 @@ output$height_plot_tab2_binary <- reactive({paste0(75+(length(unique(make_tab2_p
 
 height_plot_tab2_numeric <- reactive({paste0(75+(length(unique(make_tab2_plot_data()$exposure[make_tab2_plot_data()$exposure_type=="numerical"]))*25),"px")})
 output$height_plot_tab2_numeric <- reactive({paste0(75+(length(unique(make_tab2_plot_data()$exposure[make_tab2_plot_data()$exposure_type=="numerical"]))*25),"px")})
-
 
 output$tab2_plot_binary <- renderPlotly({
   make_tab2_plot_binary()[[2]]})

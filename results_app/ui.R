@@ -22,7 +22,7 @@ ui<-fluidPage(
                          selectInput("selected_exposure_dose","If you have selected an ordinal exposure, what dose do you want to compare to the reference category?",
                                      choices = c("not ordinal","light","moderate","heavy","somewhat active","active")), 
                          radioButtons("selected_model_tab1",label="Which model?",
-                                      choices = c("Model 1","Model 2", "Model 3"))
+                                      choices = c("Model 1","Model 2", "Model 3","Model 4"))
                      ),
                      mainPanel(
                          # Display selected exposure
@@ -49,7 +49,7 @@ ui<-fluidPage(
                          shinyTree("outcome_tree",unique=TRUE,theme="proton") %>% shinycssloaders::withSpinner(),
                          h5("Additional settings"),
                          radioButtons("selected_model_tab2",label="Which model?",
-                                      choices = c("Model 1","Model 2", "Model 3"))
+                                      choices = c("Model 1","Model 2", "Model 3", "Model 4"))
                      ),
                      mainPanel(
                          # Display selected outcome

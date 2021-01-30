@@ -4967,6 +4967,17 @@ dat<-left_join(dat,prs_pa_sedentary_mother[,-2], by =c("aln"))
 
 ```
 
+## Z scores
+```{r eval=FALSE, include=TRUE}
+prs_vars <- names(dat)[grep(names(dat),pattern="prs")]
+scaled_prs <- as.data.frame(apply(dat[,prs_vars],2,scale))
+names(scaled_prs) <- paste0(prs_vars,"_zscore")
+library(dplyr)
+dat <- bind_cols(dat,scaled_prs)
+
+```
+
+
 # Individual SNP (buestguess) {.tabset}
 
 ## Read in data
