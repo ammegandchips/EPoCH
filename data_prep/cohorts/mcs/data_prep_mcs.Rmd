@@ -653,12 +653,15 @@ dat$covs_age_child_stage0[dat$covs_age_child_stage0<0]<-NA
 
 dat$covs_age_child_stage2 <- raw_dat$bhcagea0
 dat$covs_age_child_stage2[dat$covs_age_child_stage2<0]<-NA
+dat$covs_age_child_stage2 <- dat$covs_age_child_stage2/365.25
 
 dat$covs_age_child_stage3c <- raw_dat$chcagea0
 dat$covs_age_child_stage3c[dat$covs_age_child_stage3c<0]<-NA
+dat$covs_age_child_stage3c <- dat$covs_age_child_stage3c/365.25
 
 dat$covs_age_child_stage3d <- raw_dat$dhcagea0
 dat$covs_age_child_stage3d[dat$covs_age_child_stage3d<0]<-NA
+dat$covs_age_child_stage3d <- dat$covs_age_child_stage3d/365.25
 
 dat$covs_age_child_stage4 <- raw_dat$emcs5age
 dat$covs_age_child_stage4[dat$covs_age_child_stage4<0]<-NA
