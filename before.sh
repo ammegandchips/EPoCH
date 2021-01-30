@@ -21,8 +21,6 @@ wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/meta_analysis/RU
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/meta_analysis/RUN_META_ANALYSIS_BIB_ALL.R -P ~/EPoCH/scripts/
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/meta_analysis/RUN_META_ANALYSIS_BIB_STRATIFIED.R -P ~/EPoCH/scripts/
 
-
-
 mkdir -p ~/EPoCH/out/
 rm -r ~/EPoCH/out/*
 mkdir -p ~/EPoCH/results/
