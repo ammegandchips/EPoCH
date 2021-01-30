@@ -60,7 +60,8 @@ options for `scriptname` are:
   *   SUMMARISE_DATA
   *   MAKE_KEY
   *   RUN_PHEWAS
-  *   RUN_META_ANALYSIS
+  *   RUN_META_ANALYSIS_BIB_STRATIFIED
+  *   RUN_META_ANALYSIS_BIB_ALL
 
 Options for `cohortORmodel` are:
 
