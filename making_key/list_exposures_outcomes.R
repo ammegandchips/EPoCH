@@ -17,7 +17,8 @@ physact_exposures <- names(dat)[grep(names(dat),pattern="physact_m|physact_f|_pa
 prs_physact_exposures <- names(dat)[grep(names(dat),pattern="_pa_")]
 prs_exposures <- names(dat)[grep(names(dat),pattern="prs")]
 snps_exposures <- names(dat)[grep(names(dat),pattern="snp")]
-all_exposures <- na.omit(c(sep_exposures,smoking_exposures,alcohol_exposures,caffeine_exposures,physact_exposures))
+diet_exposures <- names(dat)[grep(names(dat),pattern="med")]
+all_exposures <- na.omit(c(diet_exposures,sep_exposures,smoking_exposures,alcohol_exposures,caffeine_exposures,physact_exposures))
 
 anthro_outcomes <- names(dat)[grep(names(dat),pattern="anthro_")]
 neuro_outcomes <- names(dat)[grep(names(dat),pattern="neuro_")]

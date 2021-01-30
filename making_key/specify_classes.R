@@ -1,6 +1,7 @@
 # Specify classes and other information for each exposure/outcome 
 
 ## exposure class
+key$exposure_class[key$exposure %in% diet_exposures]<-"diet"
 key$exposure_class[key$exposure %in% sep_exposures]<-"socioeconomic position"
 key$exposure_class[key$exposure %in% smoking_exposures]<-"smoking"
 key$exposure_class[key$exposure %in% alcohol_exposures]<-"alcohol consumption"
@@ -10,6 +11,7 @@ key$exposure_class[key$exposure %in% snps_exposures]<-"snps"
 
 ## exposure subclass
 key$exposure_subclass <-"basic"
+key$exposure_subclass[key$exposure %in% diet_exposures]<-"mediterranean diet"
 key$exposure_subclass[key$exposure %in% c("covs_edu_father","covs_edu_mother")]<-"highest education"
 key$exposure_subclass[key$exposure %in% c("covs_occup_father","covs_occup_mother")]<-"occupation"
 key$exposure_subclass[key$exposure %in% coffee_exposures]<-"coffee"
