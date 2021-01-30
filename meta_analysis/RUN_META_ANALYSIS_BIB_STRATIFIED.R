@@ -109,7 +109,7 @@ all_results$exposure_dose[grep(all_results$regression_term,pattern="Active")]<-"
 
 print("saving results...")
 
-saveRDS(all_results,file=paste0(save_directory,"_",model,"_metaphewas_extracted.RDS"))
-saveRDS(meta_res,file=paste0(save_directory,"_",model,"_metaphewas_raw.RDS"))
+saveRDS(all_results,file=paste0(save_directory,"metaphewas_bibstratified_",model,"_extracted.RDS"))
+saveRDS(meta_res,file=paste0(save_directory,"metaphewas_bibstratified_",model,"_raw.RDS"))
 
 print("done!")
