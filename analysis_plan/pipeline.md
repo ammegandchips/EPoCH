@@ -95,6 +95,7 @@ chmod +x ~/EPoCH/scripts/before.sh
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/epoch_master.sh -P ~/EPoCH/scripts/
 chmod +x ~/EPoCH/scripts/epoch_master.sh
 
+# submit job, e.g.:
 qsub  -v cohortORmodel="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
 
 # STEP 3 [WAIT UNTIL THE JOB SUBMITTED IN STEP 2 IS COMPLETE]
@@ -127,11 +128,22 @@ qsub  -v cohortORmodel="model1a",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/
 qsub  -v cohortORmodel="model1b",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model2a",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model2b",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3a",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3b",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4a",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4b",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 
 qsub  -v cohortORmodel="model1a",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model1b",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model2a",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model2b",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3a",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3b",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4a",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4b",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
 
 ```
-
+To check on the status of a job (for my username gs8094):
+```
+qstat -u "gs8094"
+```
