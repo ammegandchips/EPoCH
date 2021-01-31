@@ -5,7 +5,7 @@ create_plot_tab2_binary <- function(plot_data_tab2){
   plot_data_tab2.binary <- plot_data_tab2[plot_data_tab2$exposure_type=="binary",]
   
   plot_tab2.binary <- ggplot(plot_data_tab2[plot_data_tab2$exposure_type=="binary",],
-                             aes(x=exp(est),y=exposure_term,xmin=exp(ci.l),xmax=exp(ci.u),colour=p_threshold,shape=mutual_adjustment))+
+                             aes(x=exp(est),y=exposure_term,xmin=exp(ci.l),xmax=exp(ci.u),colour=p_threshold,shape=mutual_adjustment,p=p,n=total_n,participatingcohorts=cohorts))+
     geom_errorbarh(height=0,position=position_dodgev(.5))+
     geom_point(size = 2,fill="white",position=position_dodgev(.5))+
     geom_vline(xintercept=1,size = .25, linetype = "dashed")+
@@ -22,7 +22,7 @@ create_plot_tab2_binary <- function(plot_data_tab2){
       xlab("Mean difference")
   }
   
-  plot_tab2.binary <- ggplotly(plot_tab2.binary,
+  plot_tab2.binary <- ggplotly(plot_tab2.binary,tooltip = c("x","exposure_term","p","total_n","participatingcohorts"),
                                height=125+(length(unique(plot_data_tab2.binary$exposure))*25))
   
   list(plot_data_tab2.binary,plot_tab2.binary)
