@@ -5724,13 +5724,16 @@ data(useful)
 
 ## Generate raw_dat more quickly
 
-If you need to generate the whole file again, it can be a pain and take a long time to keep looking for variables and extracting them for different categories of variable. Instead, you could just extract the variables once using the code below:
+If you need to generate the whole file again, it can be a pain and take a long time to keep looking for variables and extracting them for different categories of variable. Instead, you could just extract the variables once using the code below.
+
+BUT CHECK THIS AGAINST THE SCRIPT ABOVE BEFORE YOU RUN IT BECAUSE THERE MAY HAVE BEEN UPDATES ABOVE THAT AREN'T INCLUDED HERE...
 
 ```{r eval=FALSE, include=TRUE}
 library("tidyverse")
 library(haven) #load package to read dta files
 
-cp<-read_dta("/Volumes/sscm alspac/Data/Current/Other/Cohort Profile/cp_2b.dta")
+#cp<-read_dta("/Volumes/sscm alspac/Data/Current/Other/Cohort Profile/cp_2b.dta")
+cp<-read_dta("/Volumes/ALSPAC-Data/Current/Other/Cohort Profile/cp_2b.dta")
 
 cp$covs_sex <- NA
 cp$covs_sex[cp$kz021==2]<-"female" #Female
@@ -5740,13 +5743,13 @@ cp$survive_one_year <-NA
 cp$survive_one_year[cp$kz011b==1] <-1
 cp$survive_one_year[cp$kz011b==2] <-0
 
-mz<-read_dta("/Volumes/sscm alspac/Data/Current/Other/Sample Definition/mz_5a.dta") #child sample definition
+mz<-read_dta("/Volumes/ALSPAC-Data/Current/Other/Sample Definition/mz_5a.dta") #child sample definition
 mz <- mz[mz$mz001==1,] #select core sample pregnancies; n=14,541
 mz <- mz[-which(mz$mz010<1),] #remove 69 pregnancies with no known outcome; n=14,472
-kz<-read_dta("/Volumes/sscm alspac/Data/Current/Other/Sample Definition/kz_5c.dta") #child sample definition
+kz<-read_dta("/Volumes/ALSPAC-Data/Current/Other/Sample Definition/kz_5c.dta") #child sample definition
 kz <- kz[kz$kz001==1,] #select core sample children; n=14,676
 
-mult_pregs_core<-read_dta("/Volumes/sscm alspac/Data/Useful_data/Multiple pregs/mult_pregs in alspac_CORE.dta") #definition of multiple pregnancies within cohort
+mult_pregs_core<-read_dta("/Volumes/ALSPAC-Data/Useful_data/Multiple pregs/mult_pregs in alspac_CORE.dta") #definition of multiple pregnancies within cohort
 mult_pregs_core<-mult_pregs_core[-which(mult_pregs_core$aln %in% c(36891,45649)),] #remove 36891 from multiple pregnancy file as it doesn't appear in mz or kz but is linked as a sib to 45649 (who does appear in mz)
 mult_pregs_core<-left_join(mult_pregs_core,mz,by="aln")
 mult_pregs_core<-mult_pregs_core[order(mult_pregs_core$mz024b,mult_pregs_core$mz024a),]#order by year and month of delivery
@@ -5812,6 +5815,138 @@ dat<-dat[,-grep(names(dat),pattern="kz|mz")]
 # Make list of all other variables we want, and extract with the alspac package #
 #################################################################################
 
+father.diet.vars<-c(
+"pb020", # Frequency eating sausages or burgers
+"pb021", # Freq eating pies or pastries
+"pb022", # freq eating meat
+"pb023", # freq eating poultry
+"pb024", # freq eating offal
+"pb025", # freq eating white fish 
+"pb026", # freq eatig oily fish   
+"pb027", # freq eating shellfish
+"pb028", # freq eating fried food
+"pb029", # freq eating cabbage or sim
+"pb030", # freq eating carrots
+"pb031", # freq eating other veg
+"pb032", # freq eating salad
+"pb033", # freq eating fresh fruit
+"pb036", # freq eating nuts
+
+  
+"pb040", # slices of bread or chappatis eaten per day
+"pb041a", # eat white bread (binary yes no)
+"pb042a", # eat brown/granary
+"pb043a", # eat wholemeal binary
+"pb044a", # eat chappaits binary
+"pb046", #eat bread with fat
+
+  "pb047a", # milk in tea
+"pb048a", # milk in coffee
+"pb049a", # milk on breakfast cereal
+"pb050a", # milk as pudding
+"pb051a", # milk on its own
+"pb052a", # milk as milky drink
+
+  "pb054", # cups of tea per day
+"pb058", # cups of coffee per day
+)
+
+mother.diet.vars <- c(#FFQ
+#start of weekly variables
+"c200", #FREQ of eating sausages or burgers
+"c201", # FREQ of eating pies or pasties
+"c202", #FREQ of eating meat
+"c203", #FREQ of eating poultry
+"c204", #FREQ of eating organ
+"c205", #FREQ of eating white fish
+"c206", #FREQ of eating oily fish
+"c207", #FREQ of eating shellfish
+"c208", #FREQ of eating eggs or quiche
+"c209", #FREQ of eating cheese
+"c210", #FREQ of eating pizza
+"c211", #FREQ of eating chips
+"c215", #FREQ of eating roast potatoes
+"c216", #FREQ of eating boiled or baked potatoes
+"c217", #FREQ of eating boiled rice
+"c218", #FREQ of eating pasta
+"c219", #FREQ of eating crisps
+"c220", #FREQ of eating fried food
+"c221", #Eat fat on meat
+"c222", #FREQ of eating baked beans
+"c223", #FREQ of eating peas corn or SIM
+"c224", #FREQ of eating cabbage or SIM
+"c225", #FREQ of eating other green VEG
+"c226", #FREQ of eating carrots
+"c227", #FREQ of eating root VEG not INC carrots
+"c228", #FREQ of eating salad
+"c229", #FREQ of eating fresh fruit
+"c230", #FREQ of drinking tinned juice
+"c231", #FREQ of drinking pure non tinned juice
+"c232", #FREQ of eating pudding
+"c233", #FREQ of eating oat cereals
+"c234", #FREQ of eating bran cereals
+"c235", #FREQ of eating other cereals
+"c236", #FREQ of eating cakes or buns
+"c237", #FREQ of eating crispbreads
+"c238", #FREQ of eating biscuits
+"c239", #FREQ of eating chocolate bars
+"c240", #FREQ of eating pulses
+"c241", #FREQ of eating nuts
+"c242", #FREQ of eating bean curd
+"c243", #FREQ of eating tahini
+"c244", #FREQ of eating soya or SIM non meat
+"c245", #FREQ of eating chocolate
+"c246", #FREQ of eating sweets
+#end of weekly variables
+"c247", #FREQ of choosing diet soft drink
+"c250", #Slices of bread eaten per day
+"c275", #Slices of bread with fat daily
+"c251", #Take away main meals per MTH
+"c252", #Eat white bread most days
+"c253", #Eat brown or granary bread
+"c254", #Eat wholemeal bread
+"c255", #Eat chappatis most days
+"c256", #Dont usually eat any bread
+"c260", #Mainly use butter etc on bread & VEG
+"c261", #Mainly use butter etc for frying
+"c263", #Mainly use hard or soft MARG on bread
+"c264", #Mainly use hard or soft MARG for frying
+"c265", #Mainly use POLYUNSAT MARG on bread & VEG
+"c266", #Mainly use POLYUNSAT MARG for frying
+"c267", #Mainly use low fat spread on bread & VEG
+"c268", #Mainly use low fat spread for frying
+"c269", #Mainly use sunflower oil or SIM on VEG
+"c270", #Mainly fry with sunflower oil or SIM
+"c271", #Mainly use other VEG oil on bread & VEG
+"c272", #Mainly use other VEG oil for frying
+"c273", #Other fat used mainly on bread & VEG
+"c274", #Other fat used mainly for frying
+"c276", #Use full fat milk
+"c277", #Use semi skimmed milk
+"c278", #Use skimmed milk
+"c279", #Use sterilised milk
+"c280", #Use dried milk
+"c281", #Use goat or sheep milk
+"c282", #Use soya milk
+"c283", #Use other milk
+#for "milkvol" - start
+"c284", #Milk in tea
+"c285", #Milk in coffee	
+"c287", #Milk as pudding
+"c288", #Milk to drink on its own
+"c289", #Milk as a milky drink
+"c286", #Milk on breakfast cereal
+#end
+"c300", #Cups of caffeinated tea per day
+"c301", #Spoons of sugar per cup of tea
+"c305", #Cups of coffee per day
+"c306", #Spoons of sugar per cup of coffee
+"c310", #Drinks of cola PWK
+#"c373", #Total alcohol pwk
+				#covariates
+				"kz021", ## gender; 1 =male; 2= female
+                "c3804"# DV: Daily energy intake (kJ) FFQ for mothers: 32-week gestation
+)
 time_vars <- c("a902","b924","c991","d990","e699","pa900","pa901","pb900","pb901")
 parent_status_vars <- c("a521","a522")
 parent_smoking_vars <-c("b650")
@@ -5864,12 +5999,12 @@ immuno_vars <-c(immuno_vars, "ka497", "kb879a","kd990","kf999", "kj999a","kk998a
 cov_vars <- c("c800","c801","c804","pa910","pc996","c666a","c645a","c755","c765","b032","a525","pa065","a522","a524","b040","b041","b042","pa064","pa173a","d153a","pa174a","d154a","pa210","d190","d040","b613","pb202","c768","b560","pa189a","d169a","d152a","pa172a","pa190a","d170a","pa191a","d171a","pa192a","d172a","b140","b141","b142","b143","b144","b149","c110","c111","c112","c113","c114","c115","dw021","dw002","paw002","paw010","b700","b701","b702","b706","b707","b708","b709","b710","b711","b712","b713","b714","pb088","pb089","pb090","pb091","pb092","pb093","pb094","pb095","pb096","pb097","pb098","bestgest","kb277","kc403","kb280","kc404","kg475","kk800","kq885","kt6400","HDP","pregnancy_diabetes","kb390","kb390a","kb387","kb387a","kc514", "kc544","kc541","kc572","kc574","kc570","ke341","ke350","ke352","ke354","ke339","ke321","kc363","ke195","ke195a","ke196","ke196a","kb549","kb551","kb388","kb385","kb361","kc542","kc539","kc361","ke340","ke338","ke320","kg423","kg420","kg369a","kk645","kk640","kk598","kq830","kq823","kq798a","kt6290","kt6280","kt6193","kg174","kk312","km3030","km3031","kp5090","kp5091","kt1210","kt1211","kc512")
 negcon_vars <- c("g572","g572a","h462","h462a","g571","g571a","h461","h461a","kf527","kf528","kj517","kj518")
 cardiomet_vars <- c("cf124", "cf134", "cf144", "f7sa022", "f9sa022", "fdar118","cf143", "cf133", "cf123", "f7sa021", "f9sa021", "fdar117","trig_cord", "Trig_CIF31", "Trig_CIF43", "TRIG_F7", "trig_f9","HDL_cord", "HDL_CIF31", "HDL_CIF43", "HDL_F7", "HDL_f9","LDL_cord", "LDL_CIF31", "LDL_CIF43", "LDL_F7", "LDL_f9","chol_cord", "Chol_CIF31", "Chol_CIF43", "CHOL_F7", "CHOL_f9","Glc_F7","Insulin_cord", "insulin_F9","CRP_cord", "CRP_f9","ApoAI_f9","ApoB_f9","ApoA1_F7","ApoB_F7","IL6_f9")
-## NEED TO ADD FFQ VARIABLES TOO
 
 all_vars<-unique(c(unlist(lapply(ls()[grep(ls(),pattern="vars")],get))))
 
 
 library(alspac)
+setDataDir("/Volumes/ALSPAC-Data/")
 setDataDir("/Volumes/sscm alspac/Data/") #telling the package where the data is stored (make sure you are connected to the ALSPAC server before running this)
 options(mc.cores=4)
 #current <- createDictionary("Current", name="current")
@@ -5895,7 +6030,7 @@ A[A=="-1"]<-NA #changing -1 to missing
 B[B=="-1"]<-NA #changing -1 to missing
 C[C=="-1"]<-NA #changing -1 to missing
 
-raw_dat$paternal_participation <- ifelse(raw_dat$aln %in% unique(c(A$aln,B$aln,C$aln)),1,0)
+dat$paternal_participation <- ifelse(dat$aln %in% unique(c(A$aln,B$aln,C$aln)),1,0)
 rm(A,B,C)
 
 saveRDS(raw_dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno_raw.rds")

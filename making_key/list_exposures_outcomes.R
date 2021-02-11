@@ -17,6 +17,8 @@ prs_physact_exposures <- names(dat)[grep(names(dat),pattern="_pa_")]
 prs_exposures <- names(dat)[grep(names(dat),pattern="prs")]
 snps_exposures <- names(dat)[grep(names(dat),pattern="snp")]
 diet_exposures <- names(dat)[grep(names(dat),pattern="_rmed_|_rmed2_")]
+meddiet_rmed <- names(dat)[grep(names(dat),pattern="_rmed_")]
+meddiet_rmed2 <- names(dat)[grep(names(dat),pattern="_rmed2_")]
 all_exposures <- na.omit(c(diet_exposures,sep_exposures,smoking_exposures,alcohol_exposures,caffeine_exposures,physact_exposures))
 
 anthro_outcomes <- names(dat)[grep(names(dat),pattern="anthro_")]
@@ -61,10 +63,15 @@ sdq_outcomes <- c(hyperactivity_outcomes,emotional_outcomes,conduct_outcomes,pee
 social_outcomes <-names(dat)[grep(names(dat),pattern="neuro_scdc|csbq")]
 cognitive_outcomes <-names(dat)[grep(names(dat),pattern="neuro_cognition")]
 cognitive_performance_outcomes <-names(dat)[grep(names(dat),pattern="neuro_cognition_performance|spatialawareness|problemsolving")]
-cognitive_verbal_outcomes <-names(dat)[grep(names(dat),pattern="neuro_cognition_verbal|namingvocab|reading")]
+cognitive_verbal_outcomes <-names(dat)[grep(names(dat),pattern="neuro_cognition_verbal|reading|namingvocab")]
 cognitive_total_outcomes <-names(dat)[grep(names(dat),pattern="neuro_cognition_total")]
-cognitive_schoolreadiness_outcomes <-names(dat)[grep(names(dat),pattern="schoolreadiness")]
+cognitive_reading_outcomes <-names(dat)[grep(names(dat),pattern="reading")]
 cognitive_numberskills_outcomes <-names(dat)[grep(names(dat),pattern="numberskills")]
+cognitive_schoolreadiness_outcomes <-names(dat)[grep(names(dat),pattern="schoolreadiness")]
+cognitive_namingvocab_outcomes <-names(dat)[grep(names(dat),pattern="namingvocab")]
+cognitive_problemsolving_outcomes <-names(dat)[grep(names(dat),pattern="problemsolving")]
+cognitive_spatialawareness_outcomes <-names(dat)[grep(names(dat),pattern="spatialawareness")]
+
 
 sbp_outcomes <-names(dat)[grep(names(dat),pattern="cardio_sbp")]
 dbp_outcomes <-names(dat)[grep(names(dat),pattern="cardio_dbp")]

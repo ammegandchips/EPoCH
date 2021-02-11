@@ -572,6 +572,7 @@ Ages are defined as:
 dat$anthro_birthweight <- raw_dat$adbwgta0 #bw in kg
 dat$anthro_birthweight[raw_dat$adbwgta0<0]<-NA
 dat$anthro_birthweight <-dat$anthro_birthweight*1000
+dat$anthro_birthweight_zscore <-scale(dat$anthro_birthweight)
 
 dat$anthro_birthweight_high_binary <- NA
 dat$anthro_birthweight_high_binary[dat$anthro_birthweight>4500]<-1

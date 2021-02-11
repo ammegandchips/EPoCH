@@ -21,6 +21,8 @@ if(cohort%in%c("BIB_SA","BIB_WE","bib_sa","bib_we")){
 
   key$basic_covariates[key$exposure_class =="socioeconomic position" & key$person_exposed=="mother"] <- paste0(colnames(dat)[colnames(dat) %in% c("covs_age_mother_conception","covs_ethnicity_mother_binary","covs_parity_mother_binary")],collapse=",")
   key$basic_covariates[key$exposure_class =="socioeconomic position" & key$person_exposed=="father"] <- paste0(colnames(dat)[colnames(dat) %in% c("covs_age_father_pregnancy","covs_ethnicity_father_binary")],collapse=",")
+  
+}
 
-  }
+
 

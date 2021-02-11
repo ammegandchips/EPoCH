@@ -11,7 +11,8 @@ key$exposure_class[key$exposure %in% snps_exposures]<-"snps"
 
 ## exposure subclass
 key$exposure_subclass <-"basic"
-key$exposure_subclass[key$exposure %in% diet_exposures]<-"mediterranean diet"
+key$exposure_subclass[key$exposure %in% meddiet_rmed]<-"mediterranean diet rmed"
+key$exposure_subclass[key$exposure %in% meddiet_rmed2]<-"mediterranean diet rmed2"
 key$exposure_subclass[key$exposure %in% c("covs_edu_father","covs_edu_mother")]<-"highest education"
 key$exposure_subclass[key$exposure %in% c("covs_occup_father","covs_occup_mother")]<-"occupation"
 key$exposure_subclass[key$exposure %in% coffee_exposures]<-"coffee"
@@ -82,6 +83,7 @@ key$outcome_subclass1[key$outcome %in% depression_outcomes] <-"depressive sympto
 key$outcome_subclass1[key$outcome %in% sdq_outcomes] <-"strengths and difficulties"
 key$outcome_subclass1[key$outcome %in% cognitive_outcomes] <-"cognitive ability"
 key$outcome_subclass1[key$outcome %in% social_outcomes] <-"autistic traits"
+key$outcome_subclass1[key$outcome %in% schoolreadiness_outcomes] <-"school readiness"
 
 key$outcome_subclass1[key$outcome %in% mice_outcomes] <-"home invaded by mice"
 key$outcome_subclass1[key$outcome %in% pigeon_outcomes] <-"home invaded by pigeons"
@@ -121,6 +123,11 @@ key$outcome_subclass2[key$outcome %in% externalising_outcomes] <-"externalising 
 key$outcome_subclass2[key$outcome %in% cognitive_performance_outcomes] <-"performance intelligence"
 key$outcome_subclass2[key$outcome %in% cognitive_verbal_outcomes] <-"verbal intelligence"
 key$outcome_subclass2[key$outcome %in% cognitive_total_outcomes] <-"total intelligence"
+key$outcome_subclass2[key$outcome %in% cognitive_numberskills_outcomes] <-"number skills"
+key$outcome_subclass2[key$outcome %in% cognitive_namingvocab_outcomes] <-"naming vocabulary"
+key$outcome_subclass2[key$outcome %in% cognitive_reading_outcomes] <-"reading skills"
+key$outcome_subclass2[key$outcome %in% cognitive_problemsolving_outcomes] <-"problem solving"
+key$outcome_subclass2[key$outcome %in% cognitive_spatialawareness_outcomes] <-"spatial awareness"
 
 key$outcome_subclass2[key$outcome %in% dog_allergy_outcomes] <-"dog allergy"
 key$outcome_subclass2[key$outcome %in% cat_allergy_outcomes] <-"cat allergy"
