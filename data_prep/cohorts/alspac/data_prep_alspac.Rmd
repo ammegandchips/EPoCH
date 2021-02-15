@@ -1780,8 +1780,8 @@ dat$caffeine_mother_total_firsttrim_continuous[which(is.na(dat$caffeine_mother_c
 #TEA
 dat$caffeine_mother_tea_secondtrim_continuous<-dat$b742
 dat$caffeine_mother_tea_secondtrim_continuous[dat$b742<0]<-NA
-dat$caffeine_mother_tea_secondtrim_continuous<-dat$caffeine_mother_tea_secondtrim_continuous*27 #tranform cups to mg per week
-dat$caffeine_mother_tea_secondtrim_continuous<-dat$caffeine_mother_tea_secondtrim_continuous/7 #tranform weekly caffeine to daily
+dat$caffeine_mother_tea_secondtrim_continuous<-dat$caffeine_mother_tea_secondtrim_continuous*27 #transform cups to mg per week
+dat$caffeine_mother_tea_secondtrim_continuous<-dat$caffeine_mother_tea_secondtrim_continuous/7 #transform weekly caffeine to daily
 ```
 
 **Second trimester coffee mg per day**
@@ -1789,8 +1789,8 @@ dat$caffeine_mother_tea_secondtrim_continuous<-dat$caffeine_mother_tea_secondtri
 #COFFEE
 dat$caffeine_mother_coffee_secondtrim_continuous<-dat$b748
 dat$caffeine_mother_coffee_secondtrim_continuous[dat$b748<0]<-NA
-dat$caffeine_mother_coffee_secondtrim_continuous<-dat$caffeine_mother_coffee_secondtrim_continuous*57 #tranform cups to mg per week
-dat$caffeine_mother_coffee_secondtrim_continuous<-dat$caffeine_mother_coffee_secondtrim_continuous/7 #tranform weekly caffeine to daily
+dat$caffeine_mother_coffee_secondtrim_continuous<-dat$caffeine_mother_coffee_secondtrim_continuous*57 #transform cups to mg per week
+dat$caffeine_mother_coffee_secondtrim_continuous<-dat$caffeine_mother_coffee_secondtrim_continuous/7 #transform weekly caffeine to daily
 ```
 
 **Second trimester cola mg per day**
@@ -1798,8 +1798,8 @@ dat$caffeine_mother_coffee_secondtrim_continuous<-dat$caffeine_mother_coffee_sec
 #COLA
 dat$caffeine_mother_cola_secondtrim_continuous<-dat$b763
 dat$caffeine_mother_cola_secondtrim_continuous[dat$b763<0]<-NA
-dat$caffeine_mother_cola_secondtrim_continuous<-dat$caffeine_mother_cola_secondtrim_continuous*20 #tranform cups to mg per week
-dat$caffeine_mother_cola_secondtrim_continuous<-dat$caffeine_mother_cola_secondtrim_continuous/7 #tranform weekly caffeine to daily
+dat$caffeine_mother_cola_secondtrim_continuous<-dat$caffeine_mother_cola_secondtrim_continuous*20 #transform cups to mg per week
+dat$caffeine_mother_cola_secondtrim_continuous<-dat$caffeine_mother_cola_secondtrim_continuous/7 #transform weekly caffeine to daily
 ```
 
 **Second trimester total caffeine mg per day**
@@ -2716,6 +2716,7 @@ pheno$rmed2 <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed 
 
 # check distribution of med diet indices
 require(ggplot2)
+require(reshape)
 df <- melt(pheno[,c("rmed","rmed2")])
 rmed_hist <- ggplot(df,aes(value))+
   geom_histogram()+
@@ -2730,8 +2731,9 @@ dat <- left_join(dat,pheno,by=c("aln","qlet"),all.x=T)
 ```
 
 *Paternal diet
+
 ```{r eval=FALSE, include=TRUE}
-!! need to run and check this
+##!! need to run and check this
 
 
 dads.var.names<-c(
@@ -2769,7 +2771,7 @@ coded different:
 
 counted:
   "pb054", # cups of tea per day
-"pb058", # cups of coffee per day)
+"pb058" # cups of coffee per day)
 
 
 alspac.vars <-findVars(dads.var.names)
@@ -2802,7 +2804,7 @@ vars=c(
 alspac.table[,vars]<-replace(alspac.table[,vars],alspac.table[,vars]<0,0)
 
 
-dad_keep_vars<-c("aln",
+keep_vars<-c("aln",
              "pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
              "pb027", "pb028", "pb029", "pb030", "pb031", "pb032", "pb033", 
              "pb036", "pb040", "pb041a","pb042a", "pb043a", "pb044a","pb046", "pb047a","pb048a", 
@@ -5815,7 +5817,7 @@ dat<-dat[,-grep(names(dat),pattern="kz|mz")]
 # Make list of all other variables we want, and extract with the alspac package #
 #################################################################################
 
-father.diet.vars<-c(
+father_diet_vars<-c(
 "pb020", # Frequency eating sausages or burgers
 "pb021", # Freq eating pies or pastries
 "pb022", # freq eating meat
@@ -5848,10 +5850,10 @@ father.diet.vars<-c(
 "pb052a", # milk as milky drink
 
   "pb054", # cups of tea per day
-"pb058", # cups of coffee per day
+"pb058" # cups of coffee per day
 )
 
-mother.diet.vars <- c(#FFQ
+mother_diet_vars <- c(#FFQ
 #start of weekly variables
 "c200", #FREQ of eating sausages or burgers
 "c201", # FREQ of eating pies or pasties
@@ -6014,24 +6016,43 @@ data(current)
 data(useful)
 
 meta_data <- findVars(all_vars)
+meta_data[meta_data=="kb_7a.dta"] <- "kb_7b.dta"
+meta_data[meta_data=="kf_8a.dta"] <- "kf_8b.dta"
+
 meta_data <- subset(meta_data,subset=tolower(name) %in% all_vars)
 meta_data <- meta_data[which(meta_data$cat2 %in% c("Clinic","Quest","bestgest","birthweight_centile")),]
 meta_data <- meta_data[!duplicated(meta_data$name),]
-raw_dat <- extractVars(meta_data)
+
+meta_data1 <- meta_data[meta_data$obj %in% unique(meta_data$obj)[1:10],]
+meta_data2 <- meta_data[meta_data$obj %in% unique(meta_data$obj)[11:20],]
+meta_data3 <- meta_data[meta_data$obj %in% unique(meta_data$obj)[21:30],]
+meta_data4 <- meta_data[meta_data$obj %in% unique(meta_data$obj)[31:50],]
+
+raw_dat1 <- extractVars(meta_data1)
+raw_dat2 <- extractVars(meta_data2)
+raw_dat3 <- extractVars(meta_data3)
+raw_dat4 <- extractVars(meta_data4)
+
+raw_dat <- bind_cols(raw_dat1,
+                     raw_dat2[,colnames(raw_dat2) %in% meta_data2$name[-which(meta_data2$name %in% names(raw_dat1))]],
+                     raw_dat3[,colnames(raw_dat3) %in% meta_data3$name],
+                     raw_dat4[,colnames(raw_dat4) %in% meta_data4$name])
 
 raw_dat <- left_join(dat,raw_dat,by=c("aln","qlet")) 
 
+
 require(readstata13)
-A<-read.dta13("/Volumes/sscm alspac/Data/Current/Quest/Partner/pa_4a.dta")
-B<-read.dta13("/Volumes/sscm alspac/Data/Current/Quest/Partner/pb_4b.dta")
-C<-read.dta13("/Volumes/sscm alspac/Data/Current/Quest/Partner/pc_3a.dta")
+A<-read.dta13("/Volumes/ALSPAC-Data/Current/Quest/Partner/pa_4a.dta")
+B<-read.dta13("/Volumes/ALSPAC-Data/Current/Quest/Partner/pb_4b.dta")
+C<-read.dta13("/Volumes/ALSPAC-Data/Current/Quest/Partner/pc_3a.dta")
 
 A[A=="-1"]<-NA #changing -1 to missing
 B[B=="-1"]<-NA #changing -1 to missing
 C[C=="-1"]<-NA #changing -1 to missing
 
-dat$paternal_participation <- ifelse(dat$aln %in% unique(c(A$aln,B$aln,C$aln)),1,0)
-rm(A,B,C)
+raw_dat$paternal_participation <- NA
+raw_dat$paternal_participation <- ifelse(raw_dat$aln %in% unique(c(A$aln,B$aln,C$aln)),1,0)
+
 
 saveRDS(raw_dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno_raw.rds")
 
