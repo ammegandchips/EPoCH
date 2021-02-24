@@ -2753,7 +2753,7 @@ dads.var.names<-c(
 "pb033", # freq eating fresh fruit
 "pb036", # freq eating nuts
 
-coded different:
+#coded different:
   
 "pb040", # slices of bread or chappatis eaten per day
 "pb041a", # eat white bread (binary yes no)
@@ -2762,26 +2762,26 @@ coded different:
 "pb044a", # eat chappaits binary
 "pb046", #eat bread with fat
 
-  "pb047a", # milk in tea
+"pb047a", # milk in tea
 "pb048a", # milk in coffee
 "pb049a", # milk on breakfast cereal
 "pb050a", # milk as pudding
 "pb051a", # milk on its own
 "pb052a", # milk as milky drink
 
-counted:
+#counted:
   "pb054", # cups of tea per day
-"pb058" # cups of coffee per day)
+"pb058" # cups of coffee per day
+)
 
 
 alspac.vars <-findVars(dads.var.names)
 
-raw_dat<-extractVars(dads.var.names)
-alspac.table<-raw_dat
+alspac.table<-extractVars(dads.var.names)
+
 
 # Check variable names: 
 colnames(alspac.table) <- tolower(colnames(alspac.table))
-names(alspac.table)
 
 
 #########################################
@@ -2829,11 +2829,11 @@ vars<-c("pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
         "pb036")
 
 dad.food.data[,vars]<-sapply(alspac.table[,vars],recode,
-                             "1"=0
+                             "1"=0,
                              "2"=0.5,
                              "3"=2,
                              "4"=5.5,
-                             "5"=10))
+                             "5"=10)
 
 # pb040 slices of bread
 # missing       1.5
@@ -2873,7 +2873,8 @@ dad.food.data$pb043a[alspac.table$pb043a!=1] <- 0
 # 1 Usually             1
 # 2 Sometimes           0.5
 # 3 Never               0
-vars=c("pb047a","pb048a","pb049a","pb050a","pb051a","pb052a","pb049a") 
+vars=c("pb047a","pb048a","pb049a","pb050a","pb051a","pb052a") 
+
 dad.food.data[,vars]<-sapply(alspac.table[,vars], recode,
                          "0"=0,
                          "1"=1,
@@ -2915,12 +2916,12 @@ dad.food.gp=data.frame(aln=alspac.table$aln,
                    alcohol=NA)
 
 ###########################################
-"pb029", # freq eating cabbage or sim
-"pb030", # freq eating carrots
-"pb031", # freq eating other veg
-"pb032", # freq eating salad
-"pb033", # freq eating fresh fruit
-"pb036", # freq eating nuts
+#"pb029", # freq eating cabbage or sim
+#"pb030", # freq eating carrots
+#"pb031", # freq eating other veg
+#"pb032", # freq eating salad
+#"pb033", # freq eating fresh fruit
+#"pb036", # freq eating nuts
 
 ###################### Vegetables
 # Use variables: 
@@ -2934,7 +2935,7 @@ dad.food.gp=data.frame(aln=alspac.table$aln,
 #   c225 other green    132g)
 
 
-dad.food.gp$vegtables <- 119 * dad.food.data$pb029 +
+dad.food.gp$vegetables <- 119 * dad.food.data$pb029 +
                         60 * dad.food.data$pb030 +
                         80 * dad.food.data$pb032 +
                         87 * dad.food.data$pb031
@@ -2974,7 +2975,7 @@ dad.food.data$milk <- 30 * dad.food.data$pb047a * 2/3 +
                    100 * dad.food.data$pb049a * 2/3 +
   150 * dad.food.data$pb050a * 2/3 +
   200 * dad.food.data$pb051a * 2/3 +
-  260 * dad.food.data$pb052a * 2/3 +
+  260 * dad.food.data$pb052a * 2/3
   
   
   ###################### Cereals
@@ -2996,7 +2997,7 @@ b.portion <- matrix(c(36, 36, 36, 68),4,1)
 
 # matrix of bread types eaten: rows are observations, 4 cols for bread types
 # matrix contains 1 if type is eaten, 0 otherwise
-b.mat <- as.matrix(food.data[,c("pb041a","pb042a","pb043a","pb044a")] )
+b.mat <- as.matrix(dad.food.data[,c("pb041a","pb042a","pb043a","pb044a")] )
 # count number of different types of bread eaten
 n.btype <- apply(b.mat ,1,sum,na.rm=T)
 
@@ -3046,10 +3047,10 @@ dad.food.gp$fish <- dad.food.gp$fish/7
 #!! check below for dad. inclusion etc:
   # Additional code
   
-  pheno <- food.gp
-pheno$mat.kcal <- alspac.table$c3804
-pheno$mat.kcal[pheno$mat.kcal<0]<-NA
-pheno$mat.kcal <- pheno$mat.kcal/4.184 # convert kj to kcal
+  pheno <- dad.food.gp
+pheno$pat.kcal <- alspac.table$c3804 #need to replace this with total energy intake for dads
+pheno$pat.kcal[pheno$pat.kcal<0]<-NA
+pheno$pat.kcal <- pheno$pat.kcal/4.184 # convert kj to kcal
 
 
 ############################################
@@ -3080,49 +3081,49 @@ fooditems_summary <- df %>% group_by(variable) %>%
 # Now generate tertiles
 
 # Vegetables
-pheno$veg1000kcal <- (pheno$vegetables / pheno$mat.kcal * 1000)
+pheno$veg1000kcal <- (pheno$vegetables / pheno$pat.kcal * 1000)
 pheno$vegrmed <- with(pheno, factor(findInterval(pheno$veg1000kcal, c(-Inf, quantile(pheno$veg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
 pheno$vegrmed <- revalue(as.character(pheno$vegrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
 pheno$vegrmed <- as.numeric(pheno$vegrmed)
 
 # Legumes
-pheno$leg1000kcal <- (pheno$legumes / pheno$mat.kcal * 1000)
+pheno$leg1000kcal <- (pheno$legumes / pheno$pat.kcal * 1000)
 pheno$legrmed <- with(pheno, factor(findInterval(pheno$leg1000kcal, c(-Inf, quantile(pheno$leg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
 pheno$legrmed <- revalue(as.character(pheno$legrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
 pheno$legrmed <- as.numeric(pheno$legrmed)
 
 # Fruit incl nuts	
-pheno$fruit1000kcal <- (pheno$fruitnuts / pheno$mat.kcal * 1000)
+pheno$fruit1000kcal <- (pheno$fruitnuts / pheno$pat.kcal * 1000)
 pheno$fruitrmed <- with(pheno, factor(findInterval(pheno$fruit1000kcal, c(-Inf, quantile(pheno$fruit1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
 pheno$fruitrmed <- revalue(as.character(pheno$fruitrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
 pheno$fruitrmed <- as.numeric(pheno$fruitrmed)
 
 # Fish and seafood								
-pheno$fish1000kcal <- (pheno$fish / pheno$mat.kcal * 1000)
+pheno$fish1000kcal <- (pheno$fish / pheno$pat.kcal * 1000)
 pheno$fishrmed <- with(pheno, factor(findInterval(pheno$fish1000kcal, c(-Inf, quantile(pheno$fish1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
 pheno$fishrmed <- revalue(as.character(pheno$fishrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
 pheno$fishrmed <- as.numeric(pheno$fishrmed)
 
 # Cereals								
-pheno$cereal1000kcal <- (pheno$cereals / pheno$mat.kcal * 1000)
+pheno$cereal1000kcal <- (pheno$cereals / pheno$pat.kcal * 1000)
 pheno$cerealrmed <- with(pheno, factor(findInterval(pheno$cereal1000kcal, c(-Inf, quantile(pheno$cereal1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
 pheno$cerealrmed <- revalue(as.character(pheno$cerealrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
 pheno$cerealrmed <- as.numeric(pheno$cerealrmed)
 
 # Meat								
-pheno$meat1000kcal <- (pheno$meat / pheno$mat.kcal * 1000)
+pheno$meat1000kcal <- (pheno$meat / pheno$pat.kcal * 1000)
 pheno$meatrmed <- with(pheno, factor(findInterval(pheno$meat1000kcal, c(-Inf, quantile(pheno$meat1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
 pheno$meatrmed <- revalue(as.character(pheno$meatrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
 pheno$meatrmed <- as.numeric(pheno$meatrmed)
 
 # Dairy								
-pheno$dairy1000kcal <- (pheno$dairy / pheno$mat.kcal * 1000)
+pheno$dairy1000kcal <- (pheno$dairy / pheno$pat.kcal * 1000)
 pheno$dairyrmed <- with(pheno, factor(findInterval(pheno$dairy1000kcal, c(-Inf, quantile(pheno$dairy1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
 pheno$dairyrmed <- revalue(as.character(pheno$dairyrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
 pheno$dairyrmed <- as.numeric(pheno$dairyrmed)
 
 # Olive oil [does not show a normal distribution in ALSPAC, so this code not used]
-##pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$mat.kcal * 1000)
+##pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$pat.kcal * 1000)
 ##pheno$oliveoilrmed <- with(pheno, factor(findInterval(pheno$oliveoil1000kcal, c(-Inf, quantile(pheno$oliveoil1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
 ##pheno$oliveoilrmed <- revalue(as.character(pheno$oliveoilrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
 ##pheno$oliveoilrmed <- as.numeric(pheno$oliveoilrmed)
@@ -3137,7 +3138,7 @@ pheno$alcoholrmed[pheno$alcohol>=5 & pheno$alcohol<=25] <- 2
 ################
 # in ALSPAC, we have to do this for oliveoil
 ## Please note that the first "tertile" will be those with no oliveoil consumption, since >33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
-pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$mat.kcal * 1000)
+pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$pat.kcal * 1000)
 pheno$oliveoilrmed_notzero <- ifelse(pheno$oliveoil1000kcal == 0, NA, pheno$oliveoil1000kcal)
 pheno$oliveoilrmed <- with(pheno, factor(findInterval(pheno$oliveoilrmed_notzero, c(0.0000001, quantile(pheno$oliveoilrmed_notzero, probs=c(0.5), na.rm=T), Inf)), labels=c("1","2"))) ## CHECK WITH LEANNE AS I HAD TO CHANGE 0.01 TO 0.0000001
 pheno$oliveoilrmed <- as.numeric(pheno$oliveoilrmed)
@@ -3168,7 +3169,7 @@ rmed_summary <- df %>% group_by(variable) %>%
   summarise(mean=mean(value,na.rm=T),sd=sd(value,na.rm=T),median=median(value,na.rm=T),lowerQ=quantile(value,0.25,na.rm=T),upperQ=quantile(value,0.75,na.rm=T)) %>%
   kable()
 
-names(pheno) <- c("aln","qlet",paste0("diet_mother_",names(pheno)[3:ncol(pheno)],"_ever_pregnancy_continuous"))
+names(pheno) <- c("aln","qlet",paste0("diet_father_",names(pheno)[3:ncol(pheno)],"_ever_pregnancy_continuous"))
 dat <- left_join(dat,pheno,by=c("aln","qlet"),all.x=T)
 
 ```
@@ -5284,33 +5285,33 @@ NB. The Smoking initiation one is problematic, and seems to be related to impuls
     1) Sedentary behaviour
     2) Overall activity
 
-* PRS for physical activity were only derived for 'sedentary', there are SNPs relared to 'overall activity' but the n(=3) is so small it is unlikely to be worthwhile making PRS. The SNP n for sedentary is also very small (n=4) to note .
+* PRS for physical activity were only derived for 'sedentary', there are SNPs related to 'overall activity' but the n(=3) is so small it is unlikely to be worthwhile making PRS. The SNP n for sedentary is also very small (n=4) to note .
 
 
 ## Read in data
 
 **Full summary statistics from all cohorts available from GSCAN**
 ```{r eval=FALSE, include=TRUE}
-prs_alcohol_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200429_scores_alcohol_children.profile", header=TRUE,stringsAsFactors = F)
-prs_alcohol_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200429_scores_alcohol_mothers.profile", header=TRUE,stringsAsFactors = F)
+prs_alcohol_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200429_scores_alcohol_children.profile", header=TRUE,stringsAsFactors = F)
+prs_alcohol_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200429_scores_alcohol_mothers.profile", header=TRUE,stringsAsFactors = F)
 
-prs_caffeine_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200504_scores_caffeine_children.profile", header=TRUE,stringsAsFactors = F)
-prs_caffeine_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200504_scores_caffeine_mothers.profile", header=TRUE,stringsAsFactors = F)
+prs_caffeine_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200504_scores_caffeine_children.profile", header=TRUE,stringsAsFactors = F)
+prs_caffeine_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200504_scores_caffeine_mothers.profile", header=TRUE,stringsAsFactors = F)
 
-prs_smoking_age_init_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200502_scores_smoking_age_init_children.profile", header=TRUE,stringsAsFactors = F)
-prs_smoking_age_init_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200502_scores_smoking_age_init_mothers.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_age_init_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200502_scores_smoking_age_init_children.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_age_init_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200502_scores_smoking_age_init_mothers.profile", header=TRUE,stringsAsFactors = F)
 
-prs_smoking_cessation_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200501_scores_smoking_cessation_children.profile", header=TRUE,stringsAsFactors = F)
-prs_smoking_cessation_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200501_scores_smoking_cessation_mothers.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_cessation_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200501_scores_smoking_cessation_children.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_cessation_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200501_scores_smoking_cessation_mothers.profile", header=TRUE,stringsAsFactors = F)
 
-prs_smoking_cigs_pd_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200430_scores_smoking_cigs_pd_children.profile", header=TRUE,stringsAsFactors = F)
-prs_smoking_cigs_pd_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200430_scores_smoking_cigs_pd_mothers.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_cigs_pd_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200430_scores_smoking_cigs_pd_children.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_cigs_pd_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200430_scores_smoking_cigs_pd_mothers.profile", header=TRUE,stringsAsFactors = F)
 
-prs_smoking_initiation_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200501_scores_smoking_initiation_children.profile", header=TRUE,stringsAsFactors = F)
-prs_smoking_initiation_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200501_scores_smoking_initiation_mothers.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_initiation_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200501_scores_smoking_initiation_children.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_initiation_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200501_scores_smoking_initiation_mothers.profile", header=TRUE,stringsAsFactors = F)
 
-prs_pa_sedentary_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200507_scores_pa_sedentary_children.profile", header=TRUE,stringsAsFactors = F)
-prs_pa_sedentary_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/20200506_scores_pa_sedentary_mothers.profile", header=TRUE,stringsAsFactors = F)
+prs_pa_sedentary_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200507_scores_pa_sedentary_children.profile", header=TRUE,stringsAsFactors = F)
+prs_pa_sedentary_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200506_scores_pa_sedentary_mothers.profile", header=TRUE,stringsAsFactors = F)
 
 ```
 
@@ -5516,11 +5517,6 @@ scaled_prs <- as.data.frame(apply(dat[,prs_vars],2,scale))
 names(scaled_prs) <- paste0(prs_vars,"_zscore")
 library(dplyr)
 dat <- bind_cols(dat,scaled_prs)
-
-sensitivity_prs_vars <- names(dat)[grep(names(dat),pattern="sens")]
-sensitivity_scaled_prs <- as.data.frame(apply(dat[,sensitivity_prs_vars],2,scale))
-names(sensitivity_scaled_prs) <- paste0(sensitivity_prs_vars,"_zscore")
-dat <- bind_cols(dat,sensitivity_scaled_prs)
 
 ```
 
@@ -5817,6 +5813,8 @@ dat<-dat[,-grep(names(dat),pattern="kz|mz")]
 # Make list of all other variables we want, and extract with the alspac package #
 #################################################################################
 
+cardiomet_vars <- c("cf124", "cf134", "cf144", "f7sa022", "f9sa022", "fdar118","cf143", "cf133", "cf123", "f7sa021", "f9sa021", "fdar117","trig_cord", "Trig_CIF31", "Trig_CIF43", "TRIG_F7", "trig_f9","HDL_cord", "HDL_CIF31", "HDL_CIF43", "HDL_F7", "HDL_f9","LDL_cord", "LDL_CIF31", "LDL_CIF43", "LDL_F7", "LDL_f9","chol_cord", "Chol_CIF31", "Chol_CIF43", "CHOL_F7", "CHOL_F9","Glc_F7","Insulin_cord", "insulin_F9","CRP_cord", "CRP_f9","ApoAI_f9","ApoB_f9","ApoA1_F7","ApoB_F7","IL6_f9")
+
 father_diet_vars<-c(
 "pb020", # Frequency eating sausages or burgers
 "pb021", # Freq eating pies or pastries
@@ -6000,14 +5998,14 @@ immuno_vars <- unique(c("ka249","ka252","kb086","kb089","kd085","kd088","kf110",
 immuno_vars <-c(immuno_vars, "ka497", "kb879a","kd990","kf999", "kj999a","kk998a","kl991a","km9991a", "kn9991a","kp9991a","ks9991a","kv9991a")
 cov_vars <- c("c800","c801","c804","pa910","pc996","c666a","c645a","c755","c765","b032","a525","pa065","a522","a524","b040","b041","b042","pa064","pa173a","d153a","pa174a","d154a","pa210","d190","d040","b613","pb202","c768","b560","pa189a","d169a","d152a","pa172a","pa190a","d170a","pa191a","d171a","pa192a","d172a","b140","b141","b142","b143","b144","b149","c110","c111","c112","c113","c114","c115","dw021","dw002","paw002","paw010","b700","b701","b702","b706","b707","b708","b709","b710","b711","b712","b713","b714","pb088","pb089","pb090","pb091","pb092","pb093","pb094","pb095","pb096","pb097","pb098","bestgest","kb277","kc403","kb280","kc404","kg475","kk800","kq885","kt6400","HDP","pregnancy_diabetes","kb390","kb390a","kb387","kb387a","kc514", "kc544","kc541","kc572","kc574","kc570","ke341","ke350","ke352","ke354","ke339","ke321","kc363","ke195","ke195a","ke196","ke196a","kb549","kb551","kb388","kb385","kb361","kc542","kc539","kc361","ke340","ke338","ke320","kg423","kg420","kg369a","kk645","kk640","kk598","kq830","kq823","kq798a","kt6290","kt6280","kt6193","kg174","kk312","km3030","km3031","kp5090","kp5091","kt1210","kt1211","kc512")
 negcon_vars <- c("g572","g572a","h462","h462a","g571","g571a","h461","h461a","kf527","kf528","kj517","kj518")
-cardiomet_vars <- c("cf124", "cf134", "cf144", "f7sa022", "f9sa022", "fdar118","cf143", "cf133", "cf123", "f7sa021", "f9sa021", "fdar117","trig_cord", "Trig_CIF31", "Trig_CIF43", "TRIG_F7", "trig_f9","HDL_cord", "HDL_CIF31", "HDL_CIF43", "HDL_F7", "HDL_f9","LDL_cord", "LDL_CIF31", "LDL_CIF43", "LDL_F7", "LDL_f9","chol_cord", "Chol_CIF31", "Chol_CIF43", "CHOL_F7", "CHOL_f9","Glc_F7","Insulin_cord", "insulin_F9","CRP_cord", "CRP_f9","ApoAI_f9","ApoB_f9","ApoA1_F7","ApoB_F7","IL6_f9")
+cardiomet_vars <- c("cf124", "cf134", "cf144", "f7sa022", "f9sa022", "fdar118","cf143", "cf133", "cf123", "f7sa021", "f9sa021", "fdar117","trig_cord", "Trig_CIF31", "Trig_CIF43", "TRIG_F7", "trig_f9","HDL_cord", "HDL_CIF31", "HDL_CIF43", "HDL_F7", "HDL_f9","LDL_cord", "LDL_CIF31", "LDL_CIF43", "LDL_F7", "LDL_f9","chol_cord", "Chol_CIF31", "Chol_CIF43", "CHOL_F7", "CHOL_F9","Glc_F7","Insulin_cord", "insulin_F9","CRP_cord", "CRP_f9","ApoAI_f9","ApoB_f9","ApoA1_F7","ApoB_F7","IL6_f9")
 
 all_vars<-unique(c(unlist(lapply(ls()[grep(ls(),pattern="vars")],get))))
 
 
 library(alspac)
 setDataDir("/Volumes/ALSPAC-Data/")
-setDataDir("/Volumes/sscm alspac/Data/") #telling the package where the data is stored (make sure you are connected to the ALSPAC server before running this)
+#setDataDir("/Volumes/sscm alspac/Data/") #telling the package where the data is stored (make sure you are connected to the ALSPAC server before running this)
 options(mc.cores=4)
 #current <- createDictionary("Current", name="current")
 #useful <- createDictionary("Useful_data", name="useful")
@@ -6019,14 +6017,14 @@ meta_data <- findVars(all_vars)
 meta_data[meta_data=="kb_7a.dta"] <- "kb_7b.dta"
 meta_data[meta_data=="kf_8a.dta"] <- "kf_8b.dta"
 
-meta_data <- subset(meta_data,subset=tolower(name) %in% all_vars)
-meta_data <- meta_data[which(meta_data$cat2 %in% c("Clinic","Quest","bestgest","birthweight_centile")),]
+meta_data <- subset(meta_data,subset=tolower(name) %in% tolower(all_vars))
+meta_data <- meta_data[which(meta_data$cat2 %in% c("Clinic","Quest","bestgest","birthweight_centile")|meta_data$cat3 %in% "Samples"),]
 meta_data <- meta_data[!duplicated(meta_data$name),]
 
 meta_data1 <- meta_data[meta_data$obj %in% unique(meta_data$obj)[1:10],]
 meta_data2 <- meta_data[meta_data$obj %in% unique(meta_data$obj)[11:20],]
 meta_data3 <- meta_data[meta_data$obj %in% unique(meta_data$obj)[21:30],]
-meta_data4 <- meta_data[meta_data$obj %in% unique(meta_data$obj)[31:50],]
+meta_data4 <- meta_data[meta_data$obj %in% unique(meta_data$obj)[31:length(unique(meta_data$obj))],]
 
 raw_dat1 <- extractVars(meta_data1)
 raw_dat2 <- extractVars(meta_data2)
@@ -6035,8 +6033,9 @@ raw_dat4 <- extractVars(meta_data4)
 
 raw_dat <- bind_cols(raw_dat1,
                      raw_dat2[,colnames(raw_dat2) %in% meta_data2$name[-which(meta_data2$name %in% names(raw_dat1))]],
-                     raw_dat3[,colnames(raw_dat3) %in% meta_data3$name],
-                     raw_dat4[,colnames(raw_dat4) %in% meta_data4$name])
+                     raw_dat3[,colnames(raw_dat3) %in% meta_data3$name[-which(meta_data3$name %in% c(names(raw_dat1),names(raw_dat2)))]],
+                     raw_dat4[,colnames(raw_dat4) %in% meta_data4$name]
+)
 
 raw_dat <- left_join(dat,raw_dat,by=c("aln","qlet")) 
 
@@ -6053,13 +6052,2943 @@ C[C=="-1"]<-NA #changing -1 to missing
 raw_dat$paternal_participation <- NA
 raw_dat$paternal_participation <- ifelse(raw_dat$aln %in% unique(c(A$aln,B$aln,C$aln)),1,0)
 
+# didn't appear in meta_data last time I ran this, so may have to read in file and add manually, like this:
+obstet <- read_dta("/Volumes/ALSPAC-Data/Current/Other/Obstetric/OA_r1b.dta")
+obstet <- obstet[,c("aln","qlet","HDP","pregnancy_diabetes")]
+raw_dat <- left_join(raw_dat,obstet,by=c("aln","qlet"))
 
 saveRDS(raw_dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno_raw.rds")
 
 dat <- raw_dat
 
 
-#### NOW YOU CAN COPY AND PASTE THE SECTIONS OF THE SCRIPT THAT DERIVE THE CLEANED VARIABLES ####
+#### NOW YOU CAN COPY AND PASTE THE SECTIONS OF THE SCRIPT THAT DERIVE THE CLEANED VARIABLES: ####
+
+dat$time_qA_mother_gestation<-dat$a902
+dat$time_qA_mother_gestation[dat$time_qA_mother_gestation<0] <- NA
+
+dat$time_qB_mother_gestation<-dat$b924
+dat$time_qB_mother_gestation[dat$time_qB_mother_gestation<0] <- NA
+
+dat$time_qC_mother_gestation<-dat$c991
+dat$time_qC_mother_gestation[dat$time_qC_mother_gestation<0] <- NA
+
+dat$time_qD_mother_gestation<-dat$d990
+dat$time_qD_mother_gestation[dat$time_qD_mother_gestation<0] <- NA
+
+dat$time_qPA_partner_gestation<-dat$pa900
+dat$time_qPA_partner_gestation[dat$time_qPA_partner_gestation<0] <- NA
+
+dat$time_qPB_partner_gestation<-dat$pb900
+dat$time_qPB_partner_gestation[dat$time_qPB_partner_gestation<0] <- NA
+
+dat$time_qE_mother_sincebirth<-dat$e699
+dat$time_qE_mother_sincebirth[dat$time_qE_mother_sincebirth<0] <- NA
+
+dat$time_qPA_partner_sincebirth<-dat$pa901
+dat$time_qPA_partner_sincebirth[dat$time_qPA_partner_sincebirth<0] <- NA
+
+dat$time_qPB_partner_sincebirth<-dat$pa901
+dat$time_qPB_partner_sincebirth[dat$time_qPB_partner_sincebirth<0] <- NA
+
+
+dat$covs_biological_father<-dat$a521
+dat$covs_biological_father[dat$covs_biological_father==1]<-"bio_dad"
+dat$covs_biological_father[dat$covs_biological_father==(-2)]<-"no_partner"
+dat$covs_biological_father[dat$covs_biological_father==(-1)]<-"missing"
+dat$covs_biological_father[dat$covs_biological_father==(2)]<-"not_bio_dad"
+dat$covs_biological_father[dat$covs_biological_father==(3)]<-"unsure"
+
+dat$covs_partner_lives_with_mother_prenatal<-NA
+dat$covs_partner_lives_with_mother_prenatal[dat$a522==1]<-1
+dat$covs_partner_lives_with_mother_prenatal[dat$a522==2]<-0
+
+dat$smoking_mother_ever_life_binary <- NA
+dat$smoking_mother_ever_life_binary[dat$b650==1] <- 1
+dat$smoking_mother_ever_life_binary[dat$b650==2] <- 0
+
+dat$smoking_mother_before11_binary <- NA
+dat$smoking_mother_before11_binary[dat$b651<=11 & dat$b651>0] <- 1
+dat$smoking_mother_before11_binary[dat$b651==(-2)|dat$b651>11] <- 0 #-2 is never smoked
+
+dat$smoking_mother_preconception_binary <- NA
+dat$smoking_mother_preconception_binary[dat$b663==1]<-0
+dat$smoking_mother_preconception_binary[dat$b663%in%c(2,3,4,5)]<-1
+
+dat$smoking_mother_preconception_ordinal <- NA
+dat$smoking_mother_preconception_ordinal[dat$b669==0]<-"None"
+dat$smoking_mother_preconception_ordinal[dat$b669%in%c(1,5)]<-"Light" #i.e. <10 but not 0
+dat$smoking_mother_preconception_ordinal[dat$b669==10 | dat$b669==15]<-"Moderate" #i.e. <20, >=10
+dat$smoking_mother_preconception_ordinal[dat$b669>=20]<-"Heavy" #i.e.>=20
+dat$smoking_mother_preconception_ordinal<-factor(dat$smoking_mother_preconception_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$smoking_mother_firsttrim_ordinal <- NA
+#b670 asks for number smoked in first trimester
+dat$smoking_mother_firsttrim_ordinal[dat$b670==0]<-"None"
+dat$smoking_mother_firsttrim_ordinal[dat$b670%in%c(1,5)]<-"Light" #i.e. <5 but not 0
+dat$smoking_mother_firsttrim_ordinal[dat$b670==10 | dat$b670==15]<-"Moderate" #i.e. <20, >=10
+dat$smoking_mother_firsttrim_ordinal[dat$b670>=20]<-"Heavy" #i.e.>=20
+#b671 asks for number smoked in last two weeks, which could be first trimester depending on when she filled out the questionnaire
+dat$smoking_mother_firsttrim_ordinal[which(dat$b671==1&dat$time_qB_mother_gestation<=12&is.na(dat$smoking_mother_firsttrim_ordinal))]<-"Light"
+dat$smoking_mother_firsttrim_ordinal[which(dat$b671==5&dat$time_qB_mother_gestation<=12&is.na(dat$smoking_mother_firsttrim_ordinal))]<-"Light"
+dat$smoking_mother_firsttrim_ordinal[which((dat$b671==10|dat$b671==15)&dat$time_qB_mother_gestation<=12&is.na(dat$smoking_mother_firsttrim_ordinal))]<-"Moderate"
+dat$smoking_mother_firsttrim_ordinal[which(dat$b671>=20&dat$time_qB_mother_gestation<=12&is.na(dat$smoking_mother_firsttrim_ordinal))]<-"Heavy"
+
+dat$smoking_mother_firsttrim_ordinal<-factor(dat$smoking_mother_firsttrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$smoking_mother_firsttrim_binary <- NA
+dat$smoking_mother_firsttrim_binary[dat$smoking_mother_firsttrim_ordinal=="None"]<-0
+dat$smoking_mother_firsttrim_binary[dat$smoking_mother_firsttrim_ordinal%in% c("Light","Moderate","Heavy")]<-1
+
+dat$smoking_mother_secondtrim_ordinal <- NA
+#b671 asks if mother smoked in last two weeks, which could be second trimester depending on when she answered the question
+dat$smoking_mother_secondtrim_ordinal[which(dat$b671==0&dat$time_qB_mother_gestation%in%13:26)]<-"None"
+dat$smoking_mother_secondtrim_ordinal[which(dat$b671==1&dat$time_qB_mother_gestation%in%13:26)]<-"Light"
+dat$smoking_mother_secondtrim_ordinal[which(dat$b671==5&dat$time_qB_mother_gestation%in%13:26)]<-"Light"
+dat$smoking_mother_secondtrim_ordinal[which((dat$b671==10|dat$b671==15)&dat$time_qB_mother_gestation%in%13:26)]<-"Moderate"
+dat$smoking_mother_secondtrim_ordinal[which(dat$b671>=20&dat$time_qB_mother_gestation%in%13:26)]<-"Heavy"
+
+#c482 asks for number smoked "at the moment", which could be second trimester
+dat$smoking_mother_secondtrim_ordinal[which(dat$c482==0&dat$time_qC_mother_gestation%in%13:26&is.na(dat$smoking_mother_secondtrim_ordinal))]<-"None"
+dat$smoking_mother_secondtrim_ordinal[which(dat$c482%in%1:4&dat$time_qC_mother_gestation%in%13:26&is.na(dat$smoking_mother_secondtrim_ordinal))]<-"Light"
+dat$smoking_mother_secondtrim_ordinal[which(dat$c482%in%5:9&dat$time_qC_mother_gestation%in%13:26&is.na(dat$smoking_mother_secondtrim_ordinal))]<-"Light"
+dat$smoking_mother_secondtrim_ordinal[which(dat$c482%in%10:19&dat$time_qC_mother_gestation%in%13:26&is.na(dat$smoking_mother_secondtrim_ordinal))]<-"Moderate"
+dat$smoking_mother_secondtrim_ordinal[which(dat$c482>=20&dat$time_qC_mother_gestation%in%13:26&is.na(dat$smoking_mother_secondtrim_ordinal))]<-"Heavy"
+
+
+dat$smoking_mother_secondtrim_ordinal<-factor(dat$smoking_mother_secondtrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+
+dat$smoking_mother_secondtrim_binary <- NA
+dat$smoking_mother_secondtrim_binary[dat$smoking_mother_secondtrim_ordinal=="None"]<-0
+dat$smoking_mother_secondtrim_binary[dat$smoking_mother_secondtrim_ordinal%in% c("Light","Moderate","Heavy")]<-1
+
+dat$smoking_mother_thirdtrim_ordinal <- NA
+#e178 asks how many times per day did they smoked in the last two months of pregnancy
+dat$smoking_mother_thirdtrim_ordinal[dat$e178==0]<-"None"
+dat$smoking_mother_thirdtrim_ordinal[dat$e178==1]<-"Light" #i.e. <5 but not 0
+dat$smoking_mother_thirdtrim_ordinal[dat$e178==5]<-"Light" #i.e. <10, >=5
+dat$smoking_mother_thirdtrim_ordinal[dat$e178==10 | dat$e178==15]<-"Moderate" #i.e. <20, >=10
+dat$smoking_mother_thirdtrim_ordinal[dat$e178>=20]<-"Heavy" #i.e.>=20
+
+#c482 asks for number smoked "at the moment", which could be third trimester
+dat$smoking_mother_thirdtrim_ordinal[which(dat$c482==0&dat$time_qC_mother_gestation>=27&is.na(dat$smoking_mother_thirdtrim_ordinal))]<-"None"
+dat$smoking_mother_thirdtrim_ordinal[which(dat$c482%in%1:4&dat$time_qC_mother_gestation>=27&is.na(dat$smoking_mother_thirdtrim_ordinal))]<-"Light"
+dat$smoking_mother_thirdtrim_ordinal[which(dat$c482%in%5:9&dat$time_qC_mother_gestation>=27&is.na(dat$smoking_mother_thirdtrim_ordinal))]<-"Light"
+dat$smoking_mother_thirdtrim_ordinal[which(dat$c482%in%10:19&dat$time_qC_mother_gestation>=27&is.na(dat$smoking_mother_thirdtrim_ordinal))]<-"Moderate"
+dat$smoking_mother_thirdtrim_ordinal[which(dat$c482>=20&dat$time_qC_mother_gestation>=27&is.na(dat$smoking_mother_thirdtrim_ordinal))]<-"Heavy"
+
+#b671 asks how much the mother smoked in last two weeks, which could be third trimester depending on when she filled out the questionnaire
+dat$smoking_mother_thirdtrim_ordinal[which(dat$b671==1&dat$time_qB_mother_gestation>=27&is.na(dat$smoking_mother_thirdtrim_ordinal))]<-"Light"
+dat$smoking_mother_thirdtrim_ordinal[which(dat$b671==5&dat$time_qB_mother_gestation>=27&is.na(dat$smoking_mother_thirdtrim_ordinal))]<-"Light"
+dat$smoking_mother_thirdtrim_ordinal[which((dat$b671==10|dat$b671==15)&dat$time_qB_mother_gestation>=27&is.na(dat$smoking_mother_thirdtrim_ordinal))]<-"Moderate"
+dat$smoking_mother_thirdtrim_ordinal[which(dat$b671>=20&dat$time_qB_mother_gestation>=27&is.na(dat$smoking_mother_thirdtrim_ordinal))]<-"Heavy"
+
+dat$smoking_mother_thirdtrim_ordinal<-factor(dat$smoking_mother_thirdtrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$smoking_mother_thirdtrim_binary <- NA
+dat$smoking_mother_thirdtrim_binary[dat$smoking_mother_thirdtrim_ordinal=="None"]<-0
+dat$smoking_mother_thirdtrim_binary[dat$smoking_mother_thirdtrim_ordinal%in% c("Light","Moderate","Heavy")]<-1
+
+dat$smoking_mother_ever_pregnancy_binary<-NA
+dat$smoking_mother_ever_pregnancy_binary[dat$smoking_mother_firsttrim_binary==0 & dat$smoking_mother_secondtrim_binary==0 &dat$smoking_mother_thirdtrim_binary==0] <- 0
+dat$smoking_mother_ever_pregnancy_binary[dat$smoking_mother_firsttrim_binary==1 | dat$smoking_mother_secondtrim_binary==1 | dat$smoking_mother_thirdtrim_binary==1] <- 1
+
+dat$smoking_mother_passive_binary<-NA
+dat$smoking_mother_passive_binary[dat$c481a==1]<-0
+dat$smoking_mother_passive_binary[dat$c481a>1]<-1
+
+#smoking at 8 months = f620; 0=none, 1=light, 5=light to moderate, 10|15=moderate to heavy, 20+=heavy
+#smoking at 21 months = g820; 0=none, 1=light, 5=light to moderate, 10|15=moderate to heavy, 20+=heavy
+temp_var_8<-NA
+temp_var_8[dat$f620==0]<-0
+temp_var_8[dat$f620==1]<-1
+temp_var_8[dat$f620==5]<-1
+temp_var_8[dat$f620==10|dat$f620==15]<-2
+temp_var_8[dat$f620>=20]<-3
+
+temp_var_21<-NA
+temp_var_21[dat$g820==0]<-0
+temp_var_21[dat$g820==1]<-1
+temp_var_21[dat$g820==5]<-1
+temp_var_21[dat$g820==10|dat$g820==15]<-2
+temp_var_21[dat$g820>=20]<-3
+
+temp_df<-data.frame(temp_var_8,temp_var_21)
+temp_df$temp_var_218<-apply(temp_df,1,max,na.rm=T)
+temp_df$temp_var_218[is.infinite(temp_df$temp_var_218)]<-NA
+dat$smoking_mother_postnatal_ordinal<-temp_df$temp_var_218
+
+dat$smoking_mother_postnatal_ordinal[dat$smoking_mother_postnatal_ordinal==0]<-"None"
+dat$smoking_mother_postnatal_ordinal[dat$smoking_mother_postnatal_ordinal==1]<-"Light"
+dat$smoking_mother_postnatal_ordinal[dat$smoking_mother_postnatal_ordinal==2]<-"Moderate"
+dat$smoking_mother_postnatal_ordinal[dat$smoking_mother_postnatal_ordinal==3]<-"Heavy"
+
+dat$smoking_mother_postnatal_ordinal<-factor(dat$smoking_mother_postnatal_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+rm(temp_df,temp_var_21,temp_var_8)
+
+dat$smoking_mother_postnatal_binary <- NA
+dat$smoking_mother_postnatal_binary[dat$smoking_mother_postnatal_ordinal=="None"]<-0
+dat$smoking_mother_postnatal_binary[dat$smoking_mother_postnatal_ordinal%in% c("Light","Moderate","Heavy")]<-1
+
+dat$smoking_father_ever_life_binary <- NA
+dat$smoking_father_ever_life_binary[dat$pb071==1]<-1
+dat$smoking_father_ever_life_binary[dat$pb071==2]<-0
+
+#self-report
+dat$smoking_father_before11_binary <- NA
+dat$smoking_father_before11_binary[dat$pb072<=11 & dat$pb072>0] <- 1
+dat$smoking_father_before11_binary[dat$pb072>11] <- 0
+dat$smoking_father_before11_binary[dat$smoking_father_ever_life_binary==0] <-0 #never smoker
+
+#maternal-report
+dat$smoking_father_before11_binary_mreport <-NA
+dat$smoking_father_before11_binary_mreport[dat$b691<=11 & dat$b691>0] <- 1
+dat$smoking_father_before11_binary_mreport[dat$b691>11] <- 0
+dat$smoking_father_before11_binary_mreport[dat$smoking_father_ever_life_binary==0] <-0 #never smoker
+
+dat$smoking_father_startpregnancy_binary <- NA
+dat$smoking_father_startpregnancy_binary[dat$pb078==0]<-0
+dat$smoking_father_startpregnancy_binary[dat$pb078 %in% 1:30]<-1
+
+dat$smoking_father_startpregnancy_binary_mreport <-NA
+dat$smoking_father_startpregnancy_binary_mreport[dat$b683==1]<-0
+dat$smoking_father_startpregnancy_binary_mreport[dat$b683>1]<-1
+
+dat$smoking_father_startpregnancy_ordinal <- NA
+dat$smoking_father_startpregnancy_ordinal[dat$pb078==0]<-"None"
+dat$smoking_father_startpregnancy_ordinal[dat$pb078 == 1]<-"Light"
+dat$smoking_father_startpregnancy_ordinal[dat$pb078 == 5]<-"Light"
+dat$smoking_father_startpregnancy_ordinal[dat$pb078 == 10 | dat$pb078 == 15]<-"Moderate"
+dat$smoking_father_startpregnancy_ordinal[dat$pb078 >= 20]<-"Heavy"
+
+dat$smoking_father_startpregnancy_ordinal<-factor(dat$smoking_father_startpregnancy_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$smoking_father_startpregnancy_ordinal_mreport <- NA
+dat$smoking_father_startpregnancy_ordinal_mreport[dat$b685==0]<-"None"
+dat$smoking_father_startpregnancy_ordinal_mreport[dat$b685 == 1|dat$b685==5]<-"Light"
+dat$smoking_father_startpregnancy_ordinal_mreport[dat$b685 == 5]<-"Light"
+dat$smoking_father_startpregnancy_ordinal_mreport[dat$b685 == 10 | dat$b685 == 15]<-"Moderate"
+dat$smoking_father_startpregnancy_ordinal_mreport[dat$b685 >= 20]<-"Heavy"
+
+dat$smoking_father_startpregnancy_ordinal_mreport<-factor(dat$smoking_father_startpregnancy_ordinal_mreport,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$smoking_father_secondtrim_ordinal <-NA
+dat$smoking_father_secondtrim_ordinal[dat$pb079==0 & dat$time_qPB_partner_gestation %in% 13:26] <-"None"
+dat$smoking_father_secondtrim_ordinal[dat$pb079==1 & dat$time_qPB_partner_gestation %in% 13:26] <-"Light"
+dat$smoking_father_secondtrim_ordinal[dat$pb079==5 & dat$time_qPB_partner_gestation %in% 13:26] <-"Light"
+dat$smoking_father_secondtrim_ordinal[dat$pb079%in% 10:15 & dat$time_qPB_partner_gestation %in% 13:26] <-"Moderate"
+dat$smoking_father_secondtrim_ordinal[dat$pb079>=20 & dat$time_qPB_partner_gestation %in% 13:26] <-"Heavy"
+
+dat$smoking_father_secondtrim_ordinal<-factor(dat$smoking_father_secondtrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$smoking_father_secondtrim_binary <- NA
+dat$smoking_father_secondtrim_binary[dat$smoking_father_secondtrim_ordinal=="None"]<-0
+dat$smoking_father_secondtrim_binary[dat$smoking_father_secondtrim_ordinal %in% c("Light","Moderate","Heavy")]<-1
+
+dat$smoking_father_thirdtrim_ordinal <- NA
+dat$smoking_father_thirdtrim_ordinal[dat$pc260==0]<-"None"
+dat$smoking_father_thirdtrim_ordinal[dat$pc260 == 1]<-"Light"
+dat$smoking_father_thirdtrim_ordinal[dat$pc260 == 5]<-"Light"
+dat$smoking_father_thirdtrim_ordinal[dat$pc260 == 10 | dat$pc260 == 15]<-"Moderate"
+dat$smoking_father_thirdtrim_ordinal[dat$pc260 >= 20]<-"Heavy"
+
+dat$smoking_father_thirdtrim_ordinal<-factor(dat$smoking_father_thirdtrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$smoking_father_thirdtrim_binary <- NA
+dat$smoking_father_thirdtrim_binary[dat$smoking_father_thirdtrim_ordinal=="None"]<-0
+dat$smoking_father_thirdtrim_binary[dat$smoking_father_thirdtrim_ordinal %in% c("Light","Moderate","Heavy")]<-1
+
+dat$smoking_father_ever_pregnancy_binary<-NA
+dat$smoking_father_ever_pregnancy_binary[dat$smoking_father_startpregnancy_binary==0 & 
+                                    dat$smoking_father_secondtrim_binary==0 &
+                                    dat$smoking_father_thirdtrim_binary==0] <- 0
+dat$smoking_father_ever_pregnancy_binary[dat$smoking_father_startpregnancy_binary==1 | 
+                                    dat$smoking_father_secondtrim_binary==1 |
+                                    dat$smoking_father_thirdtrim_binary==1] <- 1
+
+
+#smoking at 8 months = pd620; 0=none, 1=light, 5=light to moderate, 10|15=moderate to heavy, 20+=heavy
+#smoking at 21 months = pe450; 0=none, 1=light, 5=light to moderate, 10|15=moderate to heavy, 20+=heavy
+temp_var_8<-NA
+temp_var_8[dat$pd620==0]<-0
+temp_var_8[dat$pd620==1]<-1
+temp_var_8[dat$pd620==5]<-1
+temp_var_8[dat$pd620==10|dat$pd620==15]<-2
+temp_var_8[dat$pd620>=20]<-3
+
+temp_var_21<-NA
+temp_var_21[dat$pe450==0]<-0
+temp_var_21[dat$pe450==1]<-1
+temp_var_21[dat$pe450==5]<-1
+temp_var_21[dat$pe450==10|dat$pe450==15]<-2
+temp_var_21[dat$pe450>=20]<-3
+
+temp_df<-data.frame(temp_var_8,temp_var_21)
+temp_df$temp_var_218<-apply(temp_df,1,max,na.rm=T)
+temp_df$temp_var_218[is.infinite(temp_df$temp_var_218)]<-NA
+dat$smoking_father_postnatal_ordinal<-temp_df$temp_var_218
+
+dat$smoking_father_postnatal_ordinal[dat$smoking_father_postnatal_ordinal==0]<-"None"
+dat$smoking_father_postnatal_ordinal[dat$smoking_father_postnatal_ordinal==1]<-"Light"
+dat$smoking_father_postnatal_ordinal[dat$smoking_father_postnatal_ordinal==2]<-"Moderate"
+dat$smoking_father_postnatal_ordinal[dat$smoking_father_postnatal_ordinal==3]<-"Heavy"
+
+dat$smoking_father_postnatal_ordinal<-factor(dat$smoking_father_postnatal_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+rm(temp_df,temp_var_21,temp_var_8)
+
+dat$smoking_father_postnatal_binary <- NA
+dat$smoking_father_postnatal_binary[dat$smoking_father_postnatal_ordinal=="None"]<-0
+dat$smoking_father_postnatal_binary[dat$smoking_father_postnatal_ordinal%in% c("Light","Moderate","Heavy")]<-1
+
+
+dat$alcohol_mother_preconception_ordinal <-NA
+dat$alcohol_mother_preconception_ordinal[dat$b720==1]<-"None"
+dat$alcohol_mother_preconception_ordinal[dat$b720==2]<-"Light" # <1glass per week
+dat$alcohol_mother_preconception_ordinal[dat$b720%in%c(3)]<-"Moderate" #1+glasses pwk, but not daily
+dat$alcohol_mother_preconception_ordinal[dat$b720%in%c(4,5,6)]<-"Heavy" #daily drinking, 1-2pd, 3-9pd, 10+pd
+dat$alcohol_mother_preconception_ordinal<-factor(dat$alcohol_mother_preconception_ordinal, levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+
+dat$alcohol_mother_firsttrim_ordinal <-NA
+dat$alcohol_mother_firsttrim_ordinal[dat$b721==1]<-"None"
+dat$alcohol_mother_firsttrim_ordinal[dat$b721==2]<-"Light" #i.e. <1 glass pw
+dat$alcohol_mother_firsttrim_ordinal[dat$b721%in%c(3)]<-"Moderate" #1+glasses pwk, but not daily
+dat$alcohol_mother_firsttrim_ordinal[dat$b721%in%c(4,5,6)]<-"Heavy" #daily drinking, 1-2pd, 3-9pd, 10+pd
+dat$alcohol_mother_firsttrim_ordinal<-factor(dat$alcohol_mother_firsttrim_ordinal, levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+
+dat$alcohol_mother_secondtrim_ordinal <-NA
+dat$alcohol_mother_secondtrim_ordinal[dat$b722==1]<-"None"
+dat$alcohol_mother_secondtrim_ordinal[dat$b722==2]<-"Light" #i.e. <1 glass pw
+dat$alcohol_mother_secondtrim_ordinal[dat$b722%in%c(3)]<-"Moderate" #1+glasses pwk, but not daily
+dat$alcohol_mother_secondtrim_ordinal[dat$b722%in%c(4,5,6)]<-"Heavy" #daily drinking, 1-2pd, 3-9pd, 10+pd
+dat$alcohol_mother_secondtrim_ordinal<-factor(dat$alcohol_mother_secondtrim_ordinal, levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+#Frequency of alcohol in last 2 months of pregnancy
+dat$alcohol_mother_thirdtrim_ordinal <-NA
+dat$alcohol_mother_thirdtrim_ordinal[dat$e220==1]<-"None"
+dat$alcohol_mother_thirdtrim_ordinal[dat$e220==2]<-"Light" #i.e. <1 glass pw
+dat$alcohol_mother_thirdtrim_ordinal[dat$e220%in%c(3)]<-"Moderate" #1+glasses pwk, but not daily
+dat$alcohol_mother_thirdtrim_ordinal[dat$e220%in%c(4,5,6)]<-"Heavy" #i.e DAILY drinking 1-2 glasses pd, 3-9 glasses per day, 10+ glasses per day
+dat$alcohol_mother_thirdtrim_ordinal<-factor(dat$alcohol_mother_thirdtrim_ordinal, levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$alcohol_mother_preconception_binary <- NA
+dat$alcohol_mother_preconception_binary[dat$alcohol_mother_preconception_ordinal=="None"] <- 0
+dat$alcohol_mother_preconception_binary[dat$alcohol_mother_preconception_ordinal%in%c("Light","Moderate","Heavy")] <- 1
+
+dat$alcohol_mother_firsttrim_binary <- NA
+dat$alcohol_mother_firsttrim_binary[dat$alcohol_mother_firsttrim_ordinal=="None"] <- 0
+dat$alcohol_mother_firsttrim_binary[dat$alcohol_mother_firsttrim_ordinal%in%c("Light","Moderate","Heavy")] <- 1
+
+dat$alcohol_mother_secondtrim_binary <- NA
+dat$alcohol_mother_secondtrim_binary[dat$alcohol_mother_secondtrim_ordinal=="None"] <- 0
+dat$alcohol_mother_secondtrim_binary[dat$alcohol_mother_secondtrim_ordinal%in%c("Light","Moderate","Heavy")] <- 1
+
+dat$alcohol_mother_thirdtrim_binary <- NA
+dat$alcohol_mother_thirdtrim_binary[dat$alcohol_mother_thirdtrim_ordinal=="None"] <- 0
+dat$alcohol_mother_thirdtrim_binary[dat$alcohol_mother_thirdtrim_ordinal%in%c("Light","Moderate","Heavy")] <- 1
+
+dat$alcohol_mother_ever_pregnancy_binary<-NA
+dat$alcohol_mother_ever_pregnancy_binary[dat$alcohol_mother_firsttrim_binary==0 &dat$alcohol_mother_secondtrim_binary==0 & dat$alcohol_mother_thirdtrim_binary == 0] <-0
+dat$alcohol_mother_ever_pregnancy_binary[dat$alcohol_mother_firsttrim_binary==1 |dat$alcohol_mother_secondtrim_binary ==1 |dat$alcohol_mother_thirdtrim_binary ==1] <-1
+
+dat$alcohol_mother_binge1_binary<-NA
+dat$alcohol_mother_binge1_binary[dat$b723==0]<- 0
+dat$alcohol_mother_binge1_binary[dat$b723>0]<- 1
+
+dat$alcohol_mother_binge3_binary<-NA
+dat$alcohol_mother_binge3_binary[dat$c360==0]<- 0
+dat$alcohol_mother_binge3_binary[dat$c360>0]<- 1
+
+dat$alcohol_mother_bingepreg_binary <-NA
+dat$alcohol_mother_bingepreg_binary[dat$alcohol_mother_binge1_binary==0&dat$alcohol_mother_binge3_binary==0] <-0
+dat$alcohol_mother_bingepreg_binary[dat$alcohol_mother_binge1_binary==1|dat$alcohol_mother_binge3_binary==1] <-1
+
+#alcohol use at 8 weeks = e221; 0=none, 1=light, 2=light to moderate, 3= Heavy
+#alcohol use at 8 months = f625; 0=none, 1=light, 2=light to moderate, 3=heavy
+#alcohol use at 21 months = g822; 0=none, 1=light, 2=light to moderate, 3=heavy
+temp_var_8w<-NA
+temp_var_8w[dat$e221==1]<-0
+temp_var_8w[dat$e221==2]<-1
+temp_var_8w[dat$e221==3]<-2
+temp_var_8w[dat$e221%in%c(4,5,6)]<-3
+
+temp_var_8m<-NA
+temp_var_8m[dat$f625==1]<-0
+temp_var_8m[dat$f625==2]<-1
+temp_var_8m[dat$f625==3]<-2
+temp_var_8m[dat$f625%in%c(4,5,6)]<-3
+
+temp_var_21m<-NA
+temp_var_21m[dat$g822==1]<-0
+temp_var_21m[dat$g822==2]<-1
+temp_var_21m[dat$g822==3]<-2
+temp_var_21m[dat$g822%in%c(4,5,6)]<-3
+
+temp_df<-data.frame(temp_var_8w,temp_var_8m,temp_var_21m)
+temp_df$temp_var_test<-apply(temp_df,1,max,na.rm=T)
+temp_df$temp_var_test[is.infinite(temp_df$temp_var_test)]<-NA
+dat$alcohol_mother_postnatal_ordinal<-temp_df$temp_var_test
+
+dat$alcohol_mother_postnatal_ordinal[dat$alcohol_mother_postnatal_ordinal==0]<-"None"
+dat$alcohol_mother_postnatal_ordinal[dat$alcohol_mother_postnatal_ordinal==1]<-"Light"
+dat$alcohol_mother_postnatal_ordinal[dat$alcohol_mother_postnatal_ordinal==2]<-"Moderate"
+dat$alcohol_mother_postnatal_ordinal[dat$alcohol_mother_postnatal_ordinal==3]<-"Heavy"
+
+dat$alcohol_mother_postnatal_ordinal<-factor(dat$alcohol_mother_postnatal_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+rm(temp_df,temp_var_21m,temp_var_8m,temp_var_8w)
+
+dat$alcohol_mother_postnatal_binary <- NA
+dat$alcohol_mother_postnatal_binary[dat$alcohol_mother_postnatal_ordinal=="None"]<-0
+dat$alcohol_mother_postnatal_binary[dat$alcohol_mother_postnatal_ordinal%in% c("Light","Moderate","Heavy")]<-1
+
+dat$alcohol_father_preconception_binary <- NA
+dat$alcohol_father_preconception_binary[dat$pb099==1]<-0
+dat$alcohol_father_preconception_binary[dat$pb099%in%c(2,3,4,5,6)]<-1
+
+dat$alcohol_father_preconception_ordinal <-NA
+dat$alcohol_father_preconception_ordinal[dat$pb099==1]<-"None"
+dat$alcohol_father_preconception_ordinal[dat$pb099==2]<-"Light" # <1glass per week
+dat$alcohol_father_preconception_ordinal[dat$pb099%in%c(3)]<-"Moderate" #1+glasses pwk, but not daily
+dat$alcohol_father_preconception_ordinal[dat$pb099%in%c(4,5,6)]<-"Heavy" #daily drinking, 1-2pd, 3-9pd, 10+pd
+dat$alcohol_father_preconception_ordinal<-factor(dat$alcohol_father_preconception_ordinal, levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$alcohol_father_secondtrim_ordinal <-NA
+dat$alcohol_father_secondtrim_ordinal[dat$pb100==1]<-"None"
+dat$alcohol_father_secondtrim_ordinal[dat$pb100==2]<-"Light" # <1glass per week
+dat$alcohol_father_secondtrim_ordinal[dat$pb100%in%c(3)]<-"Moderate" #1+glasses pwk, but not daily
+dat$alcohol_father_secondtrim_ordinal[dat$pb100%in%c(4,5,6)]<-"Heavy" #daily drinking, 1-2pd, 3-9pd, 10+pd
+dat$alcohol_father_secondtrim_ordinal<-factor(dat$alcohol_father_secondtrim_ordinal, levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$alcohol_father_thirdtrim_ordinal <-NA
+dat$alcohol_father_thirdtrim_ordinal[dat$pc280==1]<-"None"
+dat$alcohol_father_thirdtrim_ordinal[dat$pc280==2]<-"Light" # <1glass per week
+dat$alcohol_father_thirdtrim_ordinal[dat$pc280%in%c(3)]<-"Moderate" #1+glasses pwk, but not daily
+dat$alcohol_father_thirdtrim_ordinal[dat$pc280%in%c(4,5,6)]<-"Heavy" #daily drinking, 1-2pd, 3-9pd, 10+pd
+dat$alcohol_father_thirdtrim_ordinal<-factor(dat$alcohol_father_thirdtrim_ordinal, levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+dat$alcohol_father_secondtrim_binary <- NA
+dat$alcohol_father_secondtrim_binary[dat$pb100==1] <- 0
+dat$alcohol_father_secondtrim_binary[dat$pb100>1] <- 1
+
+dat$alcohol_father_thirdtrim_binary <- NA
+dat$alcohol_father_thirdtrim_binary[dat$pc280==1] <- 0
+dat$alcohol_father_thirdtrim_binary[dat$pc280>1] <- 1
+
+dat$alcohol_father_ever_pregnancy_binary<-NA
+dat$alcohol_father_ever_pregnancy_binary[dat$alcohol_father_secondtrim_binary==0 & dat$alcohol_father_thirdtrim_binary == 0] <-0
+dat$alcohol_father_ever_pregnancy_binary[dat$alcohol_father_secondtrim_binary ==1 |dat$alcohol_father_thirdtrim_binary ==1] <-1
+
+dat$alcohol_father_ever_pregnancy_binary_mreport<-NA
+dat$alcohol_father_ever_pregnancy_binary_mreport[dat$b730==1]<-0
+dat$alcohol_father_ever_pregnancy_binary_mreport[dat$b730>1]<-1
+
+dat$alcohol_father_bingepreg_binary<-NA
+dat$alcohol_father_bingepreg_binary[dat$pb101==0]<- 0
+dat$alcohol_father_bingepreg_binary[dat$pb101>0]<- 1
+
+
+
+temp_var_pc<-NA
+temp_var_pc[dat$pc281==1]<-0
+temp_var_pc[dat$pc281%in%c(2)]<-1
+temp_var_pc[dat$pc281==3]<-2
+temp_var_pc[dat$pc281%in%c(4,5,6)]<-3
+
+temp_var_pd<-NA
+temp_var_pd[dat$pd625==5]<-0
+temp_var_pd[dat$pd625%in%c(2,3)]<-1
+temp_var_pd[dat$pd625==2]<-2
+temp_var_pd[dat$pd625==1]<-3
+
+temp_var_pe<-NA
+temp_var_pe[dat$pe452==1]<-0
+temp_var_pe[dat$pe452%in%c(2)]<-1
+temp_var_pe[dat$pe452==3]<-2
+temp_var_pe[dat$pe452%in%c(4,5,6)]<-3
+
+temp_df<-data.frame(temp_var_pc,temp_var_pd,temp_var_pe)
+temp_df$temp_var_test<-apply(temp_df,1,max,na.rm=T)
+temp_df$temp_var_test[is.infinite(temp_df$temp_var_test)]<-NA
+dat$alcohol_father_postnatal_ordinal<-temp_df$temp_var_test
+
+dat$alcohol_father_postnatal_ordinal[dat$alcohol_father_postnatal_ordinal==0]<-"None"
+dat$alcohol_father_postnatal_ordinal[dat$alcohol_father_postnatal_ordinal==1]<-"Light"
+dat$alcohol_father_postnatal_ordinal[dat$alcohol_father_postnatal_ordinal==2]<-"Moderate"
+dat$alcohol_father_postnatal_ordinal[dat$alcohol_father_postnatal_ordinal==3]<-"Heavy"
+
+dat$alcohol_father_postnatal_ordinal<-factor(dat$alcohol_father_postnatal_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+rm(temp_df,temp_var_pe,temp_var_pd,temp_var_pc)
+
+
+dat$alcohol_father_postnatal_binary <- NA
+dat$alcohol_father_postnatal_binary[dat$alcohol_father_postnatal_ordinal=="None"]<-0
+dat$alcohol_father_postnatal_binary[dat$alcohol_father_postnatal_ordinal%in% c("Light","Moderate","Heavy")]<-1
+
+#cups of coffee per week
+dat$caffeine_mother_coffee_firsttrim_continuous <-dat$a228
+dat$caffeine_mother_coffee_firsttrim_continuous[dat$a228<0]<-NA
+dat$caffeine_mother_coffee_firsttrim_continuous[dat$time_qA_mother_gestation>12]<-NA
+# cups of coffee multiplied by 57 (mg caffeine in 1 cup coffee)
+dat$caffeine_mother_coffee_firsttrim_continuous<-dat$caffeine_mother_coffee_firsttrim_continuous*57
+# mg per day
+dat$caffeine_mother_coffee_firsttrim_continuous<-round(dat$caffeine_mother_coffee_firsttrim_continuous/7)
+
+#cups of tea per week
+dat$caffeine_mother_tea_firsttrim_continuous <-dat$a222
+dat$caffeine_mother_tea_firsttrim_continuous[dat$a222<0]<-NA
+dat$caffeine_mother_tea_firsttrim_continuous[dat$time_qA_mother_gestation>12]<-NA
+# cups of tea multiplied by 27 (mg caffeine in 1 cup tea)
+dat$caffeine_mother_tea_firsttrim_continuous<-dat$caffeine_mother_tea_firsttrim_continuous*27
+# mg per day
+dat$caffeine_mother_tea_firsttrim_continuous<-round(dat$caffeine_mother_tea_firsttrim_continuous/7)
+
+#cups of cola per week
+dat$caffeine_mother_cola_firsttrim_continuous <-dat$a234
+dat$caffeine_mother_cola_firsttrim_continuous[dat$a234<0]<-NA
+dat$caffeine_mother_cola_firsttrim_continuous[dat$time_qA_mother_gestation>12]<-NA
+# cups of cola multiplied by 27 (mg caffeine in 1 cup cola)
+dat$caffeine_mother_cola_firsttrim_continuous<-dat$caffeine_mother_cola_firsttrim_continuous*20
+# mg per day
+dat$caffeine_mother_cola_firsttrim_continuous<-round(dat$caffeine_mother_cola_firsttrim_continuous/7)
+
+dat$caffeine_mother_total_firsttrim_continuous <- rowSums(dat[,c("caffeine_mother_cola_firsttrim_continuous","caffeine_mother_coffee_firsttrim_continuous","caffeine_mother_tea_firsttrim_continuous")],na.rm=TRUE)
+dat$caffeine_mother_total_firsttrim_continuous[which(is.na(dat$caffeine_mother_coffee_firsttrim_continuous) & is.na(dat$caffeine_mother_tea_firsttrim_continuous) & is.na(dat$caffeine_mother_cola_firsttrim_continuous))]<-NA
+
+#TEA
+dat$caffeine_mother_tea_secondtrim_continuous<-dat$b742
+dat$caffeine_mother_tea_secondtrim_continuous[dat$b742<0]<-NA
+dat$caffeine_mother_tea_secondtrim_continuous<-dat$caffeine_mother_tea_secondtrim_continuous*27 #tranform cups to mg per week
+dat$caffeine_mother_tea_secondtrim_continuous<-dat$caffeine_mother_tea_secondtrim_continuous/7 #tranform weekly caffeine to daily
+
+#COFFEE
+dat$caffeine_mother_coffee_secondtrim_continuous<-dat$b748
+dat$caffeine_mother_coffee_secondtrim_continuous[dat$b748<0]<-NA
+dat$caffeine_mother_coffee_secondtrim_continuous<-dat$caffeine_mother_coffee_secondtrim_continuous*57 #tranform cups to mg per week
+dat$caffeine_mother_coffee_secondtrim_continuous<-dat$caffeine_mother_coffee_secondtrim_continuous/7 #tranform weekly caffeine to daily
+
+#COLA
+dat$caffeine_mother_cola_secondtrim_continuous<-dat$b763
+dat$caffeine_mother_cola_secondtrim_continuous[dat$b763<0]<-NA
+dat$caffeine_mother_cola_secondtrim_continuous<-dat$caffeine_mother_cola_secondtrim_continuous*20 #tranform cups to mg per week
+dat$caffeine_mother_cola_secondtrim_continuous<-dat$caffeine_mother_cola_secondtrim_continuous/7 #tranform weekly caffeine to daily
+
+
+dat$caffeine_mother_total_secondtrim_continuous <- rowSums(dat[,c("caffeine_mother_cola_secondtrim_continuous","caffeine_mother_coffee_secondtrim_continuous","caffeine_mother_tea_secondtrim_continuous")],na.rm=TRUE)
+dat$caffeine_mother_total_secondtrim_continuous[which(is.na(dat$caffeine_mother_coffee_secondtrim_continuous) & is.na(dat$caffeine_mother_tea_secondtrim_continuous) & is.na(dat$caffeine_mother_cola_secondtrim_continuous))]<-NA
+
+#TEA (cups of caffeinated tea per day)
+dat$caffeine_mother_tea_thirdtrim_continuous<-dat$c300
+dat$caffeine_mother_tea_thirdtrim_continuous[dat$c300<0]<-NA
+dat$caffeine_mother_tea_thirdtrim_continuous<-dat$caffeine_mother_tea_thirdtrim_continuous*27 #tranform cups to mg per day
+
+#COFFEE (cups of caffeinated coffee per day)
+dat$caffeine_mother_coffee_thirdtrim_continuous<-dat$c305
+dat$caffeine_mother_coffee_thirdtrim_continuous[dat$c305<0]<-NA
+dat$caffeine_mother_coffee_thirdtrim_continuous<-dat$caffeine_mother_coffee_thirdtrim_continuous*57 #tranform cups to mg per day
+
+#COLA (cups of caffeinated cola per week)
+dat$caffeine_mother_cola_thirdtrim_continuous<-dat$c310
+dat$caffeine_mother_cola_thirdtrim_continuous[dat$c310<0]<-NA
+dat$caffeine_mother_cola_thirdtrim_continuous<-dat$caffeine_mother_cola_thirdtrim_continuous*20 #tranform cups to mg per week
+dat$caffeine_mother_cola_thirdtrim_continuous<-dat$caffeine_mother_cola_thirdtrim_continuous/7 #transform to mg per day
+
+dat$caffeine_mother_total_thirdtrim_continuous <- rowSums(dat[,c("caffeine_mother_cola_thirdtrim_continuous","caffeine_mother_coffee_thirdtrim_continuous","caffeine_mother_tea_thirdtrim_continuous")],na.rm=TRUE)
+dat$caffeine_mother_total_thirdtrim_continuous[which(is.na(dat$caffeine_mother_coffee_thirdtrim_continuous) & is.na(dat$caffeine_mother_tea_thirdtrim_continuous) & is.na(dat$caffeine_mother_cola_thirdtrim_continuous))]<-NA
+
+dat$caffeine_mother_total_firsttrim_binary <- NA
+dat$caffeine_mother_total_firsttrim_binary[dat$caffeine_mother_total_firsttrim_continuous==0]<-0
+dat$caffeine_mother_total_firsttrim_binary[dat$caffeine_mother_total_firsttrim_continuous>0]<-1
+
+dat$caffeine_mother_total_secondtrim_binary <- NA
+dat$caffeine_mother_total_secondtrim_binary[dat$caffeine_mother_total_secondtrim_continuous==0]<-0
+dat$caffeine_mother_total_secondtrim_binary[dat$caffeine_mother_total_secondtrim_continuous>0]<-1
+
+dat$caffeine_mother_total_thirdtrim_binary <- NA
+dat$caffeine_mother_total_thirdtrim_binary[dat$caffeine_mother_total_thirdtrim_continuous==0]<-0
+dat$caffeine_mother_total_thirdtrim_binary[dat$caffeine_mother_total_thirdtrim_continuous>0]<-1
+
+dat$caffeine_mother_total_ever_pregnancy_continuous <- rowMeans(dat[,c("caffeine_mother_total_thirdtrim_continuous","caffeine_mother_total_secondtrim_continuous","caffeine_mother_total_firsttrim_continuous")],na.rm=TRUE)
+
+dat$caffeine_mother_total_ever_pregnancy_binary <- NA
+dat$caffeine_mother_total_ever_pregnancy_binary[dat$caffeine_mother_total_ever_pregnancy_continuous==0]<-0
+dat$caffeine_mother_total_ever_pregnancy_binary[dat$caffeine_mother_total_ever_pregnancy_continuous>0]<-1
+
+#TEA (cups of caffeinated tea per day)
+dat$caffeine_mother_tea_postnatal_continuous<-dat$e153
+dat$caffeine_mother_tea_postnatal_continuous[dat$e153<0]<-NA
+dat$caffeine_mother_tea_postnatal_continuous<-dat$caffeine_mother_tea_postnatal_continuous*27 #tranform cups to mg per day
+
+#COFFEE (cups of caffeinated coffee per day)
+dat$caffeine_mother_coffee_postnatal_continuous<-dat$e155
+dat$caffeine_mother_coffee_postnatal_continuous[dat$e155<0]<-NA
+dat$caffeine_mother_coffee_postnatal_continuous<-dat$caffeine_mother_coffee_postnatal_continuous*57 #tranform cups to mg per day
+
+#COLA (cups of caffeinated cola per week)
+dat$caffeine_mother_cola_postnatal_continuous<-dat$e151
+dat$caffeine_mother_cola_postnatal_continuous[dat$e151<0]<-NA
+dat$caffeine_mother_cola_postnatal_continuous<-dat$caffeine_mother_cola_postnatal_continuous*20 #tranform cups to mg per week
+dat$caffeine_mother_cola_postnatal_continuous<-dat$caffeine_mother_cola_postnatal_continuous/7 #transform to mg per day
+
+dat$caffeine_mother_total_postnatal_continuous <- rowSums(dat[,c("caffeine_mother_cola_postnatal_continuous","caffeine_mother_coffee_postnatal_continuous","caffeine_mother_tea_postnatal_continuous")],na.rm=TRUE)
+dat$caffeine_mother_total_postnatal_continuous[which(is.na(dat$caffeine_mother_coffee_postnatal_continuous) & is.na(dat$caffeine_mother_tea_postnatal_continuous) & is.na(dat$caffeine_mother_cola_postnatal_continuous))]<-NA
+
+dat$caffeine_mother_total_postnatal_binary <- NA
+dat$caffeine_mother_total_postnatal_binary[dat$caffeine_mother_total_postnatal_continuous==0]<-0
+dat$caffeine_mother_total_postnatal_binary[dat$caffeine_mother_total_postnatal_continuous>0]<-1
+
+#TEA
+dat$caffeine_father_tea_secondtrim_continuous<-dat$pb054 #cups of tea per day)
+dat$caffeine_father_tea_secondtrim_continuous[dat$pb054<0]<-NA
+dat$caffeine_father_tea_secondtrim_continuous[dat$pb056a==1]<-0#set to no caffeine if say always or usually drink decaf
+dat$caffeine_father_tea_secondtrim_continuous[dat$pb056==1]<-0#set to no caffeine if say always or usually drink decaf
+dat$pb057[dat$pb056a==3]<-0#set decaf to 0 if say never drink decaf
+dat$pb057[dat$pb056==3]<-0#set decaf to 0 if say never drink decaf
+dat$pb057[dat$pb057<0]<-NA #set missing to NA in n decaf cups 
+dat$caffeine_father_tea_secondtrim_continuous<-dat$caffeine_father_tea_secondtrim_continuous-dat$pb057
+dat$caffeine_father_tea_secondtrim_continuous[dat$caffeine_father_tea_secondtrim_continuous<0] <-NA
+dat$caffeine_father_tea_secondtrim_continuous<-dat$caffeine_father_tea_secondtrim_continuous*27 #tranform cups to mg per day
+
+#COFFEE
+dat$caffeine_father_coffee_secondtrim_continuous<-dat$pb058 #cups of coffee per day)
+dat$caffeine_father_coffee_secondtrim_continuous[dat$pb058<0]<-NA
+dat$caffeine_father_coffee_secondtrim_continuous[dat$pb060a==1]<-0#set to no caffeine if say always or usually drink decaf
+dat$caffeine_father_coffee_secondtrim_continuous[dat$pb060==1]<-0#set to no caffeine if say always or usually drink decaf
+dat$pb061[dat$pb060a==3]<-0#set decaf to 0 if say never drink decaf
+dat$pb061[dat$pb060==3]<-0#set decaf to 0 if say never drink decaf
+dat$pb061[dat$pb061<0]<-NA #set missing to NA in n decaf cups 
+dat$caffeine_father_coffee_secondtrim_continuous<-dat$caffeine_father_coffee_secondtrim_continuous-dat$pb061
+dat$caffeine_father_coffee_secondtrim_continuous[dat$caffeine_father_coffee_secondtrim_continuous<0] <-NA
+dat$caffeine_father_coffee_secondtrim_continuous<-dat$caffeine_father_coffee_secondtrim_continuous*57 #transform cups to mg per day
+
+
+#COLA
+dat$caffeine_father_cola_secondtrim_continuous<-dat$pb064 #cups of cola per weel)
+dat$caffeine_father_cola_secondtrim_continuous[dat$pb064<0]<-NA
+dat$caffeine_father_cola_secondtrim_continuous[dat$pb065a==1]<-0#set to no caffeine if say always or usually drink decaf
+dat$caffeine_father_cola_secondtrim_continuous[dat$pb065==1]<-0#set to no caffeine if say always or usually drink decaf
+dat$pb066[dat$pb065a==3]<-0#set decaf to 0 if say never drink decaf
+dat$pb066[dat$pb065==3]<-0#set decaf to 0 if say never drink decaf
+dat$pb066[dat$pb066<0]<-NA #set missing to NA in n decaf cups 
+dat$caffeine_father_cola_secondtrim_continuous<-dat$caffeine_father_cola_secondtrim_continuous-dat$pb066
+dat$caffeine_father_cola_secondtrim_continuous[dat$caffeine_father_cola_secondtrim_continuous<0] <-NA
+dat$caffeine_father_cola_secondtrim_continuous<-dat$caffeine_father_cola_secondtrim_continuous*20 #tranform cups to mg per week
+dat$caffeine_father_cola_secondtrim_continuous<-dat$caffeine_father_cola_secondtrim_continuous/7 #per day
+
+dat$caffeine_father_total_secondtrim_continuous <- rowSums(dat[,c("caffeine_father_cola_secondtrim_continuous","caffeine_father_coffee_secondtrim_continuous","caffeine_father_tea_secondtrim_continuous")],na.rm=TRUE)
+dat$caffeine_father_total_secondtrim_continuous[which(is.na(dat$caffeine_father_coffee_secondtrim_continuous) & is.na(dat$caffeine_father_tea_secondtrim_continuous) & is.na(dat$caffeine_father_cola_secondtrim_continuous))]<-NA
+
+dat$caffeine_father_total_secondtrim_binary <- NA
+dat$caffeine_father_total_secondtrim_binary[dat$caffeine_father_total_secondtrim_continuous==0]<-0
+dat$caffeine_father_total_secondtrim_binary[dat$caffeine_father_total_secondtrim_continuous>0]<-1
+
+dat$caffeine_father_total_ever_pregnancy_binary <- dat$caffeine_father_total_secondtrim_binary
+dat$caffeine_father_total_ever_pregnancy_continuous <- dat$caffeine_father_total_secondtrim_continuous
+
+dat$physact_mother_secondtrim_ordinal <- NA
+dat$physact_mother_secondtrim_ordinal[dat$b635==0|dat$b634==2]<-"Inactive" #0
+dat$physact_mother_secondtrim_ordinal[which(dat$b635>0&dat$b635<3)]<-"Somewhat" #<3
+dat$physact_mother_secondtrim_ordinal[dat$b635>=3]<-"Active" #>=3
+dat$physact_mother_secondtrim_ordinal<-factor(dat$physact_mother_secondtrim_ordinal,levels=c("Inactive","Somewhat","Active"),ordered=T)
+
+dat$physact_father_secondtrim_ordinal <- NA
+dat$physact_father_secondtrim_ordinal[dat$pb014==0|dat$pb013==2]<-"Inactive" #0
+dat$physact_father_secondtrim_ordinal[which(dat$pb014>0&dat$pb014<3)]<-"Somewhat" #<3
+dat$physact_father_secondtrim_ordinal[dat$pb014>=3]<-"Active" #>=3
+dat$physact_father_secondtrim_ordinal<-factor(dat$physact_father_secondtrim_ordinal,levels=c("Inactive","Somewhat","Active"),ordered=T)
+
+dat$physact_mother_thirdtrim_ordinal <- NA
+dat$physact_mother_thirdtrim_ordinal[dat$c504==0|dat$c503==2]<-"Inactive" #0
+dat$physact_mother_thirdtrim_ordinal[dat$c504>0&dat$c504<3]<-"Somewhat" #<3
+dat$physact_mother_thirdtrim_ordinal[dat$c504>=3]<-"Active" #>=3
+dat$physact_mother_thirdtrim_ordinal<-factor(dat$physact_mother_thirdtrim_ordinal,levels=c("Inactive","Somewhat","Active"),ordered=T)
+
+dat$physact_mother_postnatal_ordinal <- NA
+dat$physact_mother_postnatal_ordinal[dat$g761==2]<-"Inactive" #0
+dat$physact_mother_postnatal_ordinal[dat$g762>0&dat$g762<3]<-"Somewhat" #<3
+dat$physact_mother_postnatal_ordinal[dat$g762>=3]<-"Active" #>=3
+dat$physact_mother_postnatal_ordinal<-factor(dat$physact_mother_postnatal_ordinal,levels=c("Inactive","Somewhat","Active"),ordered=T)
+
+alspac.table <- raw_dat
+# set missings to 0 for these variables
+# (ie if missing assume not consumed at all)
+vars=c(
+"c200","c201","c202","c203","c204","c205","c206","c207","c208","c209",
+"c210","c211","c215","c216","c217","c218","c219","c220","c221","c222",
+"c223","c224","c225","c226","c227","c228","c229","c230","c231","c232",
+"c233","c234","c235","c236","c237","c238","c239","c240","c241","c242",
+"c243","c244","c245","c246","c247","c251","c252","c253","c254","c255",
+"c256","c260","c261","c263","c264","c265","c266","c267","c268","c269",
+"c270","c271","c272","c273","c274","c276","c277","c278","c279","c280",
+"c281","c282","c283","c284","c285","c286","c287","c288","c289","c300",
+"c301","c305","c306","c310","c373")
+
+# replace missing values with 0
+
+alspac.table[,vars]<-replace(alspac.table[,vars],alspac.table[,vars]<0,0)
+
+# ALSPAC variables to keep
+keep_vars<-c("aln",
+    "c200","c201", "c202", "c203", "c204", 
+    "c205","c206", "c207", "c209","c210", 
+    "c217","c218", "c220", "c222", "c223", 
+    "c224", "c225", "c226", "c227", "c228", 
+    "c229", "c232", "c233", "c234", "c235", 
+    "c237", "c240", "c241", "c243", "c250", 
+    "c252", "c253", "c254", "c255", "c260",
+    "c261", "c263", "c264", "c265", "c266", 
+    "c267", "c268", "c269", "c270", "c271", 
+    "c272", "c273", "c274", "c275", "c284", 
+    "c285", "c286", "c287", "c288", "c289", 
+    "c300", "c305", "c373")
+
+food.data <- alspac.table[,keep_vars]
+
+vars<-c("c200","c201", "c202", "c203", "c204", 
+        "c205","c206", "c207", "c209", "c210", 
+        "c217","c218", "c222", "c223", "c224", 
+        "c225", "c226", "c227", "c228", "c229", 
+        "c232", "c233", "c234", "c235", "c237", 
+        "c240", "c241", "c243")
+
+food.data[,vars]<-sapply(alspac.table[,vars], recode,
+                         "1"=0,
+                         "2"=0.5,
+                         "3"=2,
+                         "4"=5.5,
+                         "5"=10)
+
+# c250 slices of bread
+# missing       1.5
+# 1 <1          0
+# 2 1-2         1.5
+# 3 3-4         3.5
+# 4 5 or more   6
+
+food.data$c250[alspac.table$c250<0] <- 1.5
+food.data$c250<-recode(alspac.table$c250, 
+                         "0"=0,
+                         "1"=0,
+                         "2"=1.5,
+                         "3"=3.5,
+                         "4"=6)
+
+# c275 slices of bread with fat 
+# missing   2
+# values>7  6
+food.data$c275[alspac.table$c275<0] <- 2
+food.data$c275[alspac.table$c275>7] <- 6
+
+# c252-255 eat types of bread
+# 1 Yes 1
+# 2 No  0
+food.data$c252[alspac.table$c252!=1] <- 0
+food.data$c253[alspac.table$c253!=1] <- 0
+food.data$c254[alspac.table$c254!=1] <- 0
+food.data$c255[alspac.table$c255!=1] <- 0
+
+#c284 c285 c287 c288 c289 - milk in tea, coffee, pudding, as drink, in milky drink
+# 0 (recoded from missing) 0
+# 1 Usually             1
+# 2 Sometimes           0.5
+# 3 Never               0
+vars=c("c284","c285","c287","c288","c289") 
+food.data[,vars]<-sapply(alspac.table[,vars], recode,
+                         "0"=0,
+                         "1"=1,
+                         "2"=0.5,
+                         "3"=0)
+
+#c286 milk in cereal
+# 0 (recoded from missing) 0
+# 1 Usually             1
+# 2 Sometimes           1
+# 3 Never               0
+food.data$c286 = recode(alspac.table$c286,
+                        "0"=0, "1"=1, "2"=1,"3"=0)
+
+# c269 & c270 oil on bread/for frying
+# 1 Yes 1
+# 2 No  0
+food.data$c269[alspac.table$c269!=1] <- 0
+food.data$c270[alspac.table$c270!=1] <- 0
+
+
+# variables in food.data now have appropriate frequencies
+
+
+###########################################                        
+#Set up a data frame for the output: food.gp
+
+# From EWAS Script:
+# 'Necessary variable names are: "sample.id","vegetables",
+# "legumes","fruitnuts","dairy","cereals","meat","fish",
+# "oliveoil","alcohol","sex","mat.edu","mat.age",
+# "mat.smoking","mat.bmi","mat.kcal","batch"
+# -in that order
+#
+# I don't have all these variables, so food.gp contains the 
+# first ten of these (ID plus nine food groups) in the correct 
+# order.
+# However, see (unchecked)  code at end from another file that 
+# purports to be the remaining variables needed
+
+food.gp=data.frame(aln=alspac.table$aln,
+                   qlet=alspac.table$qlet,
+                        vegetables=NA,
+                        legumes=NA,
+                        fruitnuts=NA,
+                        dairy=NA,
+                        cereals=NA,
+                        meat=NA,
+                        fish=NA,
+                        oliveoil=NA,
+                        alcohol=NA)
+
+###########################################
+
+
+###################### Vegetables
+# Use variables: 
+#   c224 leafy green    119g
+#   c225 other green    132g
+#   c226 carrots        60g
+#   c227 other root veg 87g
+#   c228 salad          80g
+#   c210 pizza toppings   54.8g
+
+food.gp$vegetables <- 119 * food.data$c224 +
+                      132 * food.data$c225 +
+                       60 * food.data$c226 +
+                       87 * food.data$c227 +
+                       80 * food.data$c228 +
+                     54.8 * food.data$c210
+# these are portions per week - convert to daily:
+food.gp$vegetables <- food.gp$vegetables/7
+
+
+###################### Legumes
+# c222 baked beans 135g
+# c223 legumes      74g
+# c240 pulses       120g
+
+food.gp$legumes <- 135 * food.data$c222 +
+ 			74 * food.data$c223 +
+ 			120 * food.data$c240 
+
+
+# these are portions per week - convert to daily:
+food.gp$legumes <- food.gp$legumes/7
+
+
+###################### Fruit & Nuts
+# c229 fresh fruit  118g
+# c241 nuts          52g
+# c243  tahini       10g
+
+food.gp$fruitnuts <- 118 * food.data$c229 +
+                      52 * food.data$c241 +
+                      10 * food.data$c243
+
+# these are portions per week - convert to daily:
+food.gp$fruitnuts <- food.gp$fruitnuts/7
+
+###################### Dairy
+
+### milk:
+# c284  in tea          30g per cup
+# c300 cups/tea per day
+# c285 in coffee        30g per cup
+# c305 cups/coffee per day
+# c286 in cereal        100g per cereal
+# c233, c234 c235 - oat, bran and other cereals /week
+# c287 in pudding       150g
+# c232 no. puddings /week
+# c288 as a drink       200g
+# c289 in milky drink   260g
+# no measure of frequency for these two beyond usually/sometimes -
+# previous code has a factor 2/3 which I think is
+# interpreting 'usually have a milk drink' as on 2 in 3 days
+# 'sometimes' has a value of 0.5, so is thus on 1 in 3 days
+
+# milk - do this as daily milk (so need to convert cer3al and puddings)
+food.data$milk <- 30 * food.data$c284 * food.data$c300 +
+        30 * food.data$c285 * food.data$c305 +
+        (100 * food.data$c286 * (food.data$c233 + food.data$c234 + food.data$c235) )/7+
+        (150 * food.data$c287 *food.data$c232)/7 +
+        200 * food.data$c288 * 2/3 +
+        260 * food.data$c289 * 2/3
+
+### Other dairy:
+# c209 cheese   46g
+# c210 pizza    60.3g
+
+
+# convert cheese and pizza to daily
+food.gp$dairy <- (46 * food.data$c209 +
+                60.3 * food.data$c210)/7 +
+                food.data$milk
+
+###################### Cereals
+
+
+### bread:
+# c250 portions eaten per day
+
+# Types of bread eaten
+# c252 white    36g
+# c253 brown    36g
+# c254 wholemeal    36g
+# c255 chapati    68g
+# c256 Dont usually eat any bread
+
+#vector of portion sizes for each type of bread
+b.portion <- matrix(c(36, 36, 36, 68),4,1)
+
+# matrix of bread types eaten: rows are observations, 4 cols for bread types
+# matrix contains 1 if type is eaten, 0 otherwise
+b.mat <- as.matrix(food.data[,c("c252","c253","c254","c255")] )
+# count number of different types of bread eaten
+n.btype <- apply(b.mat ,1,sum,na.rm=T)
+
+# scale bread matrix to be proportions  - 
+# so if eat two types of bread, then half for each
+# (avoid dividing by zero if there are none)
+b.mat[n.btype>0,] <- b.mat[n.btype>0,]/n.btype[n.btype>0]
+
+# calculate total portion size for a person, given the breads they eat
+food.data$bread <- b.mat %*% b.portion 
+
+# and calculate daily amount from portinos eaten per day
+food.data$bread <- food.data$bread * food.data$c250
+
+#### Other cereals
+
+# c217 rice     135g
+# c218 pasta    150g
+
+# c210 pizza    32.1g
+
+# c233 oat cereals      80g
+# c234 bran cereals     36g
+# c235 other cereals    33g
+
+# c237 crispbread   20g
+
+
+food.gp$cereals <- 135 * food.data$c217 +
+                   150 * food.data$c218 +
+                    32.1 * food.data$c210 +
+                    80 * food.data$c233 +
+                    36 * food.data$c234 +
+                    33 * food.data$c235 +
+                    20 * food.data$c237
+
+#convert to daily
+food.gp$cereals <- food.gp$cereals/7
+
+# add daily bread
+food.gp$cereals <- food.gp$cereals + food.data$bread
+
+
+###################### Meat
+# c200 sausages/burgers 80g
+# c201 pies/pasties    129g
+# c202 red meat         88g
+# c203 poultry          100g
+# c204 offal            98g
+
+# amount of fat - not relevant
+
+
+food.gp$meat <-  80 * food.data$c200 +
+                129 * food.data$c201 +
+                 88 * food.data$c202 +
+                100 * food.data$c203 +
+                 98 * food.data$c204
+
+# these are portions per week - convert to daily:
+food.gp$meat <- food.gp$meat/7
+
+
+###################### Fish
+
+# c205 white fish   130g
+# c206 oily fish    119g
+# c207 shellfish    89g
+
+food.gp$fish <- 130 * food.data$c205 +
+                119 * food.data$c206 +
+                 89 * food.data$c207
+
+# these are portions per week - convert to daily:
+food.gp$fish <- food.gp$fish/7
+
+###################### Olive Oil
+
+# c269 oil on bread         10g
+# c270 oil for frying       10g
+
+# ignore oil on bread
+
+#oil for frying:
+# sunflower/soya/corn/olive oil
+# Assume these occur in the proportions 30/30/30/10
+# - so 1/10 of oil is assumed to be olive oil
+
+# c261 butter for frying
+# c264 marg for frying
+# c266 polyunsat marg for frying
+# c268 low fat spread for frying
+# c270 sun/olive/etc oil for frying   <==========
+# c272 other oil for frying
+# c274 other fat for frying
+#  - assume these are used for frying proportionately
+
+# c220 freq eat fried food
+
+# matrix of frying fats used: rows are observations, 7 cols for fat types
+# matrix contains 1 if fat is used, 0 otherwise
+f.mat <- as.matrix(food.data[,c("c261","c264","c266","c268", "c270", "c272", "c274")] )
+# count number of different types of fat used
+n.ftype <- apply(f.mat ,1,sum)
+# scale fat matrix to be proportions  - 
+f.mat[which(n.ftype>0),] <- f.mat[which(n.ftype>0),]/n.ftype[which(n.ftype>0)]
+
+#only interested in the oil proportion:
+oil.p <- f.mat[,5]
+
+#assume 1/10 of this is olive oil:
+oil.p <- oil.p/10
+
+# calculate  total olive oil as 10g per portion each fried food occasion:
+food.gp$oliveoil <- 10 * oil.p * food.data$c220
+
+###################### Alcohol
+
+# c373 alcohol units/wk 8g/unit
+
+food.gp$alcohol  <- food.data$c373 * 8              
+# convert to daily
+food.gp$alcohol  <- food.gp$alcohol/7
+
+
+############################################
+# End of Med Diet calculations
+############################################
+
+require(reshape)
+# tidy up
+# remove interim variables
+rm(list=c("keep_vars","vars","nmiss","v",
+     "b.mat","n.btype","b.portion",
+     "f.mat","n.ftype","oil.p"))
+
+############################################
+
+pheno <- food.gp
+pheno$mat.kcal <- alspac.table$c3804
+pheno$mat.kcal[pheno$mat.kcal<0]<-NA
+pheno$mat.kcal <- pheno$mat.kcal/4.184 # convert kj to kcal
+
+################
+# Construct food group tertiles
+# Please comment out (using # at beginning of each line) if your cohort does not have sufficient variation (not a normal distribution) in consumption of a food item (e.g. legumes or olive oil)
+# In that case, please see the next step of constructing alternative cut-offs
+################
+
+  # Now generate tertiles
+
+# Vegetables
+pheno$veg1000kcal <- (pheno$vegetables / pheno$mat.kcal * 1000)
+pheno$vegrmed <- with(pheno, factor(findInterval(pheno$veg1000kcal, c(-Inf, quantile(pheno$veg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$vegrmed <- revalue(as.character(pheno$vegrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$vegrmed <- as.numeric(pheno$vegrmed)
+
+# Legumes
+pheno$leg1000kcal <- (pheno$legumes / pheno$mat.kcal * 1000)
+pheno$legrmed <- with(pheno, factor(findInterval(pheno$leg1000kcal, c(-Inf, quantile(pheno$leg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$legrmed <- revalue(as.character(pheno$legrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$legrmed <- as.numeric(pheno$legrmed)
+
+# Fruit incl nuts	
+pheno$fruit1000kcal <- (pheno$fruitnuts / pheno$mat.kcal * 1000)
+pheno$fruitrmed <- with(pheno, factor(findInterval(pheno$fruit1000kcal, c(-Inf, quantile(pheno$fruit1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$fruitrmed <- revalue(as.character(pheno$fruitrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$fruitrmed <- as.numeric(pheno$fruitrmed)
+
+# Fish and seafood								
+pheno$fish1000kcal <- (pheno$fish / pheno$mat.kcal * 1000)
+pheno$fishrmed <- with(pheno, factor(findInterval(pheno$fish1000kcal, c(-Inf, quantile(pheno$fish1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$fishrmed <- revalue(as.character(pheno$fishrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$fishrmed <- as.numeric(pheno$fishrmed)
+
+# Cereals								
+pheno$cereal1000kcal <- (pheno$cereals / pheno$mat.kcal * 1000)
+pheno$cerealrmed <- with(pheno, factor(findInterval(pheno$cereal1000kcal, c(-Inf, quantile(pheno$cereal1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$cerealrmed <- revalue(as.character(pheno$cerealrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$cerealrmed <- as.numeric(pheno$cerealrmed)
+
+# Meat								
+pheno$meat1000kcal <- (pheno$meat / pheno$mat.kcal * 1000)
+pheno$meatrmed <- with(pheno, factor(findInterval(pheno$meat1000kcal, c(-Inf, quantile(pheno$meat1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$meatrmed <- revalue(as.character(pheno$meatrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
+pheno$meatrmed <- as.numeric(pheno$meatrmed)
+
+# Dairy								
+pheno$dairy1000kcal <- (pheno$dairy / pheno$mat.kcal * 1000)
+pheno$dairyrmed <- with(pheno, factor(findInterval(pheno$dairy1000kcal, c(-Inf, quantile(pheno$dairy1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$dairyrmed <- revalue(as.character(pheno$dairyrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
+pheno$dairyrmed <- as.numeric(pheno$dairyrmed)
+
+# Olive oil [does not show a normal distribution in ALSPAC, so this code not used]
+##pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$mat.kcal * 1000)
+##pheno$oliveoilrmed <- with(pheno, factor(findInterval(pheno$oliveoil1000kcal, c(-Inf, quantile(pheno$oliveoil1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+##pheno$oliveoilrmed <- revalue(as.character(pheno$oliveoilrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+##pheno$oliveoilrmed <- as.numeric(pheno$oliveoilrmed)
+
+# Alcohol
+pheno$alcoholrmed <- 0
+pheno$alcoholrmed[pheno$alcohol>=5 & pheno$alcohol<=25] <- 2
+
+################
+# Construct alternative cut-offs if >33% has same intake, e.g. >33% of women in Generation R consumes no legumes
+# In this case remove this specific food group above from "Construct food group tertiles"
+################
+# in ALSPAC, we have to do this for oliveoil
+## Please note that the first "tertile" will be those with no oliveoil consumption, since >33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
+pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$mat.kcal * 1000)
+pheno$oliveoilrmed_notzero <- ifelse(pheno$oliveoil1000kcal == 0, NA, pheno$oliveoil1000kcal)
+pheno$oliveoilrmed <- with(pheno, factor(findInterval(pheno$oliveoilrmed_notzero, c(0.0000001, quantile(pheno$oliveoilrmed_notzero, probs=c(0.5), na.rm=T), Inf)), labels=c("1","2"))) ## CHECK WITH LEANNE AS I HAD TO CHANGE 0.01 TO 0.0000001
+pheno$oliveoilrmed <- as.numeric(pheno$oliveoilrmed)
+pheno$oliveoilrmed[pheno$oliveoil1000kcal==0] <- 0 #because more than 33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
+pheno$oliveoilrmed_notzero <-NULL
+
+## Check tertiles
+df <- melt(pheno[,grep("rmed",colnames(pheno))])
+
+################
+# Construct rMED
+################
+pheno$rmed <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed + pheno$cerealrmed + pheno$meatrmed + pheno$dairyrmed + pheno$oliveoilrmed + pheno$alcoholrmed
+
+################
+# Construct rMED2
+################
+pheno$rmed2 <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed + pheno$cerealrmed + pheno$meatrmed + pheno$dairyrmed + pheno$oliveoilrmed
+
+
+names(pheno) <- c("aln","qlet",paste0("diet_mother_",names(pheno)[3:ncol(pheno)],"_ever_pregnancy_continuous"))
+dat <- left_join(dat,pheno,by=c("aln","qlet"),all.x=T)
+
+dat$anthro_birthweight_high_binary <- NA
+dat$anthro_birthweight_high_binary[dat$anthro_birthweight>4500]<-1
+dat$anthro_birthweight_high_binary[dat$anthro_birthweight>=2500&dat$anthro_birthweight<=4500]<-0
+
+
+dat$anthro_birthweight_low_binary <- NA
+dat$anthro_birthweight_low_binary[dat$anthro_birthweight<2500]<-1
+dat$anthro_birthweight_low_binary[dat$anthro_birthweight>=2500&dat$anthro_birthweight<=4500]<-0
+
+
+dat$anthro_birthweight_sga_binary <- NA
+dat$anthro_birthweight_sga_binary[dat$centiles<=10]<-1
+dat$anthro_birthweight_sga_binary[dat$centiles>10]<-0
+
+dat$anthro_birthweight_lga_binary <- NA
+dat$anthro_birthweight_lga_binary[dat$centiles>=90]<-1
+dat$anthro_birthweight_lga_binary[dat$centiles<90]<-0
+
+dat$anthro_head_circ_stage3 <-dat$f7ms014
+dat$anthro_head_circ_stage3[dat$anthro_head_circ_stage3<0]<-NA
+dat$anthro_head_circ_stage3_zscore <- scale(dat$anthro_head_circ_stage3)
+
+temp31<-dat$cf055
+temp31[temp31<0]<-NA
+temp25<-dat$cf054
+temp25[temp25<0]<-NA
+timepoint <-ifelse(is.na(temp31),NA,"31")
+temp3125 <-temp31
+temp3125[is.na(timepoint)]<-temp25[is.na(timepoint)]
+timepoint[is.na(timepoint)&(is.na(temp25)==FALSE)]<-"25"
+dat$stage1_timepoint <-timepoint
+
+dat$anthro_height_stage1 <- temp3125
+dat$anthro_height_stage1_zscore <- scale(dat$anthro_height_stage1)
+
+temp37<-dat$cf056
+temp37[temp37<0]<-NA
+temp43<-dat$cf057
+temp43[temp43<0]<-NA
+temp49<-dat$cf058
+temp49[temp49<0]<-NA
+timepoint <-ifelse(is.na(temp49),NA,"49")
+temp494337 <-temp49 # take latest timepoint (49 m)
+temp494337[is.na(timepoint)]<-temp43[is.na(timepoint)] #if NA, use 43 m
+timepoint[is.na(timepoint)&(is.na(temp43)==FALSE)]<-"43"
+temp494337[is.na(timepoint)]<-temp37[is.na(timepoint)] #if both 49 and 43 NA, use 37 m
+timepoint[is.na(timepoint)&(is.na(temp37)==FALSE)]<-"37"
+dat$stage2_timepoint <-timepoint
+
+dat$anthro_height_stage2 <- temp494337
+dat$anthro_height_stage2_zscore <- scale(dat$anthro_height_stage2)
+
+dat$anthro_height_stage3<-dat$f7ms010
+dat$anthro_height_stage3[dat$anthro_height_stage3<0]<-NA
+dat$anthro_height_stage3_zscore <- scale(dat$anthro_height_stage3)
+
+dat$anthro_height_stage4<-dat$fdms010
+dat$anthro_height_stage4[dat$anthro_height_stage4<0]<-NA
+dat$anthro_height_stage4_zscore <- scale(dat$anthro_height_stage4)
+
+dat$anthro_waist_stage1<-dat$cf075
+dat$anthro_waist_stage1[dat$anthro_waist_stage1<0]<-NA
+dat$anthro_waist_stage1_zscore <- scale(dat$anthro_waist_stage1)
+
+dat$anthro_waist_stage2 <- NA
+dat$anthro_waist_stage2[which(dat$stage2_timepoint=="37")] <-dat$cf076[which(dat$stage2_timepoint=="37")]
+dat$anthro_waist_stage2[which(dat$stage2_timepoint=="43")] <-dat$cf077[which(dat$stage2_timepoint=="43")]
+dat$anthro_waist_stage2[which(dat$stage2_timepoint=="49")] <-dat$cf078[which(dat$stage2_timepoint=="49")]
+dat$anthro_waist_stage2[dat$anthro_waist_stage2<0]<-NA
+dat$anthro_waist_stage2_zscore <- scale(dat$anthro_waist_stage2)
+
+dat$anthro_waist_stage3<-dat$f7ms018
+dat$anthro_waist_stage3[dat$anthro_waist_stage3<0]<-NA
+dat$anthro_waist_stage3_zscore <- scale(dat$anthro_waist_stage3)
+
+
+dat$anthro_waist_stage4<-dat$f9ms018
+dat$anthro_waist_stage4[dat$anthro_waist_stage4<0]<-NA
+dat$anthro_waist_stage4_zscore <- scale(dat$anthro_waist_stage4)
+
+
+dat$anthro_weight_stage1 <- NA
+dat$anthro_weight_stage1[which(dat$stage1_timepoint=="31")] <-dat$cf045[which(dat$stage1_timepoint=="31")]
+dat$anthro_weight_stage1[which(dat$stage1_timepoint=="25")] <-dat$cf044[which(dat$stage1_timepoint=="25")]
+dat$anthro_weight_stage1[dat$anthro_weight_stage1<0]<-NA
+dat$anthro_weight_stage1_zscore <- scale(dat$anthro_weight_stage1)
+
+dat$anthro_weight_stage2 <- NA
+dat$anthro_weight_stage2[which(dat$stage2_timepoint=="37")] <-dat$cf046[which(dat$stage2_timepoint=="37")]
+dat$anthro_weight_stage2[which(dat$stage2_timepoint=="43")] <-dat$cf047[which(dat$stage2_timepoint=="43")]
+dat$anthro_weight_stage2[which(dat$stage2_timepoint=="49")] <-dat$cf048[which(dat$stage2_timepoint=="49")]
+dat$anthro_weight_stage2[dat$anthro_weight_stage2<0]<-NA
+dat$anthro_weight_stage2_zscore <- scale(dat$anthro_weight_stage2)
+
+
+dat$anthro_weight_stage3<-dat$f7ms026
+dat$anthro_weight_stage3[dat$anthro_weight_stage3<0]<-NA
+dat$anthro_weight_stage3_zscore <- scale(dat$anthro_weight_stage3)
+
+dat$anthro_weight_stage4<-dat$f9ms026
+dat$anthro_weight_stage4[dat$anthro_weight_stage4<0]<-NA
+dat$anthro_weight_stage4_zscore <- scale(dat$anthro_weight_stage4)
+
+
+ages <- dat[,c("aln","qlet","cf014","cf015", "cf016", "cf017","cf018","f7003c","f9003c")]
+dat <- dat[,-which(names(dat)%in% c("cf014","cf015", "cf016", "cf017","cf018","f7003c","f9003c"))]
+
+ages$cf015[ages$cf015<0]<-NA
+ages$cf014[ages$cf014<0]<-NA
+ages$cf016[ages$cf016<0]<-NA
+ages$cf017[ages$cf018<0]<-NA
+ages$cf017[ages$cf018<0]<-NA
+ages$cf015<-ages$cf015/4 #because age at CIF clinic is in weeks
+ages$cf014<-ages$cf014/4 #because age at CIF clinic is in weeks
+ages$cf016<-ages$cf016/4 #because age at CIF clinic is in weeks
+ages$cf017<-ages$cf017/4 #because age at CIF clinic is in weeks
+ages$cf018<-ages$cf018/4 #because age at CIF clinic is in weeks
+
+dat <- left_join(dat,ages,by=c("aln","qlet")) 
+
+dat$covs_age_child_stage1_cif <- NA
+dat$covs_age_child_stage1_cif[which(dat$stage1_timepoint=="25")] <-dat$cf014[which(dat$stage1_timepoint=="25")]
+dat$covs_age_child_stage1_cif[which(dat$stage1_timepoint=="31")] <-dat$cf015[which(dat$stage1_timepoint=="31")]
+
+dat$covs_age_child_stage2_cif <- NA
+dat$covs_age_child_stage2_cif[which(dat$stage2_timepoint=="37")] <-dat$cf016[which(dat$stage2_timepoint=="37")]
+dat$covs_age_child_stage2_cif[which(dat$stage2_timepoint=="43")] <-dat$cf017[which(dat$stage2_timepoint=="43")]
+dat$covs_age_child_stage2_cif[which(dat$stage2_timepoint=="49")] <-dat$cf018[which(dat$stage2_timepoint=="49")]
+
+dat$covs_age_child_stage3_f7 <- dat$f7003c
+dat$covs_age_child_stage4_f9 <- dat$f9003c
+
+dat<-dat[,-which(names(dat)%in%c("f9003c","f7003c"))]
+
+
+dat$anthro_bmi_stage1 <- dat$anthro_weight_stage1 / ((dat$anthro_height_stage1/100)^2)
+
+dat$anthro_bmi_stage2 <- dat$anthro_weight_stage2 / ((dat$anthro_height_stage2/100)^2)
+dat$anthro_bmi_stage3 <- dat$anthro_weight_stage3 / ((dat$anthro_height_stage3/100)^2)
+dat$anthro_bmi_stage4 <- dat$anthro_weight_stage4 / ((dat$anthro_height_stage4/100)^2)
+
+
+library(childsds)
+dat$anthro_bmi_stage1_sds <- sds(value = dat$anthro_bmi_stage1,
+		      age = dat$covs_age_child_stage1_cif/12,
+		      sex = dat$covs_sex, male = "male", female = "female",
+		      ref = ukwho.ref, item = "bmi")
+
+
+dat$anthro_bmi_stage2_sds <- sds(value = dat$anthro_bmi_stage2,
+		      age = dat$covs_age_child_stage2_cif/12,
+		      sex = dat$covs_sex, male = "male", female = "female",
+		      ref = ukwho.ref, item = "bmi")
+
+dat$anthro_bmi_stage3_sds <- sds(value = dat$anthro_bmi_stage3,
+		      age = dat$covs_age_child_stage3_f7/12,
+		      sex = dat$covs_sex, male = "male", female = "female",
+		      ref = ukwho.ref, item = "bmi")
+
+dat$anthro_bmi_stage4_sds <- sds(value = dat$anthro_bmi_stage4,
+		      age = dat$covs_age_child_stage4_f9/12,
+		      sex = dat$covs_sex, male = "male", female = "female",
+		      ref = ukwho.ref, item = "bmi")
+
+dat$anthro_overweightobese_stage1_binary <- NA
+dat$anthro_overweightobese_stage1_binary[dat$anthro_bmi_stage1_sds>1] <-1
+dat$anthro_overweightobese_stage1_binary[which(dat$anthro_bmi_stage1_sds>=(-2) &dat$anthro_bmi_stage1_sds<=1)] <-0
+
+dat$anthro_obese_stage1_binary <- NA
+dat$anthro_obese_stage1_binary[which(dat$anthro_bmi_stage1_sds>2)] <-1
+dat$anthro_obese_stage1_binary[which(dat$anthro_bmi_stage1_sds<=1 &dat$anthro_bmi_stage1_sds>=(-2))] <-0		      
+dat$anthro_overweightobese_stage2_binary <- NA
+dat$anthro_overweightobese_stage2_binary[dat$anthro_bmi_stage2_sds>1] <-1
+dat$anthro_overweightobese_stage2_binary[which(dat$anthro_bmi_stage2_sds>=(-2) &dat$anthro_bmi_stage2_sds<=1)] <-0
+
+dat$anthro_obese_stage2_binary <- NA
+dat$anthro_obese_stage2_binary[which(dat$anthro_bmi_stage2_sds>2)] <-1
+dat$anthro_obese_stage2_binary[which(dat$anthro_bmi_stage2_sds<=1 &dat$anthro_bmi_stage2_sds>=(-2))] <-0
+
+
+dat$anthro_overweightobese_stage3_binary <- NA
+dat$anthro_overweightobese_stage3_binary[dat$anthro_bmi_stage3_sds>1] <-1
+dat$anthro_overweightobese_stage3_binary[which(dat$anthro_bmi_stage3_sds>=(-2) &dat$anthro_bmi_stage3_sds<=1)] <-0
+
+dat$anthro_obese_stage3_binary <- NA
+dat$anthro_obese_stage3_binary[which(dat$anthro_bmi_stage3_sds>2)] <-1
+dat$anthro_obese_stage3_binary[which(dat$anthro_bmi_stage3_sds<=1 &dat$anthro_bmi_stage3_sds>=(-2))] <-0
+
+
+dat$anthro_overweightobese_stage4_binary <- NA
+dat$anthro_overweightobese_stage4_binary[dat$anthro_bmi_stage4_sds>1] <-1
+dat$anthro_overweightobese_stage4_binary[which(dat$anthro_bmi_stage4_sds>=(-2) &dat$anthro_bmi_stage4_sds<=1)] <-0
+
+dat$anthro_obese_stage4_binary <- NA
+dat$anthro_obese_stage4_binary[which(dat$anthro_bmi_stage4_sds>2)] <-1
+dat$anthro_obese_stage4_binary[which(dat$anthro_bmi_stage4_sds<=1 &dat$anthro_bmi_stage4_sds>=(-2))] <-0
+
+dat$anthro_fmi_stage4 <- dat$f9dx135
+dat$anthro_fmi_stage4[dat$f9dx135<0]<-NA
+dat$anthro_fmi_stage4 <- dat$anthro_fmi_stage4 / dat$anthro_height_stage4
+dat$anthro_fmi_stage4_zscore <- scale(dat$anthro_fmi_stage4)
+
+
+dat$neuro_depression_stage4<-dat$fddp130
+dat$neuro_depression_stage4[dat$fddp130<0]<-NA
+dat$covs_age_child_stage4_f10<-dat$fd003c
+dat$covs_age_child_stage4_f10[dat$fd003c<0]<-NA
+dat$neuro_depression_stage4_zscore<-scale(dat$neuro_depression_stage4)
+
+#Stage 2
+dat$neuro_hyperactivity_stage2<-dat$j557c
+dat$neuro_hyperactivity_stage2[dat$j557c<0]<-NA
+dat$neuro_hyperactivity_stage2_zscore <- scale(dat$neuro_hyperactivity_stage2)
+dat$neuro_hyperactivity_stage2_binary <- NA
+dat$neuro_hyperactivity_stage2_binary[dat$neuro_hyperactivity_stage2>=7]<-1
+dat$neuro_hyperactivity_stage2_binary[dat$neuro_hyperactivity_stage2<7]<-0
+dat$covs_age_child_stage2_j<-dat$j914
+dat$covs_age_child_stage2_j[dat$j914<0]<-NA
+dat$covs_age_child_stage2_j <- dat$covs_age_child_stage2_j*12 #years to months
+#Stage 3
+dat$neuro_hyperactivity_stage3<-dat$kq348b
+dat$neuro_hyperactivity_stage3[dat$kq348b<0]<-NA
+dat$neuro_hyperactivity_stage3_zscore <- scale(dat$neuro_hyperactivity_stage3)
+dat$neuro_hyperactivity_stage3_binary <- NA
+dat$neuro_hyperactivity_stage3_binary[dat$neuro_hyperactivity_stage3>=7]<-1
+dat$neuro_hyperactivity_stage3_binary[dat$neuro_hyperactivity_stage3<7]<-0
+dat$covs_age_child_stage3_kq<-dat$kq998a
+dat$covs_age_child_stage3_kq[dat$kq998a<0]<-NA
+#Stage 4
+dat$neuro_hyperactivity_stage4<-dat$ku706b
+dat$neuro_hyperactivity_stage4[dat$ku706b<0]<-NA
+dat$neuro_hyperactivity_stage4_zscore <- scale(dat$neuro_hyperactivity_stage4)
+dat$neuro_hyperactivity_stage4_binary <- NA
+dat$neuro_hyperactivity_stage4_binary[dat$neuro_hyperactivity_stage4>=7]<-1
+dat$neuro_hyperactivity_stage4_binary[dat$neuro_hyperactivity_stage4<7]<-0
+dat$covs_age_child_stage4_kq<-dat$ku991a
+dat$covs_age_child_stage4_kq[dat$ku991a<0]<-NA
+
+#Stage 2
+dat$neuro_emotional_stage2<-dat$j557a
+dat$neuro_emotional_stage2[dat$j557a<0]<-NA
+dat$neuro_emotional_stage2_zscore <- scale(dat$neuro_emotional_stage2)
+dat$neuro_emotional_stage2_binary <- NA
+dat$neuro_emotional_stage2_binary[dat$neuro_emotional_stage2>=5]<-1
+dat$neuro_emotional_stage2_binary[dat$neuro_emotional_stage2<5]<-0
+#Stage 3
+dat$neuro_emotional_stage3<-dat$kq348c
+dat$neuro_emotional_stage3[dat$kq348c<0]<-NA
+dat$neuro_emotional_stage3_zscore <- scale(dat$neuro_emotional_stage3)
+dat$neuro_emotional_stage3_binary <- NA
+dat$neuro_emotional_stage3_binary[dat$neuro_emotional_stage3>=5]<-1
+dat$neuro_emotional_stage3_binary[dat$neuro_emotional_stage3<5]<-0
+#Stage 4
+dat$neuro_emotional_stage4<-dat$ku707b
+dat$neuro_emotional_stage4[dat$ku707b<0]<-NA
+dat$neuro_emotional_stage4_zscore <- scale(dat$neuro_emotional_stage4)
+dat$neuro_emotional_stage4_binary <- NA
+dat$neuro_emotional_stage4_binary[dat$neuro_emotional_stage4>=5]<-1
+dat$neuro_emotional_stage4_binary[dat$neuro_emotional_stage4<5]<-0
+
+
+#Stage 2
+dat$neuro_conduct_stage2<-dat$j557b
+dat$neuro_conduct_stage2[dat$j557b<0]<-NA
+dat$neuro_conduct_stage2_zscore <- scale(dat$neuro_conduct_stage2)
+dat$neuro_conduct_stage2_binary <- NA
+dat$neuro_conduct_stage2_binary[dat$neuro_conduct_stage2>=4]<-1
+dat$neuro_conduct_stage2_binary[dat$neuro_conduct_stage2<4]<-0
+#Stage 3
+dat$neuro_conduct_stage3<-dat$kq348d
+dat$neuro_conduct_stage3[dat$kq348d<0]<-NA
+dat$neuro_conduct_stage3_zscore <- scale(dat$neuro_conduct_stage3)
+dat$neuro_conduct_stage3_binary <- NA
+dat$neuro_conduct_stage3_binary[dat$neuro_conduct_stage2>=4]<-1
+dat$neuro_conduct_stage3_binary[dat$neuro_conduct_stage2<4]<-0
+#Stage 4
+dat$neuro_conduct_stage4<-dat$ku708b
+dat$neuro_conduct_stage4[dat$ku708b<0]<-NA
+dat$neuro_conduct_stage4_zscore <- scale(dat$neuro_conduct_stage4)
+dat$neuro_conduct_stage4_binary <- NA
+dat$neuro_conduct_stage4_binary[dat$neuro_conduct_stage4>=4]<-1
+dat$neuro_conduct_stage4_binary[dat$neuro_conduct_stage4<4]<-0
+
+
+#Stage 2
+dat$neuro_peer_stage2<-dat$j557d
+dat$neuro_peer_stage2[dat$j557d<0]<-NA
+dat$neuro_peer_stage2_zscore <- scale(dat$neuro_peer_stage2)
+dat$neuro_peer_stage2_binary <- NA
+dat$neuro_peer_stage2_binary[dat$neuro_peer_stage2>=4]<-1
+dat$neuro_peer_stage2_binary[dat$neuro_peer_stage2<4]<-0
+#Stage 3
+dat$neuro_peer_stage3<-dat$kq348e
+dat$neuro_peer_stage3[dat$kq348e<0]<-NA
+dat$neuro_peer_stage3_zscore <- scale(dat$neuro_peer_stage3)
+dat$neuro_peer_stage3_binary <- NA
+dat$neuro_peer_stage3_binary[dat$neuro_peer_stage3>=4]<-1
+dat$neuro_peer_stage3_binary[dat$neuro_peer_stage3<4]<-0
+#Stage 4
+dat$neuro_peer_stage4<-dat$ku709b
+dat$neuro_peer_stage4[dat$ku709b<0]<-NA
+dat$neuro_peer_stage4_zscore <- scale(dat$neuro_peer_stage4)
+dat$neuro_peer_stage4_binary <- NA
+dat$neuro_peer_stage4_binary[dat$neuro_peer_stage4>=4]<-1
+dat$neuro_peer_stage4_binary[dat$neuro_peer_stage4<4]<-0
+
+
+
+#Stage 2
+dat$neuro_prosocial_stage2<-dat$j557e
+dat$neuro_prosocial_stage2[dat$j557e<0]<-NA
+dat$neuro_prosocial_stage2_zscore <- scale(dat$neuro_prosocial_stage2)
+dat$neuro_prosocial_stage2_binary <- NA
+dat$neuro_prosocial_stage2_binary[dat$neuro_prosocial_stage2<=6]<-1
+dat$neuro_prosocial_stage2_binary[dat$neuro_prosocial_stage2>6]<-0
+#Stage 3
+dat$neuro_prosocial_stage3<-dat$kq348a
+dat$neuro_prosocial_stage3[dat$kq348a<0]<-NA
+dat$neuro_prosocial_stage3_zscore <- scale(dat$neuro_prosocial_stage3)
+dat$neuro_prosocial_stage3_binary <- NA
+dat$neuro_prosocial_stage3_binary[dat$neuro_prosocial_stage3<=6]<-1
+dat$neuro_prosocial_stage3_binary[dat$neuro_prosocial_stage3>6]<-0
+#Stage 4
+dat$neuro_prosocial_stage4<-dat$ku705b
+dat$neuro_prosocial_stage4[dat$ku705b<0]<-NA
+dat$neuro_prosocial_stage4_zscore <- scale(dat$neuro_prosocial_stage4)
+dat$neuro_prosocial_stage4_binary <- NA
+dat$neuro_prosocial_stage4_binary[dat$neuro_prosocial_stage4<=6]<-1
+dat$neuro_prosocial_stage4_binary[dat$neuro_prosocial_stage4>6]<-0
+
+
+#Stage 2
+dat$neuro_totalsdq_stage2<-dat$j557f
+dat$neuro_totalsdq_stage2[dat$j557f<0]<-NA
+dat$neuro_totalsdq_stage2_zscore <- scale(dat$neuro_totalsdq_stage2)
+dat$neuro_totalsdq_stage2_binary <- NA
+dat$neuro_totalsdq_stage2_binary[dat$neuro_totalsdq_stage2>=17]<-1
+dat$neuro_totalsdq_stage2_binary[dat$neuro_totalsdq_stage2<17]<-0
+#Stage 3
+dat$neuro_totalsdq_stage3<-dat$kq348f
+dat$neuro_totalsdq_stage3[dat$kq348f<0]<-NA
+dat$neuro_totalsdq_stage3_zscore <- scale(dat$neuro_totalsdq_stage3)
+dat$neuro_totalsdq_stage3_binary <- NA
+dat$neuro_totalsdq_stage3_binary[dat$neuro_totalsdq_stage3>=17]<-1
+dat$neuro_totalsdq_stage3_binary[dat$neuro_totalsdq_stage3<17]<-0
+#Stage 4
+dat$neuro_totalsdq_stage4<-dat$ku710b
+dat$neuro_totalsdq_stage4[dat$ku710b<0]<-NA
+dat$neuro_totalsdq_stage4_zscore <- scale(dat$neuro_totalsdq_stage4)
+dat$neuro_totalsdq_stage4_binary <- NA
+dat$neuro_totalsdq_stage4_binary[dat$neuro_totalsdq_stage4>=17]<-1
+dat$neuro_totalsdq_stage4_binary[dat$neuro_totalsdq_stage4<17]<-0
+
+
+
+#Stage 2
+dat$neuro_internalising_stage2 <- rowSums(dat[,c("neuro_emotional_stage2","neuro_peer_stage2")])
+dat$neuro_internalising_stage2_zscore <- scale(dat$neuro_internalising_stage2)
+#Stage 3
+dat$neuro_internalising_stage3 <- rowSums(dat[,c("neuro_emotional_stage3","neuro_peer_stage3")])
+dat$neuro_internalising_stage3_zscore <- scale(dat$neuro_internalising_stage3)
+#Stage 4
+dat$neuro_internalising_stage4 <- rowSums(dat[,c("neuro_emotional_stage4","neuro_peer_stage4")])
+dat$neuro_internalising_stage4_zscore <- scale(dat$neuro_internalising_stage4)
+
+
+
+#Stage 2
+dat$neuro_externalising_stage2 <- rowSums(dat[,c("neuro_hyperactivity_stage2","neuro_conduct_stage2")])
+dat$neuro_externalising_stage2_zscore <- scale(dat$neuro_externalising_stage2)
+#Stage 3
+dat$neuro_externalising_stage3 <- rowSums(dat[,c("neuro_hyperactivity_stage3","neuro_conduct_stage3")])
+dat$neuro_externalising_stage3_zscore <- scale(dat$neuro_externalising_stage3)
+#Stage 4
+dat$neuro_externalising_stage4 <- rowSums(dat[,c("neuro_hyperactivity_stage4","neuro_conduct_stage4")])
+dat$neuro_externalising_stage4_zscore <- scale(dat$neuro_externalising_stage4)
+
+
+
+
+#Stage 3
+dat$neuro_scdc_stage3<-dat$kr554b
+dat$neuro_scdc_stage3[dat$kr554b<0]<-NA
+dat$neuro_scdc_stage3_zscore <- scale(dat$neuro_scdc_stage3)
+dat$covs_age_child_stage3_kr<-dat$kr991a
+dat$covs_age_child_stage3_kr[dat$kr991a<0]<-NA
+
+
+
+dat$neuro_cognition_performance_stage2<-dat$cf811
+dat$neuro_cognition_performance_stage2[dat$cf811<0]<-NA
+dat$neuro_cognition_performance_stage2_zscore <- scale(dat$neuro_cognition_performance_stage2)
+
+dat$neuro_cognition_verbal_stage2<-dat$cf812
+dat$neuro_cognition_verbal_stage2[dat$cf812<0]<-NA
+dat$neuro_cognition_verbal_stage2_zscore <- scale(dat$neuro_cognition_verbal_stage2)
+
+dat$neuro_cognition_total_stage2<-dat$cf813
+dat$neuro_cognition_total_stage2[dat$cf813<0]<-NA
+dat$neuro_cognition_total_stage2_zscore <- scale(dat$neuro_cognition_total_stage2)
+
+dat$covs_age_child_stage2_cif49<-dat$cf018
+dat$covs_age_child_stage2_cif49[dat$cf018<0]<-NA
+dat$covs_age_child_stage2_cif49<-dat$covs_age_child_stage2_cif49/12 #weeks to months
+
+
+
+dat$neuro_cognition_performance_stage4<-dat$f8ws111
+dat$neuro_cognition_performance_stage4[dat$f8ws111<0]<-NA
+dat$neuro_cognition_performance_stage4_zscore <- scale(dat$neuro_cognition_performance_stage4)
+
+dat$neuro_cognition_verbal_stage4<-dat$f8ws110
+dat$neuro_cognition_verbal_stage4[dat$f8ws110<0]<-NA
+dat$neuro_cognition_verbal_stage4_zscore <- scale(dat$neuro_cognition_verbal_stage4)
+
+dat$neuro_cognition_total_stage4<-dat$f8ws112
+dat$neuro_cognition_total_stage4[dat$f8ws112<0]<-NA
+dat$neuro_cognition_total_stage4_zscore <- scale(dat$neuro_cognition_total_stage4)
+
+dat$covs_age_child_stage4_f8<-dat$f8003c
+dat$covs_age_child_stage4_f8[dat$f8003c<0]<-NA
+
+dat$immuno_wheeze_stage0_binary <-NA
+dat$immuno_wheeze_stage0_binary[which(dat$kb053==1&dat$kb879a>0&dat$kb879a<12)]<-1
+dat$immuno_wheeze_stage0_binary[which(dat$kb053==2&dat$kb879a>0&dat$kb879a<12)]<-0
+
+
+
+dat$immuno_wheeze_stage1_binary <-NA
+dat$immuno_wheeze_stage1_binary[which(dat$kd051b==2 | dat$kd070==2 | dat$kf063==2)] <-0
+dat$immuno_wheeze_stage1_binary[which(dat$kd051b==1 | dat$kd070==1 | dat$kf063==1)] <-1
+
+
+
+dat$immuno_wheeze_stage2_binary <-NA
+dat$immuno_wheeze_stage2_binary[which(dat$kj043==2 | dat$kj090==2 | dat$kl031==3| dat$kl080==2)] <-0
+dat$immuno_wheeze_stage2_binary[which(dat$kj043==1 | dat$kj090==1 | dat$kl031%in%c(1,2)| dat$kl080==1)] <-1
+
+
+
+
+dat$immuno_wheeze_stage3_binary <-NA
+dat$immuno_wheeze_stage3_binary[which(dat$kn1031==3 | dat$kn1110==2 | dat$kq024a==2| dat$kq070==2| dat$kr031a==2)] <-0
+dat$immuno_wheeze_stage3_binary[which(dat$kn1031%in%c(1,2) | dat$kn1110==1 | dat$kq024a==1| dat$kq070==1| dat$kr031a==1)] <-1
+
+
+
+
+dat$immuno_wheeze_stage4_binary <-NA
+dat$immuno_wheeze_stage4_binary[which(dat$ks1031==3 | dat$ks1260==2 | dat$kv1080==2|dat$kv1050==3)] <-0
+dat$immuno_wheeze_stage4_binary[which(dat$ks1031%in%c(1,2) | dat$ks1260==1 | dat$kv1080==1|dat$kv1050%in%c(1,2))] <-1
+
+
+
+
+dat$immuno_wheeze_allstages_binary <- rowSums(dat[,c("immuno_wheeze_stage0_binary","immuno_wheeze_stage1_binary","immuno_wheeze_stage2_binary","immuno_wheeze_stage3_binary","immuno_wheeze_stage4_binary")],na.rm=T)
+dat$immuno_wheeze_allstages_binary[dat$immuno_wheeze_allstages_binary>0]<-1
+dat$immuno_wheeze_allstages_binary[which(is.na(dat$immuno_wheeze_stage0_binary) & is.na(dat$immuno_wheeze_stage1_binary) & is.na(dat$immuno_wheeze_stage2_binary)&is.na(dat$immuno_wheeze_stage3_binary)&is.na(dat$immuno_wheeze_stage4_binary))] <- NA
+
+
+
+
+
+dat$immuno_asthma_stage3_binary <-NA
+dat$immuno_asthma_stage3_binary[which(dat$kp3030==1 | dat$kq034a==2 | dat$kr041a==2 | dat$kr105a==2)] <-0
+dat$immuno_asthma_stage3_binary[which(dat$kp3030%in%c(2,3) | dat$kq034a==1 | dat$kr041a==1 | dat$kr105a==1)]  <-1
+
+# replace if doctor diagnosed
+dat$immuno_asthma_stage3_binary[which(dat$kr050==1)] <-1
+
+
+dat$immuno_asthma_stage4_binary <-NA
+dat$immuno_asthma_stage4_binary[which(dat$ks1041==3 | dat$ks1240==1 | dat$kv1059==3)] <-0
+dat$immuno_asthma_stage4_binary[which(dat$ks1041%in%c(1,2) | dat$ks1240%in%c(2,3)|dat$kv1059%in%c(1,2))] <-1
+
+# replace if doctor diagnosed
+dat$immuno_asthma_stage4_binary[which(dat$kv1070%in%c(1,3))] <-1
+
+
+dat$immuno_asthma_allstages_binary <- rowSums(dat[,c("immuno_asthma_stage3_binary","immuno_asthma_stage4_binary")],na.rm=T)
+dat$immuno_asthma_allstages_binary[dat$immuno_asthma_allstages_binary>0]<-1
+dat$immuno_asthma_allstages_binary[which(is.na(dat$immuno_asthma_stage3_binary)&is.na(dat$immuno_asthma_stage4_binary))] <- NA
+
+
+
+
+dat$immuno_eczema_stage0_binary <-NA
+dat$immuno_eczema_stage0_binary[which(dat$ka249 ==2| dat$ka252==2 | dat$kb086==2 & (dat$kb879a>0&dat$kb879a<12))] <-0
+dat$immuno_eczema_stage0_binary[which(dat$ka249 ==1| dat$ka252==1 | dat$kb086==1 & (dat$kb879a>0&dat$kb879a<12))] <-1
+
+
+dat$immuno_eczema_stage1_binary <-NA
+dat$immuno_eczema_stage1_binary[which(dat$kf110 ==2)]<-0
+dat$immuno_eczema_stage1_binary[which(dat$kf110 ==1)]<-1
+
+
+
+dat$immuno_eczema_stage2_binary <-NA
+dat$immuno_eczema_stage2_binary[which(dat$kj100 ==2| dat$kl100==2)] <-0
+dat$immuno_eczema_stage2_binary[which(dat$kj100 ==1| dat$kl100==1)] <-1
+
+
+
+dat$immuno_eczema_stage3_binary <-NA
+dat$immuno_eczema_stage3_binary[which(dat$kn1120==2| dat$kq035a==2 | dat$kq090==2 | dat$kr042a==2)] <-0
+dat$immuno_eczema_stage3_binary[which(dat$kn1120==1| dat$kq035a==1 | dat$kq090==1 | dat$kr042a==1)] <-1
+
+
+
+dat$immuno_eczema_stage4_binary <-NA
+dat$immuno_eczema_stage4_binary[which(dat$ks1042==3 | dat$ks1280==2 | dat$kv1110==2 | dat$kv1111==2)] <-0
+dat$immuno_eczema_stage4_binary[which(dat$ks1042%in%c(1,2) | dat$ks1280==1 | dat$kv1110==1 | dat$kv1111==1)] <-1
+
+dat$immuno_eczema_stage4_binary[which(dat$kv1070%in%c(2,3))] <-1
+
+
+
+dat$immuno_eczema_allstages_binary <- rowSums(dat[,c("immuno_eczema_stage0_binary","immuno_eczema_stage1_binary","immuno_eczema_stage2_binary","immuno_eczema_stage3_binary","immuno_eczema_stage4_binary")],na.rm=T)
+dat$immuno_eczema_allstages_binary[dat$immuno_eczema_allstages_binary>0]<-1
+dat$immuno_eczema_allstages_binary[which(is.na(dat$immuno_eczema_stage0_binary) & is.na(dat$immuno_eczema_stage1_binary) & is.na(dat$immuno_eczema_stage2_binary)&is.na(dat$immuno_eczema_stage3_binary)&is.na(dat$immuno_eczema_stage4_binary))] <- NA
+
+
+
+
+dat$immuno_allergy_food_stage2_binary <- NA
+dat$immuno_allergy_food_stage2_binary[which(dat$kk262a==1)]<-1
+dat$immuno_allergy_food_stage2_binary[which(dat$kk262a==2)]<-0
+
+
+dat$immuno_allergy_food_stage3_binary <- NA
+dat$immuno_allergy_food_stage3_binary[which(dat$kq195a==2)]<-0
+dat$immuno_allergy_food_stage3_binary[which(dat$kq195a==1)]<-1
+
+
+dat$immuno_allergy_food_stage4_binary <- NA
+dat$immuno_allergy_food_stage4_binary[which(dat$ks3000%in%c(1,2))]<-1
+dat$immuno_allergy_food_stage4_binary[which(dat$ks3000==3)]<-0
+
+
+
+dat$immuno_allergy_pollen_stage2_binary <- NA
+dat$immuno_allergy_pollen_stage2_binary[dat$kk286==2]<-0
+dat$immuno_allergy_pollen_stage2_binary[dat$kk286==1]<-1
+
+
+
+dat$immuno_allergy_pollen_stage3_binary <- NA
+dat$immuno_allergy_pollen_stage3_binary[dat$kq217==2]<-0
+dat$immuno_allergy_pollen_stage3_binary[dat$kq217==1]<-1
+
+
+
+dat$immuno_allergy_pollen_stage4_binary <-NA
+dat$immuno_allergy_pollen_stage4_binary[which(dat$ks3030%in%c(1,2))] <-0 #set to no if give valid answer to "apart from food and drink, is your child allergic to anything else?
+dat$immuno_allergy_pollen_stage4_binary[which(dat$ks3031==1)] <-1 # replace with yes if they ticked this box
+
+
+
+
+dat$immuno_allergy_cat_stage2_binary <- NA
+dat$immuno_allergy_cat_stage2_binary[dat$kk287==2]<-0
+dat$immuno_allergy_cat_stage2_binary[dat$kk287==1]<-1
+
+
+
+dat$immuno_allergy_cat_stage3_binary <- NA
+dat$immuno_allergy_cat_stage3_binary[dat$kq218==2]<-0
+dat$immuno_allergy_cat_stage3_binary[dat$kq218==1]<-1
+
+
+
+dat$immuno_allergy_cat_stage4_binary <-NA
+dat$immuno_allergy_cat_stage4_binary[which(dat$ks3030%in%c(1,2))] <-0 #set to no if give valid answer to "apart from food and drink, is your child allergic to anything else?
+dat$immuno_allergy_cat_stage4_binary[which(dat$ks3032==1)] <-1 # replace with yes if they ticked this box
+
+
+
+dat$immuno_allergy_dog_stage2_binary <- NA
+dat$immuno_allergy_dog_stage2_binary[dat$kk288==2]<-0
+dat$immuno_allergy_dog_stage2_binary[dat$kk288==1]<-1
+
+
+
+dat$immuno_allergy_dog_stage3_binary <- NA
+dat$immuno_allergy_dog_stage3_binary[dat$kq219==2]<-0
+dat$immuno_allergy_dog_stage3_binary[dat$kq219==1]<-1
+
+
+
+dat$immuno_allergy_dog_stage4_binary <-NA
+dat$immuno_allergy_dog_stage4_binary[which(dat$ks3030%in%c(1,2))] <-0 #set to no if give valid answer to "apart from food and drink, is your child allergic to anything else?
+dat$immuno_allergy_dog_stage4_binary[which(dat$ks3033==1)] <-1 # replace with yes if they ticked this box
+
+
+
+
+dat$immuno_allergy_insect_stage2_binary <- NA
+dat$immuno_allergy_insect_stage2_binary[dat$kk289==2]<-0
+dat$immuno_allergy_insect_stage2_binary[dat$kk289==1]<-1
+
+
+
+dat$immuno_allergy_insect_stage3_binary <- NA
+dat$immuno_allergy_insect_stage3_binary[dat$kq220==2]<-0
+dat$immuno_allergy_insect_stage3_binary[dat$kq220==1]<-1
+
+
+dat$immuno_allergy_insect_stage4_binary <-NA
+dat$immuno_allergy_insect_stage4_binary[which(dat$ks3030%in%c(1,2))] <-0 #set to no if give valid answer to "apart from food and drink, is your child allergic to anything else?
+dat$immuno_allergy_insect_stage4_binary[which(dat$ks3034==1)] <-1 # replace with yes if they ticked this box
+
+
+
+
+dat$immuno_allergy_dust_stage2_binary <- NA
+dat$immuno_allergy_dust_stage2_binary[dat$kk290==2]<-0
+dat$immuno_allergy_dust_stage2_binary[dat$kk290==1]<-1
+
+
+
+dat$immuno_allergy_dust_stage3_binary <- NA
+dat$immuno_allergy_dust_stage3_binary[dat$kq221==2]<-0
+dat$immuno_allergy_dust_stage3_binary[dat$kq221==1]<-1
+
+
+
+dat$immuno_allergy_dust_stage4_binary <-NA
+dat$immuno_allergy_dust_stage4_binary[which(dat$ks3030%in%c(1,2))] <-0 #set to no if give valid answer to "apart from food and drink, is your child allergic to anything else?
+dat$immuno_allergy_dust_stage4_binary[which(dat$ks3035==1)] <-1 # replace with yes if they ticked this box
+
+
+
+
+
+
+dat$immuno_allergy_any_stage2_binary <- NA
+dat$immuno_allergy_any_stage2_binary[which(dat$immuno_allergy_food_stage2_binary==0&dat$immuno_allergy_pollen_stage2_binary==0&dat$immuno_allergy_cat_stage2_binary==0&dat$immuno_allergy_dog_stage2_binary==0&dat$immuno_allergy_insect_stage2_binary==0&dat$immuno_allergy_dust_stage2_binary==0)] <-0
+dat$immuno_allergy_any_stage2_binary[which(dat$immuno_allergy_food_stage2_binary==1|dat$immuno_allergy_pollen_stage2_binary==1|dat$immuno_allergy_cat_stage2_binary==1|dat$immuno_allergy_dog_stage2_binary==1|dat$immuno_allergy_insect_stage2_binary==1|dat$immuno_allergy_dust_stage2_binary==1)] <-1
+
+
+
+
+dat$immuno_allergy_any_stage3_binary <- NA
+dat$immuno_allergy_any_stage3_binary[which(dat$immuno_allergy_food_stage3_binary==0&dat$immuno_allergy_pollen_stage3_binary==0&dat$immuno_allergy_cat_stage3_binary==0&dat$immuno_allergy_dog_stage3_binary==0&dat$immuno_allergy_insect_stage3_binary==0&dat$immuno_allergy_dust_stage3_binary==0)] <-0
+dat$immuno_allergy_any_stage3_binary[which(dat$immuno_allergy_food_stage3_binary==1|dat$immuno_allergy_pollen_stage3_binary==1|dat$immuno_allergy_cat_stage3_binary==1|dat$immuno_allergy_dog_stage3_binary==1|dat$immuno_allergy_insect_stage3_binary==1|dat$immuno_allergy_dust_stage3_binary==1)] <-1
+
+
+
+
+dat$immuno_allergy_any_stage4_binary <- NA
+dat$immuno_allergy_any_stage4_binary[which(dat$immuno_allergy_food_stage2_binary==0&dat$immuno_allergy_pollen_stage4_binary==0&dat$immuno_allergy_cat_stage4_binary==0&dat$immuno_allergy_dog_stage4_binary==0&dat$immuno_allergy_insect_stage4_binary==0&dat$immuno_allergy_dust_stage4_binary==0)] <-0
+dat$immuno_allergy_any_stage4_binary[which(dat$immuno_allergy_food_stage4_binary==1|dat$immuno_allergy_pollen_stage4_binary==1|dat$immuno_allergy_cat_stage4_binary==1|dat$immuno_allergy_dog_stage4_binary==1|dat$immuno_allergy_insect_stage4_binary==1|dat$immuno_allergy_dust_stage4_binary==1)] <-1
+
+
+
+
+dat$immuno_allergy_any_allstages_binary <- rowSums(dat[,c("immuno_allergy_any_stage2_binary","immuno_allergy_any_stage3_binary","immuno_allergy_any_stage4_binary")],na.rm=T)
+dat$immuno_allergy_any_allstages_binary[dat$immuno_allergy_any_allstages_binary>0]<-1
+dat$immuno_allergy_any_allstages_binary[which(is.na(dat$immuno_allergy_any_stage2_binary) & is.na(dat$immuno_allergy_any_stage3_binary) & is.na(dat$immuno_allergy_any_stage4_binary))] <- NA
+
+
+## Derive clean variables
+
+
+
+remove.iqr3.outliers <- function(x){x[(x<(quantile(x,0.25,na.rm=T)-(IQR(x,na.rm=T)*3)))|(x>(quantile(x,0.75,na.rm=T)+(IQR(x,na.rm=T)*3)))]<-NA;x}
+
+dat$cardio_sbp_stage2<- NA
+dat$cardio_sbp_stage2[which(dat$stage2_timepoint=="37")] <-dat$cf123[which(dat$stage2_timepoint=="37")]
+dat$cardio_sbp_stage2[which(dat$stage2_timepoint=="49")] <-dat$cf133[which(dat$stage2_timepoint=="49")]
+dat$cardio_sbp_stage2[dat$cardio_sbp_stage2<0]<-NA
+dat$cardio_sbp_stage2<- remove.iqr3.outliers(dat$cardio_sbp_stage2)
+dat$cardio_sbp_stage2_zscore <- scale(dat$cardio_sbp_stage2)
+
+dat$cardio_sbp_stage3 <- dat$f7sa021
+dat$cardio_sbp_stage3[dat$f7sa021<0]<-NA
+dat$cardio_sbp_stage3<- remove.iqr3.outliers(dat$cardio_sbp_stage3)
+dat$cardio_sbp_stage3_zscore <- scale(dat$cardio_sbp_stage3)
+
+dat$cardio_sbp_stage4 <- dat$f9sa021
+dat$cardio_sbp_stage4[dat$f9sa021<0]<-NA
+dat$cardio_sbp_stage4<- remove.iqr3.outliers(dat$cardio_sbp_stage4)
+dat$cardio_sbp_stage4_zscore <- scale(dat$cardio_sbp_stage4)
+
+
+dat$cardio_dbp_stage2<- NA
+dat$cardio_dbp_stage2[which(dat$stage2_timepoint=="37")] <-dat$cf124[which(dat$stage2_timepoint=="37")]
+dat$cardio_dbp_stage2[which(dat$stage2_timepoint=="49")] <-dat$cf134[which(dat$stage2_timepoint=="49")]
+dat$cardio_dbp_stage2[dat$cardio_dbp_stage2<0]<-NA
+dat$cardio_dbp_stage2<- remove.iqr3.outliers(dat$cardio_dbp_stage2)
+dat$cardio_dbp_stage2_zscore <- scale(dat$cardio_dbp_stage2)
+
+dat$cardio_dbp_stage3 <- dat$f7sa022
+dat$cardio_dbp_stage3[dat$f7sa022<0]<-NA
+dat$cardio_dbp_stage3<- remove.iqr3.outliers(dat$cardio_dbp_stage3)
+dat$cardio_dbp_stage3_zscore <- scale(dat$cardio_dbp_stage3)
+
+dat$cardio_dbp_stage4 <- dat$f9sa022
+dat$cardio_dbp_stage4[dat$f9sa022<0]<-NA
+dat$cardio_dbp_stage4<- remove.iqr3.outliers(dat$cardio_dbp_stage4)
+dat$cardio_dbp_stage4_zscore <- scale(dat$cardio_dbp_stage4)
+
+dat$cardio_trig_stage0 <- dat$trig_cord
+dat$cardio_trig_stage0[dat$trig_cord<0]<-NA
+dat$cardio_trig_stage0<- remove.iqr3.outliers(dat$cardio_trig_stage0)
+dat$cardio_trig_stage0_zscore <- scale(dat$cardio_trig_stage0)
+
+dat$cardio_trig_stage1 <- dat$Trig_CIF31
+dat$cardio_trig_stage1[dat$Trig_CIF31<0]<-NA
+dat$cardio_trig_stage1<- remove.iqr3.outliers(dat$cardio_trig_stage1)
+dat$cardio_trig_stage1_zscore <- scale(dat$cardio_trig_stage1)
+
+dat$cardio_trig_stage2 <- dat$Trig_CIF43
+dat$cardio_trig_stage2[dat$Trig_CIF43<0]<-NA
+dat$cardio_trig_stage2<- remove.iqr3.outliers(dat$cardio_trig_stage2)
+dat$cardio_trig_stage2_zscore <- scale(dat$cardio_trig_stage2)
+
+dat$cardio_trig_stage3 <- dat$TRIG_F7
+dat$cardio_trig_stage3[dat$TRIG_F7<0]<-NA
+dat$cardio_trig_stage3<- remove.iqr3.outliers(dat$cardio_trig_stage3)
+dat$cardio_trig_stage3_zscore <- scale(dat$cardio_trig_stage3)
+
+dat$cardio_trig_stage4 <- dat$trig_f9
+dat$cardio_trig_stage4[dat$trig_f9<0]<-NA
+dat$cardio_trig_stage4<- remove.iqr3.outliers(dat$cardio_trig_stage4)
+dat$cardio_trig_stage4_zscore <- scale(dat$cardio_trig_stage4)
+
+
+dat$cardio_HDL_stage0 <- dat$HDL_cord
+dat$cardio_HDL_stage0[dat$HDL_cord<0]<-NA
+dat$cardio_HDL_stage0<- remove.iqr3.outliers(dat$cardio_HDL_stage0)
+dat$cardio_HDL_stage0_zscore <- scale(dat$cardio_HDL_stage0)
+
+dat$cardio_HDL_stage1 <- dat$HDL_CIF31
+dat$cardio_HDL_stage1[dat$HDL_CIF31<0]<-NA
+dat$cardio_HDL_stage1<- remove.iqr3.outliers(dat$cardio_HDL_stage1)
+dat$cardio_HDL_stage1_zscore <- scale(dat$cardio_HDL_stage1)
+
+dat$cardio_HDL_stage2 <- dat$HDL_CIF43
+dat$cardio_HDL_stage2[dat$HDL_CIF43<0]<-NA
+dat$cardio_HDL_stage2<- remove.iqr3.outliers(dat$cardio_HDL_stage2)
+dat$cardio_HDL_stage2_zscore <- scale(dat$cardio_HDL_stage2)
+
+dat$cardio_HDL_stage3 <- dat$HDL_F7
+dat$cardio_HDL_stage3[dat$HDL_F7<0]<-NA
+dat$cardio_HDL_stage3<- remove.iqr3.outliers(dat$cardio_HDL_stage3)
+dat$cardio_HDL_stage3_zscore <- scale(dat$cardio_HDL_stage3)
+
+dat$cardio_HDL_stage4 <- dat$HDL_f9
+dat$cardio_HDL_stage4[dat$HDL_f9<0]<-NA
+dat$cardio_HDL_stage4<- remove.iqr3.outliers(dat$cardio_HDL_stage4)
+dat$cardio_HDL_stage4_zscore <- scale(dat$cardio_HDL_stage4)
+
+
+dat$cardio_LDL_stage0 <- dat$LDL_cord
+dat$cardio_LDL_stage0[dat$LDL_cord<0]<-NA
+dat$cardio_LDL_stage0<- remove.iqr3.outliers(dat$cardio_LDL_stage0)
+dat$cardio_LDL_stage0_zscore <- scale(dat$cardio_LDL_stage0)
+
+dat$cardio_LDL_stage1 <- dat$LDL_CIF31
+dat$cardio_LDL_stage1[dat$LDL_CIF31<0]<-NA
+dat$cardio_LDL_stage4<- remove.iqr3.outliers(dat$cardio_LDL_stage1)
+dat$cardio_LDL_stage1_zscore <- scale(dat$cardio_LDL_stage1)
+
+dat$cardio_LDL_stage2 <- dat$LDL_CIF43
+dat$cardio_LDL_stage2[dat$LDL_CIF43<0]<-NA
+dat$cardio_LDL_stage2<- remove.iqr3.outliers(dat$cardio_LDL_stage2)
+dat$cardio_LDL_stage2_zscore <- scale(dat$cardio_LDL_stage2)
+
+dat$cardio_LDL_stage3 <- dat$LDL_F7
+dat$cardio_LDL_stage3[dat$LDL_F7<0]<-NA
+dat$cardio_LDL_stage3<- remove.iqr3.outliers(dat$cardio_LDL_stage3)
+dat$cardio_LDL_stage3_zscore <- scale(dat$cardio_LDL_stage3)
+
+dat$cardio_LDL_stage4 <- dat$LDL_f9
+dat$cardio_LDL_stage4[dat$LDL_f9<0]<-NA
+dat$cardio_LDL_stage4<- remove.iqr3.outliers(dat$cardio_LDL_stage4)
+dat$cardio_LDL_stage4_zscore <- scale(dat$cardio_LDL_stage4)
+
+
+
+dat$cardio_chol_stage0 <- dat$chol_cord
+dat$cardio_chol_stage0[dat$chol_cord<0]<-NA
+dat$cardio_chol_stage0<- remove.iqr3.outliers(dat$cardio_chol_stage0)
+dat$cardio_chol_stage0_zscore <- scale(dat$cardio_chol_stage0)
+
+dat$cardio_chol_stage1 <- dat$Chol_CIF31
+dat$cardio_chol_stage1[dat$Chol_CIF31<0]<-NA
+dat$cardio_chol_stage1<- remove.iqr3.outliers(dat$cardio_chol_stage1)
+dat$cardio_chol_stage1_zscore <- scale(dat$cardio_chol_stage1)
+
+dat$cardio_chol_stage2 <- dat$Chol_CIF43
+dat$cardio_chol_stage2[dat$Chol_CIF43<0]<-NA
+dat$cardio_chol_stage2<- remove.iqr3.outliers(dat$cardio_chol_stage2)
+dat$cardio_chol_stage2_zscore <- scale(dat$cardio_chol_stage2)
+
+dat$cardio_chol_stage3 <- dat$CHOL_F7
+dat$cardio_chol_stage3[dat$CHOL_F7<0]<-NA
+dat$cardio_chol_stage3<- remove.iqr3.outliers(dat$cardio_chol_stage3)
+dat$cardio_chol_stage3_zscore <- scale(dat$cardio_chol_stage3)
+
+dat$cardio_chol_stage4 <- dat$CHOL_F9
+dat$cardio_chol_stage4[dat$CHOL_F9<0]<-NA
+dat$cardio_chol_stage4<- remove.iqr3.outliers(dat$cardio_chol_stage4)
+dat$cardio_chol_stage4_zscore <- scale(dat$cardio_chol_stage4)
+
+
+
+dat$cardio_glucose_stage3 <- dat$Glc_F7
+dat$cardio_glucose_stage3[dat$Glc_F7<0]<-NA
+dat$cardio_glucose_stage3<- remove.iqr3.outliers(dat$cardio_glucose_stage3)
+dat$cardio_glucose_stage3_zscore <- scale(dat$cardio_glucose_stage3)
+
+
+
+dat$cardio_insulin_stage0 <- dat$Insulin_cord
+dat$cardio_insulin_stage0[dat$Insulin_cord<0]<-NA
+dat$cardio_insulin_stage0<- remove.iqr3.outliers(dat$cardio_insulin_stage0)
+dat$cardio_insulin_stage0_zscore <- scale(dat$cardio_insulin_stage0)
+
+dat$cardio_insulin_stage4 <- dat$insulin_F9
+dat$cardio_insulin_stage4[dat$insulin_F9<0]<-NA
+dat$cardio_insulin_stage4<- remove.iqr3.outliers(dat$cardio_insulin_stage4)
+dat$cardio_insulin_stage4_zscore <- scale(dat$cardio_insulin_stage4)
+
+
+# removed cord because mostly missing or 0; when outliers removed, all 0
+
+#dat$cardio_CRP_stage0 <- dat$CRP_cord
+#dat$cardio_CRP_stage0[dat$CRP_cord<0]<-NA
+#dat$cardio_CRP_stage0<- remove.iqr3.outliers(dat$cardio_CRP_stage0)
+#dat$cardio_CRP_stage0_zscore <- scale(dat$cardio_CRP_stage0)
+
+dat$cardio_CRP_stage4 <- dat$CRP_f9
+dat$cardio_CRP_stage4[dat$CRP_f9<0]<-NA
+dat$cardio_CRP_stage4<- remove.iqr3.outliers(dat$cardio_CRP_stage4)
+dat$cardio_CRP_stage4_zscore <- scale(dat$cardio_CRP_stage4)
+
+
+
+dat$cardio_apoA_stage3 <- dat$ApoA1_F7
+dat$cardio_apoA_stage3[dat$ApoA1_F7<0]<-NA
+dat$cardio_apoA_stage3<- remove.iqr3.outliers(dat$cardio_apoA_stage3)
+dat$cardio_apoA_stage3_zscore <- scale(dat$cardio_apoA_stage3)
+
+dat$cardio_apoA_stage4 <- dat$ApoAI_f9
+dat$cardio_apoA_stage4[dat$ApoAI_f9<0]<-NA
+dat$cardio_apoA_stage4<- remove.iqr3.outliers(dat$cardio_apoA_stage4)
+dat$cardio_apoA_stage4_zscore <- scale(dat$cardio_apoA_stage4)
+
+
+dat$cardio_apoB_stage3 <- dat$ApoB_F7
+dat$cardio_apoB_stage3[dat$ApoB_F7<0]<-NA
+dat$cardio_apoB_stage3<- remove.iqr3.outliers(dat$cardio_apoB_stage3)
+dat$cardio_apoB_stage3_zscore <- scale(dat$cardio_apoB_stage3)
+
+dat$cardio_apoB_stage4 <- dat$ApoB_f9
+dat$cardio_apoB_stage4[dat$ApoB_f9<0]<-NA
+dat$cardio_apoB_stage4<- remove.iqr3.outliers(dat$cardio_apoB_stage4)
+dat$cardio_apoB_stage4_zscore <- scale(dat$cardio_apoB_stage4)
+
+
+dat$cardio_il6_stage4 <- dat$IL6_f9
+dat$cardio_il6_stage4[dat$IL6_f9<0]<-NA
+dat$cardio_il6_stage4<- remove.iqr3.outliers(dat$cardio_il6_stage4)
+dat$cardio_il6_stage4_zscore <- scale(dat$cardio_il6_stage4)
+
+
+
+dat$covs_ethnicity_mother <- NA
+dat$covs_ethnicity_mother[dat$c800==1]<-"white"
+dat$covs_ethnicity_mother[dat$c800%in%c(2,3,4)]<-"black"
+dat$covs_ethnicity_mother[dat$c800%in%c(5,6,7,8)]<-"asian"
+dat$covs_ethnicity_mother[dat$c800%in%c(9)]<-"mixed or other"
+
+dat$covs_ethnicity_mother_binary <- NA
+dat$covs_ethnicity_mother_binary[dat$c800==1]<-"white"
+dat$covs_ethnicity_mother_binary[dat$c800>1]<-"not white"
+
+dat$covs_ethnicity_father <- NA
+dat$covs_ethnicity_father[dat$c801==1]<-"white"
+dat$covs_ethnicity_father[dat$c801%in%c(2,3,4)]<-"black"
+dat$covs_ethnicity_father[dat$c801%in%c(5,6,7,8)]<-"asian"
+dat$covs_ethnicity_father[dat$c801%in%c(9)]<-"mixed or other"
+
+dat$covs_ethnicity_father_binary <- NA
+dat$covs_ethnicity_father_binary[dat$c801==1]<-"white"
+dat$covs_ethnicity_father_binary[dat$c801>1]<-"not white"
+
+dat$covs_ethnicity_child_binary <- NA
+dat$covs_ethnicity_child_binary[dat$c804==1]<-"white"
+dat$covs_ethnicity_child_binary[dat$c804==2]<-"not white"
+
+dat$covs_age_father_pregnancy <-dat$pa910
+dat$covs_age_father_pregnancy[dat$covs_age_father_pregnancy<0]<-NA
+
+dat$covs_edu_father <- NA
+dat$covs_edu_father[dat$c666a==1]<-0 #CSE/none
+dat$covs_edu_father[dat$c666a%in%c(2,3)]<-1 #O-level or vocational
+dat$covs_edu_father[dat$c666a==4]<-2 #A-level
+dat$covs_edu_father[dat$c666a==5]<-3 #Degree
+
+dat$covs_edu_mother <- NA
+dat$covs_edu_mother[dat$c645a==1]<-0 #CSE/none
+dat$covs_edu_mother[dat$c645a%in%c(2,3)]<-1 #O-level or vocational
+dat$covs_edu_mother[dat$c645a==4]<-2 #A-level
+dat$covs_edu_mother[dat$c645a==5]<-3 #Degree
+
+dat$covs_occup_mother <- NA
+dat$covs_occup_mother[dat$c755%in%c(1,2)]<-3 #professional or managerial/technica
+dat$covs_occup_mother[dat$c755==3]<-2 #skilled non-manual
+dat$covs_occup_mother[dat$c755==4]<-1 #skilled manual
+dat$covs_occup_mother[dat$c755%in%c(5,6)]<-0 #semi-skilled or unskilled
+
+dat$covs_occup_father <- NA
+dat$covs_occup_father[dat$c765%in%c(1,2)]<-3 #professional or managerial/technica
+dat$covs_occup_father[dat$c765==3]<-2 #skilled non-manual
+dat$covs_occup_father[dat$c765==4]<-1 #skilled manual
+dat$covs_occup_father[dat$c765%in%c(5,6)]<-0 #semi-skilled or unskilled
+
+dat$covs_parity_mother_binary <-NA
+dat$covs_parity_mother_binary[dat$b032==0]<-0
+dat$covs_parity_mother_binary[dat$b032>0]<-1
+
+
+### Family relationships
+
+dat$covs_married_mother_binary<-NA
+dat$covs_married_mother_binary[dat$a525%in%c(1,2,3,4)]<-0
+dat$covs_married_mother_binary[dat$a525%in%c(5,6)]<-1
+
+dat$covs_married_father_binary<-NA
+dat$covs_married_father_binary[dat$pa065%in%c(1,2,3,4)]<-0
+dat$covs_married_father_binary[dat$pa065%in%c(5,6)]<-1
+
+
+### Parents' health
+
+#self-rated health had very low numbers reporting anything other than always or usually well, so not enough variation to be useful
+
+dat$covs_asthma_father_binary <- NA
+dat$covs_asthma_father_binary[dat$pa173a==2]<-0
+dat$covs_asthma_father_binary[dat$pa173a==1]<-1
+
+dat$covs_asthma_mother_binary <- NA
+dat$covs_asthma_mother_binary[dat$d153a==2]<-0
+dat$covs_asthma_mother_binary[dat$d153a==1]<-1
+
+dat$covs_eczema_father_binary <- NA
+dat$covs_eczema_father_binary[dat$pa174a==2]<-0
+dat$covs_eczema_father_binary[dat$pa174a==1]<-1
+
+dat$covs_eczema_mother_binary <- NA
+dat$covs_eczema_mother_binary[dat$d154a==2]<-0
+dat$covs_eczema_mother_binary[dat$d154a==1]<-1
+
+dat$covs_allergy_father_binary <- NA
+dat$covs_allergy_father_binary[dat$pa210==2]<-0
+dat$covs_allergy_father_binary[dat$pa210==1]<-1
+
+dat$covs_allergy_mother_binary <- NA
+dat$covs_allergy_mother_binary[dat$d190==2]<-0
+dat$covs_allergy_mother_binary[dat$d190==1]<-1
+
+#diabetes can be derived from the obstetric records
+
+dat$covs_stressfulevents_mother <-dat$b613
+dat$covs_stressfulevents_mother[dat$b613<0]<-NA
+dat$covs_stressfulevents_mother_zscore <- scale(dat$covs_stressfulevents_mother)
+
+dat$covs_stressfulevents_father <-dat$pb202
+dat$covs_stressfulevents_father[dat$pb202<0]<-NA
+dat$covs_stressfulevents_father_zscore <- scale(dat$covs_stressfulevents_father)
+
+#confusion over paternal variable name for exposure to fumes/chemicals (c768 extracted but doesn't appear in the documentation) so not included here
+
+
+dat$covs_mother_depression_binary <- NA #severe depression
+dat$covs_mother_depression_binary[dat$d171a==0]<-0
+dat$covs_mother_depression_binary[dat$d171a>0]<-1
+
+dat$covs_father_depression_binary <- NA
+dat$covs_father_depression_binary[dat$pa191a==0]<-0
+dat$covs_father_depression_binary[dat$pa191a>0]<-1
+
+dat$covs_supplements_mother_binary <-NA
+temp <- dat[,c("b140","b141","b142","b143","b144","b149")]
+temp[temp==2]<-0
+temp[temp<0]<-NA
+temp1 <- rowSums(temp,na.rm = T)
+temp1[apply(temp,1,function(x) all(is.na(x)))]<-NA
+dat$covs_supplements_mother_binary[temp1==0]<-0
+dat$covs_supplements_mother_binary[temp1>0]<-1
+rm(temp,temp1)
+# took the earlier time point when supplements are more necessary
+
+dat$covs_height_mother <-dat$dw021
+dat$covs_weight_mother <-dat$dw002
+dat$covs_height_mother[dat$dw021<1] <- NA
+dat$covs_weight_mother[dat$dw002<1] <- NA
+dat$covs_bmi_mother <- dat$covs_weight_mother/(dat$covs_height_mother/100)^2
+
+dat$covs_bmi_mother_zscore <-scale(dat$covs_bmi_mother)
+
+dat$covs_height_father <-dat$paw010
+dat$covs_weight_father <-dat$paw002
+dat$covs_height_father[dat$paw010<1] <- NA
+dat$covs_weight_father[dat$paw002<1] <- NA
+dat$covs_bmi_father <- dat$covs_weight_father/(dat$covs_height_father/100)^2
+
+dat$covs_bmi_father_zscore <-scale(dat$covs_bmi_father)
+
+#drugs not including cannabis, only 57 women
+dat$covs_drugs_mother_binary <-NA
+dat$covs_drugs_mother_binary[which(dat$b706==4|dat$b707==4|dat$b708==4|dat$b709==4|dat$b710==4|dat$b711==4|dat$b712==4|dat$b713==4)]<-0
+dat$covs_drugs_mother_binary[which(dat$b706%in%c(1,2,3)|dat$b707%in%c(1,2,3)|dat$b708%in%c(1,2,3)|dat$b709%in%c(1,2,3)|dat$b710%in%c(1,2,3)|dat$b711%in%c(1,2,3)|dat$b712%in%c(1,2,3)|dat$b713%in%c(1,2,3))]<-1
+
+dat$covs_drugs_father_binary <-NA
+dat$covs_drugs_father_binary[which(dat$pb090==4|dat$pb091==4|dat$pb092==4|dat$pb093==4|dat$pb094==4|dat$pb095==4|dat$pb096==4|dat$pb097==4)]<-0
+dat$covs_drugs_father_binary[which(dat$pb090%in%c(1,2,3)|dat$pb091%in%c(1,2,3)|dat$pb092%in%c(1,2,3)|dat$pb093%in%c(1,2,3)|dat$pb094%in%c(1,2,3)|dat$pb095%in%c(1,2,3)|dat$pb096%in%c(1,2,3)|dat$pb097%in%c(1,2,3))]<-1
+
+
+### Pregnancy complications
+
+dat$covs_hdp_binary<-dat$HDP
+dat$covs_hdp_binary[dat$covs_hdp_binary<0]<-NA
+
+#glycosuria, existing diabetes or gestational diabetes vs no glycosuria or diabetes
+dat$covs_glycosuria_binary<-NA
+dat$covs_glycosuria_binary[dat$pregnancy_diabetes==0]<-0
+dat$covs_glycosuria_binary[dat$pregnancy_diabetes%in%c(1,2,3)]<-1
+
+
+### Child's health
+
+dat$covs_gestage <- dat$bestgest
+
+dat$covs_preterm_binary <- NA
+dat$covs_preterm_binary[dat$covs_gestage<37]<-1
+dat$covs_preterm_binary[dat$covs_gestage>=37]<-0
+
+dat$covs_breastfeeding_ordinal <- NA
+dat$covs_breastfeeding_ordinal[dat$kb280==1] <-0 #never
+dat$covs_breastfeeding_ordinal[dat$kb280==2] <-1 #less than 1 month (combined to make less than 3m - matches categories for kc404)
+dat$covs_breastfeeding_ordinal[dat$kb280==3] <- 1 #1-<3 months (combined to make less than 3m - matches categories for kc404)
+dat$covs_breastfeeding_ordinal[dat$kb280==4] <- 2 #3-<6 months
+dat$covs_breastfeeding_ordinal[dat$kb280==5]<- 3 #6 or more months
+dat$covs_breastfeeding_ordinal[dat$kc404==0] <- 0
+dat$covs_breastfeeding_ordinal[dat$kc404==1] <- 1
+dat$covs_breastfeeding_ordinal[dat$kc404==2] <- 2
+dat$covs_breastfeeding_ordinal[dat$kc404==3] <- 3
+
+dat$covs_alcohol_child_stage2_binary<-NA
+dat$covs_alcohol_child_stage2_binary[which(dat$kg475==0|dat$kk800==0)]<-0
+dat$covs_alcohol_child_stage2_binary[which(dat$kg475>0|dat$kk800>0)]<-1
+
+dat$covs_alcohol_child_stage3_binary<-NA
+dat$covs_alcohol_child_stage3_binary[dat$kq885==0]<-0
+dat$covs_alcohol_child_stage3_binary[dat$kq885>0]<-1
+
+dat$covs_alcohol_child_stage4_binary<-NA
+dat$covs_alcohol_child_stage4_binary[dat$kt6400==0]<-0
+dat$covs_alcohol_child_stage4_binary[dat$kt6400>0]<-1
+
+dat$covs_alcohol_child_any_binary <- NA
+dat$covs_alcohol_child_any_binary[dat$covs_alcohol_child_stage2_binary==0|dat$covs_alcohol_child_stage3_binary==0|dat$covs_alcohol_child_stage4_binary==0]<-0
+dat$covs_alcohol_child_any_binary[dat$covs_alcohol_child_stage2_binary==1|dat$covs_alcohol_child_stage3_binary==1|dat$covs_alcohol_child_stage4_binary==1]<-1
+
+# difficult to derive a continuous or ordinal measure for caffeine intake, so have used a binary variable for each type of drink
+dat$covs_coffee_child_stage0_binary<-NA
+dat$covs_coffee_child_stage0_binary[dat$kb388==1]<-0
+dat$covs_coffee_child_stage0_binary[dat$kb388==2]<-1
+
+dat$covs_tea_child_stage0_binary<-NA
+dat$covs_tea_child_stage0_binary[dat$kb385==1]<-0
+dat$covs_tea_child_stage0_binary[dat$kb385==2]<-1
+
+dat$covs_cola_child_stage0_binary<-NA
+dat$covs_cola_child_stage0_binary[dat$kb361==1]<-0
+dat$covs_cola_child_stage0_binary[dat$kb361==2]<-1
+
+dat$covs_caffeinedrinks_child_stage0_binary <-NA
+dat$covs_caffeinedrinks_child_stage0_binary[dat$covs_coffee_child_stage0_binary==0&dat$covs_tea_child_stage0_binary==0&dat$covs_cola_child_stage0_binary==0] <-0
+dat$covs_caffeinedrinks_child_stage0_binary[dat$covs_coffee_child_stage0_binary==1|dat$covs_tea_child_stage0_binary==1|dat$covs_cola_child_stage0_binary==1] <-1
+
+dat$covs_coffee_child_stage1_binary<-NA
+dat$covs_coffee_child_stage1_binary[dat$kc542==1|dat$ke340==1]<-0
+dat$covs_coffee_child_stage1_binary[dat$kc542==2|dat$ke340==2]<-1
+
+dat$covs_tea_child_stage1_binary<-NA
+dat$covs_tea_child_stage1_binary[dat$kc539==1|dat$ke338==1]<-0
+dat$covs_tea_child_stage1_binary[dat$kc539==2|dat$ke338==2]<-1
+
+dat$covs_cola_child_stage1_binary<-NA
+dat$covs_cola_child_stage1_binary[dat$kc512==1|dat$ke320==1]<-0
+dat$covs_cola_child_stage1_binary[dat$kc512==2|dat$ke320==2]<-1
+
+dat$covs_caffeinedrinks_child_stage1_binary <-NA
+dat$covs_caffeinedrinks_child_stage1_binary[dat$covs_coffee_child_stage1_binary==0&dat$covs_tea_child_stage1_binary==0&dat$covs_cola_child_stage1_binary==0] <-0
+dat$covs_caffeinedrinks_child_stage1_binary[dat$covs_coffee_child_stage1_binary==1|dat$covs_tea_child_stage1_binary==1|dat$covs_cola_child_stage1_binary==1] <-1
+
+dat$covs_coffee_child_stage2_binary<-NA
+dat$covs_coffee_child_stage2_binary[which(dat$kg423==0|dat$kk645==2)]<-0
+dat$covs_coffee_child_stage2_binary[which(dat$kg423>0|dat$kk645==1)]<-1
+
+dat$covs_tea_child_stage2_binary<-NA
+dat$covs_tea_child_stage2_binary[which(dat$kg420==0|dat$kk640==2)]<-0
+dat$covs_tea_child_stage2_binary[which(dat$kg420>0|dat$kk640==1)]<-1
+
+dat$covs_cola_child_stage2_binary<-NA
+dat$covs_cola_child_stage2_binary[which(dat$kg369a==1|dat$kk598==1)]<-0
+dat$covs_cola_child_stage2_binary[which(dat$kg369a>1|dat$kk598>1)]<-1
+
+dat$covs_caffeinedrinks_child_stage2_binary <-NA
+dat$covs_caffeinedrinks_child_stage2_binary[dat$covs_coffee_child_stage2_binary==0&dat$covs_tea_child_stage2_binary==0&dat$covs_cola_child_stage2_binary==0] <-0
+dat$covs_caffeinedrinks_child_stage2_binary[dat$covs_coffee_child_stage2_binary==1|dat$covs_tea_child_stage2_binary==1|dat$covs_cola_child_stage2_binary==1] <-1
+
+dat$covs_coffee_child_stage3_binary<-NA
+dat$covs_coffee_child_stage3_binary[dat$kq830==1]<-1
+dat$covs_coffee_child_stage3_binary[dat$kq830==2]<-0
+
+dat$covs_tea_child_stage3_binary<-NA
+dat$covs_tea_child_stage3_binary[dat$kq823==1]<-1
+dat$covs_tea_child_stage3_binary[dat$kq823==2]<-0
+
+dat$covs_cola_child_stage3_binary<-NA
+dat$covs_cola_child_stage3_binary[dat$kq798a==1]<-1
+dat$covs_cola_child_stage3_binary[dat$kq798a==2]<-0
+
+dat$covs_caffeinedrinks_child_stage3_binary <-NA
+dat$covs_caffeinedrinks_child_stage3_binary[dat$covs_coffee_child_stage3_binary==0&dat$covs_tea_child_stage3_binary==0&dat$covs_cola_child_stage3_binary==0] <-0
+dat$covs_caffeinedrinks_child_stage3_binary[dat$covs_coffee_child_stage3_binary==1|dat$covs_tea_child_stage3_binary==1|dat$covs_cola_child_stage3_binary==1] <-1
+
+dat$covs_coffee_child_stage4_binary<-NA
+dat$covs_coffee_child_stage4_binary[dat$kt6290==1]<-1
+dat$covs_coffee_child_stage4_binary[dat$kt6290==2]<-0
+
+dat$covs_tea_child_stage4_binary<-NA
+dat$covs_tea_child_stage4_binary[dat$kt6280==1]<-1
+dat$covs_tea_child_stage4_binary[dat$kt6280==2]<-0
+
+dat$covs_cola_child_stage4_binary<-NA
+dat$covs_cola_child_stage4_binary[dat$kt6193==1]<-0
+dat$covs_cola_child_stage4_binary[dat$kt6193>1]<-1
+
+dat$covs_caffeinedrinks_child_stage4_binary <-NA
+dat$covs_caffeinedrinks_child_stage4_binary[dat$covs_coffee_child_stage4_binary==0&dat$covs_tea_child_stage4_binary==0&dat$covs_cola_child_stage4_binary==0] <-0
+dat$covs_caffeinedrinks_child_stage4_binary[dat$covs_coffee_child_stage4_binary==1|dat$covs_tea_child_stage4_binary==1|dat$covs_cola_child_stage4_binary==1] <-1
+
+dat$covs_caffeinedrinks_child_before2_binary <-NA
+dat$covs_caffeinedrinks_child_before2_binary[dat$covs_caffeinedrinks_child_stage0_binary==0|dat$covs_caffeinedrinks_child_stage1_binary==0] <-0
+dat$covs_caffeinedrinks_child_before2_binary[dat$covs_caffeinedrinks_child_stage0_binary==1|dat$covs_caffeinedrinks_child_stage1_binary==1] <-1
+
+dat$covs_passivesmk_child_stage0_binary <- NA
+dat$covs_passivesmk_child_stage0_binary[which(dat$kb549==2&dat$kb551==2)]<-0
+dat$covs_passivesmk_child_stage0_binary[which(dat$kb549==1&dat$kb551==1)]<-1
+
+dat$covs_passivesmk_child_stage1_binary <- NA
+dat$covs_passivesmk_child_stage1_binary[which(dat$kc363==0|(dat$ke196a==2&dat$ke195a==2))]<-0
+dat$covs_passivesmk_child_stage1_binary[which(dat$kc363>0|(dat$ke196a==1|dat$ke195a==1))]<-1
+
+dat$covs_passivesmk_child_stage2_binary <- NA
+dat$covs_passivesmk_child_stage2_binary[which(dat$kg174==1|dat$kk312==1)]<-0
+dat$covs_passivesmk_child_stage2_binary[which(dat$kg174>1|dat$kk312>1)]<-1
+
+dat$covs_passivesmk_child_stage3_binary <- NA
+dat$covs_passivesmk_child_stage3_binary[which((dat$kp5090==6&dat$kp5091==6)|(dat$km3030==6&dat$km3031==6))]<-0
+dat$covs_passivesmk_child_stage3_binary[which((dat$kp5090%in%c(1:5)|dat$kp5091%in%c(1:5))|(dat$km3030%in%c(1:5)|dat$km3031%in%c(1:5)))]<-1
+
+dat$covs_passivesmk_child_stage4_binary <- NA
+dat$covs_passivesmk_child_stage4_binary[which(dat$kt1210==6&dat$kt1211==6)]<-0
+dat$covs_passivesmk_child_stage4_binary[which(dat$kt1210%in%c(1:5)&dat$kt1211%in%c(1:5))]<-1
+
+dat$covs_passivesmk_child_before2_binary <-NA
+dat$covs_passivesmk_child_before2_binary[dat$covs_passivesmk_child_stage0_binary==0|dat$covs_passivesmk_child_stage1_binary==0] <-0
+dat$covs_passivesmk_child_before2_binary[dat$covs_passivesmk_child_stage0_binary==1|dat$covs_passivesmk_child_stage1_binary==1] <-1
+
+### Pigeon infestation
+
+dat$negcon_pigeons_binary <-NA
+dat$negcon_pigeons_binary[which(dat$g572a==2|dat$h462a==2)]<-0
+dat$negcon_pigeons_binary[which(dat$g572a==1|dat$h462a==1)]<-1
+
+
+### Mice infestation
+
+dat$negcon_mice_binary <-NA
+dat$negcon_mice_binary[which(dat$g571a==2|dat$h461a==2)]<-0
+dat$negcon_mice_binary[which(dat$g571a==1|dat$h461a==1)]<-1
+
+
+### Left handedness (to draw)
+
+dat$negcon_lefthand_binary <-NA
+dat$negcon_lefthand_binary[which(dat$kf528%in%c(2,3)|dat$kj518%in%c(2,3))]<-0 #not very well or hasn't done yet
+dat$negcon_lefthand_binary[which(dat$kf528==1|dat$kj518==1)]<-1#does well
+
+## PRS
+
+prs_alcohol_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200429_scores_alcohol_children.profile", header=TRUE,stringsAsFactors = F)
+prs_alcohol_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200429_scores_alcohol_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+prs_caffeine_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200504_scores_caffeine_children.profile", header=TRUE,stringsAsFactors = F)
+prs_caffeine_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200504_scores_caffeine_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+prs_smoking_age_init_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200502_scores_smoking_age_init_children.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_age_init_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200502_scores_smoking_age_init_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+prs_smoking_cessation_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200501_scores_smoking_cessation_children.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_cessation_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200501_scores_smoking_cessation_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+prs_smoking_cigs_pd_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200430_scores_smoking_cigs_pd_children.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_cigs_pd_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200430_scores_smoking_cigs_pd_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+prs_smoking_initiation_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200501_scores_smoking_initiation_children.profile", header=TRUE,stringsAsFactors = F)
+prs_smoking_initiation_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200501_scores_smoking_initiation_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+prs_pa_sedentary_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200507_scores_pa_sedentary_children.profile", header=TRUE,stringsAsFactors = F)
+prs_pa_sedentary_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/20200506_scores_pa_sedentary_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+
+sens_exc_alsp_prs_alcohol_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/excluding_alsp_23me/20201119_scores_alcohol_children.profile", header=TRUE,stringsAsFactors = F)
+sens_exc_alsp_prs_alcohol_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/excluding_alsp_23me/20201118_scores_alcohol_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+sens_exc_alsp_prs_smoking_age_init_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/excluding_alsp_23me/20210203_scores_smoking_age_init_children.profile", header=TRUE,stringsAsFactors = F)
+sens_exc_alsp_prs_smoking_age_init_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/excluding_alsp_23me/20210203_scores_smoking_age_init_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+sens_exc_alsp_prs_smoking_cessation_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/excluding_alsp_23me/20210203_scores_smoking_cessation_children.profile", header=TRUE,stringsAsFactors = F)
+sens_exc_alsp_prs_smoking_cessation_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/excluding_alsp_23me/20210203_scores_smoking_cessation_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+sens_exc_alsp_prs_smoking_cigs_pd_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/excluding_alsp_23me/20210203_scores_smoking_cigs_pd_children.profile", header=TRUE,stringsAsFactors = F)
+sens_exc_alsp_prs_smoking_cigs_pd_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/excluding_alsp_23me/20210203_scores_smoking_cigs_pd_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+sens_exc_alsp_prs_smoking_initiation_child<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/excluding_alsp_23me/20210203_scores_smoking_initiation_children.profile", header=TRUE,stringsAsFactors = F)
+sens_exc_alsp_prs_smoking_initiation_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/PRS/excluding_alsp_23me/20210203_scores_smoking_initiation_mothers.profile", header=TRUE,stringsAsFactors = F)
+
+prs_alcohol_child$aln <-as.numeric(substr(prs_alcohol_child$FID, 1, 5))
+prs_alcohol_child$qlet<-substr(prs_alcohol_child$FID, 6, 6)
+prs_alcohol_child$prs_score_child_alcohol<-prs_alcohol_child$SCORE
+## keep only the columns we want
+prs_alcohol_child<-prs_alcohol_child[, which(names(prs_alcohol_child) %in% c("aln", "qlet","prs_score_child_alcohol"))]
+
+prs_alcohol_mother$aln <-as.numeric(substr(prs_alcohol_mother$FID, 1, 5))
+prs_alcohol_mother$qlet<-substr(prs_alcohol_mother$FID, 6, 6)
+prs_alcohol_mother$prs_score_mother_alcohol<-prs_alcohol_mother$SCORE
+prs_alcohol_mother<-prs_alcohol_mother[, which(names(prs_alcohol_mother) %in% c("aln", "qlet","prs_score_mother_alcohol"))]
+
+prs_caffeine_child$aln <-as.numeric(substr(prs_caffeine_child$FID, 1, 5))
+prs_caffeine_child$qlet<-substr(prs_caffeine_child$FID, 6, 6)
+prs_caffeine_child$prs_score_child_caffeine<-prs_caffeine_child$SCORE
+prs_caffeine_child<-prs_caffeine_child[, which(names(prs_caffeine_child) %in% c("aln", "qlet","prs_score_child_caffeine"))]
+
+prs_caffeine_mother$aln <-as.numeric(substr(prs_caffeine_mother$FID, 1, 5))
+prs_caffeine_mother$qlet<-substr(prs_caffeine_mother$FID, 6, 6)
+prs_caffeine_mother$prs_score_mother_caffeine<-prs_caffeine_mother$SCORE
+prs_caffeine_mother<-prs_caffeine_mother[, which(names(prs_caffeine_mother) %in% c("aln", "qlet","prs_score_mother_caffeine"))]
+
+prs_smoking_age_init_child$aln <-as.numeric(substr(prs_smoking_age_init_child$FID, 1, 5))
+prs_smoking_age_init_child$qlet<-substr(prs_smoking_age_init_child$FID, 6, 6)
+prs_smoking_age_init_child$prs_score_child_smoking_age_init<-prs_smoking_age_init_child$SCORE
+prs_smoking_age_init_child<-prs_smoking_age_init_child[, which(names(prs_smoking_age_init_child) %in% c("aln", "qlet","prs_score_child_smoking_age_init"))]
+
+prs_smoking_age_init_mother$aln <-as.numeric(substr(prs_smoking_age_init_mother$FID, 1, 5))
+prs_smoking_age_init_mother$qlet<-substr(prs_smoking_age_init_mother$FID, 6, 6)
+prs_smoking_age_init_mother$prs_score_mother_smoking_age_init<-prs_smoking_age_init_mother$SCORE
+prs_smoking_age_init_mother<-prs_smoking_age_init_mother[, which(names(prs_smoking_age_init_mother) %in% c("aln", "qlet","prs_score_mother_smoking_age_init"))]
+
+prs_smoking_cessation_child$aln <-as.numeric(substr(prs_smoking_cessation_child$FID, 1, 5))
+prs_smoking_cessation_child$qlet<-substr(prs_smoking_cessation_child$FID, 6, 6)
+prs_smoking_cessation_child$prs_score_child_smoking_cessation<-prs_smoking_cessation_child$SCORE
+prs_smoking_cessation_child<-prs_smoking_cessation_child[, which(names(prs_smoking_cessation_child) %in% c("aln", "qlet","prs_score_child_smoking_cessation"))]
+
+prs_smoking_cessation_mother$aln <-as.numeric(substr(prs_smoking_cessation_mother$FID, 1, 5))
+prs_smoking_cessation_mother$qlet<-substr(prs_smoking_cessation_mother$FID, 6, 6)
+prs_smoking_cessation_mother$prs_score_mother_smoking_cessation<-prs_smoking_cessation_mother$SCORE
+prs_smoking_cessation_mother<-prs_smoking_cessation_mother[, which(names(prs_smoking_cessation_mother) %in% c("aln", "qlet","prs_score_mother_smoking_cessation"))]
+
+prs_smoking_cigs_pd_child$aln <-as.numeric(substr(prs_smoking_cigs_pd_child$FID, 1, 5))
+prs_smoking_cigs_pd_child$qlet<-substr(prs_smoking_cigs_pd_child$FID, 6, 6)
+prs_smoking_cigs_pd_child$prs_score_child_smoking_cigs_pd<-prs_smoking_cigs_pd_child$SCORE
+prs_smoking_cigs_pd_child<-prs_smoking_cigs_pd_child[, which(names(prs_smoking_cigs_pd_child) %in% c("aln", "qlet","prs_score_child_smoking_cigs_pd"))]
+
+prs_smoking_cigs_pd_mother$aln <-as.numeric(substr(prs_smoking_cigs_pd_mother$FID, 1, 5))
+prs_smoking_cigs_pd_mother$qlet<-substr(prs_smoking_cigs_pd_mother$FID, 6, 6)
+prs_smoking_cigs_pd_mother$prs_score_mother_smoking_cigs_pd<-prs_smoking_cigs_pd_mother$SCORE
+prs_smoking_cigs_pd_mother<-prs_smoking_cigs_pd_mother[, which(names(prs_smoking_cigs_pd_mother) %in% c("aln", "qlet","prs_score_mother_smoking_cigs_pd"))]
+
+prs_smoking_initiation_child$aln <-as.numeric(substr(prs_smoking_initiation_child$FID, 1, 5))
+prs_smoking_initiation_child$qlet<-substr(prs_smoking_initiation_child$FID, 6, 6)
+prs_smoking_initiation_child$prs_score_child_smoking_initiation<-prs_smoking_initiation_child$SCORE
+prs_smoking_initiation_child<-prs_smoking_initiation_child[, which(names(prs_smoking_initiation_child) %in% c("aln", "qlet","prs_score_child_smoking_initiation"))]
+
+prs_smoking_initiation_mother$aln <-as.numeric(substr(prs_smoking_initiation_mother$FID, 1, 5))
+prs_smoking_initiation_mother$qlet<-substr(prs_smoking_initiation_mother$FID, 6, 6)
+prs_smoking_initiation_mother$prs_score_mother_smoking_initiation<-prs_smoking_initiation_mother$SCORE
+prs_smoking_initiation_mother<-prs_smoking_initiation_mother[, which(names(prs_smoking_initiation_mother) %in% c("aln", "qlet","prs_score_mother_smoking_initiation"))]
+
+prs_pa_sedentary_child$aln <-as.numeric(substr(prs_pa_sedentary_child$FID, 1, 5))
+prs_pa_sedentary_child$qlet<-substr(prs_pa_sedentary_child$FID, 6, 6)
+prs_pa_sedentary_child$prs_score_child_pa_sedentary<-prs_pa_sedentary_child$SCORE
+prs_pa_sedentary_child<-prs_pa_sedentary_child[, which(names(prs_pa_sedentary_child) %in% c("aln", "qlet","prs_score_child_pa_sedentary"))]
+
+prs_pa_sedentary_mother$aln <-as.numeric(substr(prs_pa_sedentary_mother$FID, 1, 5))
+prs_pa_sedentary_mother$qlet<-substr(prs_pa_sedentary_mother$FID, 6, 6)
+prs_pa_sedentary_mother$prs_score_mother_pa_sedentary<-prs_pa_sedentary_mother$SCORE
+prs_pa_sedentary_mother<-prs_pa_sedentary_mother[, which(names(prs_pa_sedentary_mother) %in% c("aln", "qlet","prs_score_mother_pa_sedentary"))]
+
+
+sens_exc_alsp_prs_alcohol_child$aln <-as.numeric(substr(sens_exc_alsp_prs_alcohol_child$FID, 1, 5))
+sens_exc_alsp_prs_alcohol_child$qlet<-substr(sens_exc_alsp_prs_alcohol_child$FID, 6, 6)
+sens_exc_alsp_prs_alcohol_child$sens_exc_alsp_prs_score_child_alcohol<-sens_exc_alsp_prs_alcohol_child$SCORE
+## keep only the columns we want
+sens_exc_alsp_prs_alcohol_child<-sens_exc_alsp_prs_alcohol_child[, which(names(sens_exc_alsp_prs_alcohol_child) %in% c("aln", "qlet","sens_exc_alsp_prs_score_child_alcohol"))]
+
+sens_exc_alsp_prs_alcohol_mother$aln <-as.numeric(substr(sens_exc_alsp_prs_alcohol_mother$FID, 1, 5))
+sens_exc_alsp_prs_alcohol_mother$qlet<-substr(sens_exc_alsp_prs_alcohol_mother$FID, 6, 6)
+sens_exc_alsp_prs_alcohol_mother$sens_exc_alsp_prs_score_mother_alcohol<-sens_exc_alsp_prs_alcohol_mother$SCORE
+sens_exc_alsp_prs_alcohol_mother<-sens_exc_alsp_prs_alcohol_mother[, which(names(sens_exc_alsp_prs_alcohol_mother) %in% c("aln", "qlet","sens_exc_alsp_prs_score_mother_alcohol"))]
+
+sens_exc_alsp_prs_smoking_age_init_child$aln <-as.numeric(substr(sens_exc_alsp_prs_smoking_age_init_child$FID, 1, 5))
+sens_exc_alsp_prs_smoking_age_init_child$qlet<-substr(sens_exc_alsp_prs_smoking_age_init_child$FID, 6, 6)
+sens_exc_alsp_prs_smoking_age_init_child$sens_exc_alsp_prs_score_child_smoking_age_init<-sens_exc_alsp_prs_smoking_age_init_child$SCORE
+sens_exc_alsp_prs_smoking_age_init_child<-sens_exc_alsp_prs_smoking_age_init_child[, which(names(sens_exc_alsp_prs_smoking_age_init_child) %in% c("aln", "qlet","sens_exc_alsp_prs_score_child_smoking_age_init"))]
+
+sens_exc_alsp_prs_smoking_age_init_mother$aln <-as.numeric(substr(sens_exc_alsp_prs_smoking_age_init_mother$FID, 1, 5))
+sens_exc_alsp_prs_smoking_age_init_mother$qlet<-substr(sens_exc_alsp_prs_smoking_age_init_mother$FID, 6, 6)
+sens_exc_alsp_prs_smoking_age_init_mother$sens_exc_alsp_prs_score_mother_smoking_age_init<-sens_exc_alsp_prs_smoking_age_init_mother$SCORE
+sens_exc_alsp_prs_smoking_age_init_mother<-sens_exc_alsp_prs_smoking_age_init_mother[, which(names(sens_exc_alsp_prs_smoking_age_init_mother) %in% c("aln", "qlet","sens_exc_alsp_prs_score_mother_smoking_age_init"))]
+
+sens_exc_alsp_prs_smoking_cessation_child$aln <-as.numeric(substr(sens_exc_alsp_prs_smoking_cessation_child$FID, 1, 5))
+sens_exc_alsp_prs_smoking_cessation_child$qlet<-substr(sens_exc_alsp_prs_smoking_cessation_child$FID, 6, 6)
+sens_exc_alsp_prs_smoking_cessation_child$sens_exc_alsp_prs_score_child_smoking_cessation<-sens_exc_alsp_prs_smoking_cessation_child$SCORE
+sens_exc_alsp_prs_smoking_cessation_child<-sens_exc_alsp_prs_smoking_cessation_child[, which(names(sens_exc_alsp_prs_smoking_cessation_child) %in% c("aln", "qlet","sens_exc_alsp_prs_score_child_smoking_cessation"))]
+
+sens_exc_alsp_prs_smoking_cessation_mother$aln <-as.numeric(substr(sens_exc_alsp_prs_smoking_cessation_mother$FID, 1, 5))
+sens_exc_alsp_prs_smoking_cessation_mother$qlet<-substr(sens_exc_alsp_prs_smoking_cessation_mother$FID, 6, 6)
+sens_exc_alsp_prs_smoking_cessation_mother$sens_exc_alsp_prs_score_mother_smoking_cessation<-sens_exc_alsp_prs_smoking_cessation_mother$SCORE
+sens_exc_alsp_prs_smoking_cessation_mother<-sens_exc_alsp_prs_smoking_cessation_mother[, which(names(sens_exc_alsp_prs_smoking_cessation_mother) %in% c("aln", "qlet","sens_exc_alsp_prs_score_mother_smoking_cessation"))]
+
+sens_exc_alsp_prs_smoking_cigs_pd_child$aln <-as.numeric(substr(sens_exc_alsp_prs_smoking_cigs_pd_child$FID, 1, 5))
+sens_exc_alsp_prs_smoking_cigs_pd_child$qlet<-substr(sens_exc_alsp_prs_smoking_cigs_pd_child$FID, 6, 6)
+sens_exc_alsp_prs_smoking_cigs_pd_child$sens_exc_alsp_prs_score_child_smoking_cigs_pd<-sens_exc_alsp_prs_smoking_cigs_pd_child$SCORE
+sens_exc_alsp_prs_smoking_cigs_pd_child<-sens_exc_alsp_prs_smoking_cigs_pd_child[, which(names(sens_exc_alsp_prs_smoking_cigs_pd_child) %in% c("aln", "qlet","sens_exc_alsp_prs_score_child_smoking_cigs_pd"))]
+
+sens_exc_alsp_prs_smoking_cigs_pd_mother$aln <-as.numeric(substr(sens_exc_alsp_prs_smoking_cigs_pd_mother$FID, 1, 5))
+sens_exc_alsp_prs_smoking_cigs_pd_mother$qlet<-substr(sens_exc_alsp_prs_smoking_cigs_pd_mother$FID, 6, 6)
+sens_exc_alsp_prs_smoking_cigs_pd_mother$sens_exc_alsp_prs_score_mother_smoking_cigs_pd<-sens_exc_alsp_prs_smoking_cigs_pd_mother$SCORE
+sens_exc_alsp_prs_smoking_cigs_pd_mother<-sens_exc_alsp_prs_smoking_cigs_pd_mother[, which(names(sens_exc_alsp_prs_smoking_cigs_pd_mother) %in% c("aln", "qlet","sens_exc_alsp_prs_score_mother_smoking_cigs_pd"))]
+
+sens_exc_alsp_prs_smoking_initiation_child$aln <-as.numeric(substr(sens_exc_alsp_prs_smoking_initiation_child$FID, 1, 5))
+sens_exc_alsp_prs_smoking_initiation_child$qlet<-substr(sens_exc_alsp_prs_smoking_initiation_child$FID, 6, 6)
+sens_exc_alsp_prs_smoking_initiation_child$sens_exc_alsp_prs_score_child_smoking_initiation<-sens_exc_alsp_prs_smoking_initiation_child$SCORE
+sens_exc_alsp_prs_smoking_initiation_child<-sens_exc_alsp_prs_smoking_initiation_child[, which(names(sens_exc_alsp_prs_smoking_initiation_child) %in% c("aln", "qlet","sens_exc_alsp_prs_score_child_smoking_initiation"))]
+
+sens_exc_alsp_prs_smoking_initiation_mother$aln <-as.numeric(substr(sens_exc_alsp_prs_smoking_initiation_mother$FID, 1, 5))
+sens_exc_alsp_prs_smoking_initiation_mother$qlet<-substr(sens_exc_alsp_prs_smoking_initiation_mother$FID, 6, 6)
+sens_exc_alsp_prs_smoking_initiation_mother$sens_exc_alsp_prs_score_mother_smoking_initiation<-sens_exc_alsp_prs_smoking_initiation_mother$SCORE
+sens_exc_alsp_prs_smoking_initiation_mother<-sens_exc_alsp_prs_smoking_initiation_mother[, which(names(sens_exc_alsp_prs_smoking_initiation_mother) %in% c("aln", "qlet","sens_exc_alsp_prs_score_mother_smoking_initiation"))]
+
+
+dat<-left_join(dat,prs_alcohol_child, by =c("aln","qlet"))
+dat<-left_join(dat,prs_alcohol_mother[,-2], by =c("aln"))
+
+dat<-left_join(dat,prs_caffeine_child, by =c("aln","qlet"))
+dat<-left_join(dat,prs_caffeine_mother[,-2], by =c("aln"))
+
+dat<-left_join(dat,prs_smoking_age_init_child, by =c("aln","qlet"))
+dat<-left_join(dat,prs_smoking_age_init_mother[,-2], by =c("aln"))
+
+dat<-left_join(dat,prs_smoking_cessation_child, by =c("aln","qlet"))
+dat<-left_join(dat,prs_smoking_cessation_mother[,-2], by =c("aln"))
+
+dat<-left_join(dat,prs_smoking_cigs_pd_child, by =c("aln","qlet"))
+dat<-left_join(dat,prs_smoking_cigs_pd_mother[,-2], by =c("aln"))
+
+dat<-left_join(dat,prs_smoking_initiation_child, by =c("aln","qlet"))
+dat<-left_join(dat,prs_smoking_initiation_mother[,-2], by =c("aln"))
+
+dat<-left_join(dat,prs_pa_sedentary_child, by =c("aln","qlet"))
+dat<-left_join(dat,prs_pa_sedentary_mother[,-2], by =c("aln"))
+
+
+dat<-left_join(dat,sens_exc_alsp_prs_alcohol_child, by =c("aln","qlet"))
+dat<-left_join(dat,sens_exc_alsp_prs_alcohol_mother[,-2], by =c("aln"))
+
+dat<-left_join(dat,sens_exc_alsp_prs_smoking_age_init_child, by =c("aln","qlet"))
+dat<-left_join(dat,sens_exc_alsp_prs_smoking_age_init_mother[,-2], by =c("aln"))
+
+dat<-left_join(dat,sens_exc_alsp_prs_smoking_cessation_child, by =c("aln","qlet"))
+dat<-left_join(dat,sens_exc_alsp_prs_smoking_cessation_mother[,-2], by =c("aln"))
+
+dat<-left_join(dat,sens_exc_alsp_prs_smoking_cigs_pd_child, by =c("aln","qlet"))
+dat<-left_join(dat,sens_exc_alsp_prs_smoking_cigs_pd_mother[,-2], by =c("aln"))
+
+dat<-left_join(dat,sens_exc_alsp_prs_smoking_initiation_child, by =c("aln","qlet"))
+dat<-left_join(dat,sens_exc_alsp_prs_smoking_initiation_mother[,-2], by =c("aln"))
+
+
+prs_vars <- names(dat)[grep(names(dat),pattern="prs")]
+scaled_prs <- as.data.frame(apply(dat[,prs_vars],2,scale))
+names(scaled_prs) <- paste0(prs_vars,"_zscore")
+library(dplyr)
+dat <- bind_cols(dat,scaled_prs)
+
+snps_alcohol_buestguess_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/alcohol_mothers_excluded_numb.raw", header=T)
+snps_alcohol_buestguess_children<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/alcohol_children_excluded_numb.raw", header=T)
+
+snps_caffeine_buestguess_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/caffeine_mothers_excluded_numb.raw", header=T)
+snps_caffeine_buestguess_children<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/caffeine_children_excluded_numb.raw", header=T)
+
+snps_smoking_age_init_buestguess_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/smoking_age_init_mothers_excluded_numb.raw", header=T)
+snps_smoking_age_init_buestguess_children<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/smoking_age_init_children_excluded_numb.raw", header=T)
+
+snps_smoking_cessation_buestguess_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/smoking_cessation_mothers_excluded_numb.raw", header=T)
+snps_smoking_cessation_buestguess_children<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/smoking_cessation_children_excluded_numb.raw", header=T)
+
+snps_smoking_cigs_pd_buestguess_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/smoking_cigs_pd_mothers_excluded_numb.raw", header=T)
+snps_smoking_cigs_pd_buestguess_children<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/smoking_cigs_pd_children_excluded_numb.raw", header=T)
+
+snps_smoking_initiation_buestguess_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/smoking_initiation_mothers_excluded_numb.raw", header=T)
+snps_smoking_initiation_buestguess_children<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/smoking_initiation_children_excluded_numb.raw", header=T)
+
+snps_pa_sedentary_buestguess_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/pa_sedentary_mothers_excluded_numb.raw", header=T)
+snps_pa_sedentary_buestguess_children<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/pa_sedentary_children_excluded_numb.raw", header=T)
+
+snps_pa_overall_activity_mother<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/pa_overall_activity_mothers_excluded_numb.raw", header=T)
+snps_pa_overall_activity_children<-read.table("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/individual_snps/pa_overall_activity_children_excluded_numb.raw", header=T)
+
+
+# (rename) add mother_snp to start of all snp columns
+names(snps_alcohol_buestguess_mother)<-paste("mother_snp_alc_",names(snps_alcohol_buestguess_mother),sep="")
+names(snps_alcohol_buestguess_children)<-paste("children_snp_alc_",names(snps_alcohol_buestguess_children),sep="")
+
+names(snps_caffeine_buestguess_mother)<-paste("mother_snp_caff_",names(snps_caffeine_buestguess_mother),sep="")
+names(snps_caffeine_buestguess_children)<-paste("children_snp_caff_",names(snps_caffeine_buestguess_children),sep="")
+
+names(snps_smoking_age_init_buestguess_mother)<-paste("mother_snp_age_init_",names(snps_smoking_age_init_buestguess_mother),sep="")
+names(snps_smoking_age_init_buestguess_children)<-paste("children_snp_age_init_",names(snps_smoking_age_init_buestguess_children),sep="")
+
+names(snps_smoking_cessation_buestguess_mother)<-paste("mother_snp_cessation_",names(snps_smoking_cessation_buestguess_mother),sep="")
+names(snps_smoking_cessation_buestguess_children)<-paste("children_snp_cessation_",names(snps_smoking_cessation_buestguess_children),sep="")
+
+names(snps_smoking_cigs_pd_buestguess_mother)<-paste("mother_snp_cigspd_",names(snps_smoking_cigs_pd_buestguess_mother),sep="")
+names(snps_smoking_cigs_pd_buestguess_children)<-paste("children_snp_cigspd_",names(snps_smoking_cigs_pd_buestguess_children),sep="")
+
+names(snps_smoking_initiation_buestguess_mother)<-paste("mother_snp_initiation_",names(snps_smoking_initiation_buestguess_mother),sep="")
+names(snps_smoking_initiation_buestguess_children)<-paste("children_snp_initiation_",names(snps_smoking_initiation_buestguess_children),sep="")
+
+names(snps_pa_sedentary_buestguess_mother)<-paste("mother_snp_sedentary_",names(snps_pa_sedentary_buestguess_mother),sep="")
+names(snps_pa_sedentary_buestguess_children)<-paste("children_snp_sedentary_",names(snps_pa_sedentary_buestguess_children),sep="")
+
+names(snps_pa_overall_activity_mother)<-paste("mother_snp_overallact_",names(snps_pa_overall_activity_mother),sep="")
+names(snps_pa_overall_activity_children)<-paste("children_snp_overallact_",names(snps_pa_overall_activity_children),sep="")
+
+snps_alcohol_buestguess_mother$aln <-as.numeric(substr(snps_alcohol_buestguess_mother$mother_snp_alc_FID, 1, 5))
+snps_alcohol_buestguess_mother$qlet<-substr(snps_alcohol_buestguess_mother$mother_snp_alc_FID, 6, 6)
+snps_alcohol_buestguess_mother<-snps_alcohol_buestguess_mother[-c(1:6)] 
+
+snps_caffeine_buestguess_mother$aln <-as.numeric(substr(snps_caffeine_buestguess_mother$mother_snp_caff_FID, 1, 5))
+snps_caffeine_buestguess_mother$qlet<-substr(snps_caffeine_buestguess_mother$mother_snp_caff_FID, 6, 6)
+snps_caffeine_buestguess_mother<-snps_caffeine_buestguess_mother[-c(1:6)]
+
+snps_smoking_age_init_buestguess_mother$aln <-as.numeric(substr(snps_smoking_age_init_buestguess_mother$mother_snp_age_init_FID, 1, 5))
+snps_smoking_age_init_buestguess_mother$qlet<-substr(snps_smoking_age_init_buestguess_mother$mother_snp_age_init_FID, 6, 6)
+snps_smoking_age_init_buestguess_mother<-snps_smoking_age_init_buestguess_mother[-c(1:6)]
+
+snps_smoking_cessation_buestguess_mother$aln <-as.numeric(substr(snps_smoking_cessation_buestguess_mother$mother_snp_cessation_FID, 1, 5))
+snps_smoking_cessation_buestguess_mother$qlet<-substr(snps_smoking_cessation_buestguess_mother$mother_snp_cessation_FID, 6, 6)
+snps_smoking_cessation_buestguess_mother<-snps_smoking_cessation_buestguess_mother[-c(1:6)]
+
+snps_smoking_cigs_pd_buestguess_mother$aln <-as.numeric(substr(snps_smoking_cigs_pd_buestguess_mother$mother_snp_cigspd_FID, 1, 5))
+snps_smoking_cigs_pd_buestguess_mother$qlet<-substr(snps_smoking_cigs_pd_buestguess_mother$mother_snp_cigspd_FID, 6, 6)
+snps_smoking_cigs_pd_buestguess_mother<-snps_smoking_cigs_pd_buestguess_mother[-c(1:6)]
+
+snps_smoking_initiation_buestguess_mother$aln <-as.numeric(substr(snps_smoking_initiation_buestguess_mother$mother_snp_initiation_FID, 1, 5))
+snps_smoking_initiation_buestguess_mother$qlet<-substr(snps_smoking_initiation_buestguess_mother$mother_snp_initiation_FID, 6, 6)
+snps_smoking_initiation_buestguess_mother<-snps_smoking_initiation_buestguess_mother[-c(1:6)]
+
+snps_pa_sedentary_buestguess_mother$aln <-as.numeric(substr(snps_pa_sedentary_buestguess_mother$mother_snp_sedentary_FID, 1, 5))
+snps_pa_sedentary_buestguess_mother$qlet<-substr(snps_pa_sedentary_buestguess_mother$mother_snp_sedentary_FID, 6, 6)
+snps_pa_sedentary_buestguess_mother<-snps_pa_sedentary_buestguess_mother[-c(1:6)]
+
+snps_pa_overall_activity_mother$aln <-as.numeric(substr(snps_pa_overall_activity_mother$mother_snp_overallact_FID, 1, 5))
+snps_pa_overall_activity_mother$qlet<-substr(snps_pa_overall_activity_mother$mother_snp_overallact_FID, 6, 6)
+snps_pa_overall_activity_mother<-snps_pa_overall_activity_mother[-c(1:6)]
+
+snps_alcohol_buestguess_children$aln <-as.numeric(substr(snps_alcohol_buestguess_children$children_snp_alc_FID, 1, 5))
+snps_alcohol_buestguess_children$qlet<-substr(snps_alcohol_buestguess_children$children_snp_alc_FID, 6, 6)
+snps_alcohol_buestguess_children<-snps_alcohol_buestguess_children[-c(1:6)]
+
+snps_caffeine_buestguess_children$aln <-as.numeric(substr(snps_caffeine_buestguess_children$children_snp_caff_FID, 1, 5))
+snps_caffeine_buestguess_children$qlet<-substr(snps_caffeine_buestguess_children$children_snp_caff_FID, 6, 6)
+snps_caffeine_buestguess_children<-snps_caffeine_buestguess_children[-c(1:6)]
+
+snps_smoking_age_init_buestguess_children$aln <-as.numeric(substr(snps_smoking_age_init_buestguess_children$children_snp_age_init_FID, 1, 5))
+snps_smoking_age_init_buestguess_children$qlet<-substr(snps_smoking_age_init_buestguess_children$children_snp_age_init_FID, 6, 6)
+snps_smoking_age_init_buestguess_children<-snps_smoking_age_init_buestguess_children[-c(1:6)]
+
+snps_smoking_cessation_buestguess_children$aln <-as.numeric(substr(snps_smoking_cessation_buestguess_children$children_snp_cessation_FID, 1, 5))
+snps_smoking_cessation_buestguess_children$qlet<-substr(snps_smoking_cessation_buestguess_children$children_snp_cessation_FID, 6, 6)
+snps_smoking_cessation_buestguess_children<-snps_smoking_cessation_buestguess_children[-c(1:6)]
+
+snps_smoking_cigs_pd_buestguess_children$aln <-as.numeric(substr(snps_smoking_cigs_pd_buestguess_children$children_snp_cigspd_FID, 1, 5))
+snps_smoking_cigs_pd_buestguess_children$qlet<-substr(snps_smoking_cigs_pd_buestguess_children$children_snp_cigspd_FID, 6, 6)
+snps_smoking_cigs_pd_buestguess_children<-snps_smoking_cigs_pd_buestguess_children[-c(1:6)]
+
+snps_smoking_initiation_buestguess_children$aln <-as.numeric(substr(snps_smoking_initiation_buestguess_children$children_snp_initiation_FID, 1, 5))
+snps_smoking_initiation_buestguess_children$qlet<-substr(snps_smoking_initiation_buestguess_children$children_snp_initiation_FID, 6, 6)
+snps_smoking_initiation_buestguess_children<-snps_smoking_initiation_buestguess_children[-c(1:6)]
+
+snps_pa_sedentary_buestguess_children$aln <-as.numeric(substr(snps_pa_sedentary_buestguess_children$children_snp_sedentary_FID, 1, 5))
+snps_pa_sedentary_buestguess_children$qlet<-substr(snps_pa_sedentary_buestguess_children$children_snp_sedentary_FID, 6, 6)
+snps_pa_sedentary_buestguess_children<-snps_pa_sedentary_buestguess_children[-c(1:6)]
+
+snps_pa_overall_activity_children$aln <-as.numeric(substr(snps_pa_overall_activity_children$children_snp_overallact_FID, 1, 5))
+snps_pa_overall_activity_children$qlet<-substr(snps_pa_overall_activity_children$children_snp_overallact_FID, 6, 6)
+snps_pa_overall_activity_children<-snps_pa_overall_activity_children[-c(1:6)]
+
+dat<-left_join(dat,snps_alcohol_buestguess_mother[,-which(colnames(snps_alcohol_buestguess_mother) =="qlet")], by =c("aln"))
+dat<-left_join(dat,snps_alcohol_buestguess_children, by =c("aln", "qlet"))
+
+dat<-left_join(dat,snps_caffeine_buestguess_mother[,-which(colnames(snps_caffeine_buestguess_mother) =="qlet")], by =c("aln"))
+dat<-left_join(dat,snps_caffeine_buestguess_children, by =c("aln", "qlet"))
+
+dat<-left_join(dat,snps_smoking_age_init_buestguess_mother[,-which(colnames(snps_smoking_age_init_buestguess_mother) =="qlet")], by =c("aln"))
+dat<-left_join(dat,snps_smoking_age_init_buestguess_children, by =c("aln", "qlet"))
+
+dat<-left_join(dat,snps_smoking_cessation_buestguess_mother[,-which(colnames(snps_smoking_cessation_buestguess_mother) =="qlet")], by =c("aln"))
+dat<-left_join(dat,snps_smoking_cessation_buestguess_children, by =c("aln", "qlet"))
+
+dat<-left_join(dat,snps_smoking_cigs_pd_buestguess_mother[,-which(colnames(snps_smoking_cigs_pd_buestguess_mother) =="qlet")], by =c("aln"))
+dat<-left_join(dat,snps_smoking_cigs_pd_buestguess_children, by =c("aln", "qlet"))
+
+dat<-left_join(dat,snps_smoking_initiation_buestguess_mother[,-which(colnames(snps_smoking_initiation_buestguess_mother) =="qlet")], by =c("aln"))
+dat<-left_join(dat,snps_smoking_initiation_buestguess_children, by =c("aln", "qlet"))
+
+dat<-left_join(dat,snps_pa_sedentary_buestguess_mother[,-which(colnames(snps_pa_sedentary_buestguess_mother) =="qlet")], by =c("aln"))
+dat<-left_join(dat,snps_pa_sedentary_buestguess_children, by =c("aln", "qlet"))
+
+dat<-left_join(dat,snps_pa_overall_activity_mother[,-which(colnames(snps_pa_overall_activity_mother) =="qlet")], by =c("aln"))
+dat<-left_join(dat,snps_pa_overall_activity_children, by =c("aln", "qlet"))
+
+principal_components_mother<-read_dta("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/principal_components/final_pcs/mums_pcs.dta")
+principal_components_child<-read_dta("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/principal_components/final_pcs/children_pcs.dta")
+
+
+dat<-left_join(dat,principal_components_mother[,-which(colnames(principal_components_mother) =="qlet")], by =c("aln"))
+dat<-left_join(dat,principal_components_child, by =c("aln", "qlet"))
+
+
+#paternal med diet
+dat -> alspac.table
+
+colnames(alspac.table) <- tolower(colnames(alspac.table))
+
+
+vars=c(
+  "pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
+  "pb027", "pb028", "pb029", "pb030", "pb031", "pb032", "pb033", 
+  "pb036", "pb040", "pb041a", "pb042a", "pb043a", "pb044a", "pb046", "pb047a","pb048a", 
+  "pb049a", "pb050a", "pb051a", "pb052a","pb054","pb058")
+
+# replace missing values with 0
+
+alspac.table[,vars]<-replace(alspac.table[,vars],alspac.table[,vars]<0,0)
+
+
+
+keep_vars<-c("aln",
+             "pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
+             "pb027", "pb028", "pb029", "pb030", "pb031", "pb032", "pb033", 
+             "pb036", "pb040", "pb041a","pb042a", "pb043a", "pb044a","pb046", "pb047a","pb048a", 
+             "pb049a", "pb050a", "pb051a", "pb052a","pb054","pb058")
+
+dad.food.data <-alspac.table[,keep_vars]
+
+
+vars<-c("pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
+        "pb027", "pb028", "pb029", "pb030", "pb031", "pb032", "pb033", 
+        "pb036")
+
+dad.food.data[,vars]<-sapply(alspac.table[,vars],recode,
+                             "1"=0,
+                             "2"=0.5,
+                             "3"=2,
+                             "4"=5.5,
+                             "5"=10)
+
+dad.food.data$pb040[alspac.table$pb040<0] <- 1.5
+dad.food.data$pb040<-recode(alspac.table$pb040, 
+                       "0"=0,
+                       "1"=0,
+                       "2"=1.5,
+                       "3"=3.5,
+                       "4"=6)
+
+# pb046 slices of bread with fat 
+# missing   2 !! why i missing 2 and not NA
+# values>7  6
+dad.food.data$pb046[alspac.table$pb046<0] <- 2
+dad.food.data$pb046[alspac.table$pb046>7] <- 6
+
+
+# eats types of bread
+# 1 Yes 1
+# 2 No  0
+# !! again missing coded to 0 (no). check
+dad.food.data$pb041a[alspac.table$pb041a!=1] <- 0
+dad.food.data$pb042a[alspac.table$pb042a!=1] <- 0
+dad.food.data$pb043a[alspac.table$pb043a!=1] <- 0
+
+
+#milk in tea, coffee, pudding, as drink, in milky drink
+# !! again missing coded to 0 (no). check
+
+# 0 (recoded from missing) 0
+# 1 Usually             1
+# 2 Sometimes           0.5
+# 3 Never               0
+
+vars=c("pb047a","pb048a","pb049a","pb050a","pb051a","pb052a") 
+
+dad.food.data[,vars]<-sapply(alspac.table[,vars], recode,
+                         "0"=0,
+                         "1"=1,
+                         "2"=0.5,
+                         "3"=0)
+
+dad.food.gp=data.frame(aln=alspac.table$aln,
+                   qlet=alspac.table$qlet,
+                   vegetables=NA,
+                   legumes=NA,
+                   fruitnuts=NA,
+                   dairy=NA,
+                   cereals=NA,
+                   meat=NA,
+                   fish=NA,
+                   oliveoil=NA,
+                   alcohol=NA)
+
+
+dad.food.gp$vegetables <- 119 * dad.food.data$pb029 +
+                        60 * dad.food.data$pb030 +
+                        80 * dad.food.data$pb032 +
+                        87 * dad.food.data$pb031
+
+# these are portions per week - convert to daily:
+dad.food.gp$vegetables <- dad.food.gp$vegetables/7
+
+
+
+
+dad.food.gp$fruitnuts <- 118 * dad.food.data$pb033 +
+                          52 * dad.food.data$pb036
+
+# these are portions per week - convert to daily:
+dad.food.gp$fruitnuts <- dad.food.gp$fruitnuts/7
+
+
+
+dad.food.data$milk <- 30 * dad.food.data$pb047a * 2/3 +
+                  30 * dad.food.data$pb048a * 2/3 +
+                   100 * dad.food.data$pb049a * 2/3 +
+  150 * dad.food.data$pb050a * 2/3 +
+  200 * dad.food.data$pb051a * 2/3 +
+  260 * dad.food.data$pb052a * 2/3
+  
+### Other pat.kcal:
+# c209 cheese   46g
+# c210 pizza    60.3g
+
+
+# need  to add dairy (as in mums)
+
+
+  #vector of portion sizes for each type of bread
+b.portion <- matrix(c(36, 36, 36, 68),4,1)
+
+# matrix of bread types eaten: rows are observations, 4 cols for bread types
+# matrix contains 1 if type is eaten, 0 otherwise
+b.mat <- as.matrix(dad.food.data[,c("pb041a","pb042a","pb043a","pb044a")] )
+# count number of different types of bread eaten
+n.btype <- apply(b.mat ,1,sum,na.rm=T)
+
+
+b.mat[n.btype>0,] <- b.mat[n.btype>0,]/n.btype[n.btype>0]
+
+# calculate total portion size for a person, given the breads they eat
+dad.food.data$bread <- b.mat %*% b.portion 
+
+# and calculate daily amount from portinos eaten per day
+dad.food.data$bread <- dad.food.data$bread * dad.food.data$pb040
+
+
+
+dad.food.gp$meat <-  80 * dad.food.data$pb020 +
+  129 * dad.food.data$pb021 +
+  88 * dad.food.data$pb022 +
+  100 * dad.food.data$pb023 +
+  98 * dad.food.data$pb024
+
+
+# these are portions per week - convert to daily:
+dad.food.gp$meat <- dad.food.gp$meat/7
+
+
+
+dad.food.gp$fish <- 130 * dad.food.data$pb025 +
+  119 * dad.food.data$pb026 +
+  89 * dad.food.data$pb027
+
+# these are portions per week - convert to daily:
+dad.food.gp$fish <- dad.food.gp$fish/7
+
+#!! check below for dad. inclusion etc:
+  # Additional code
+  
+  pheno <- dad.food.gp
+pheno$pat.kcal <- alspac.table$c3804 # this is the wrong variable for total paternal energy intake
+pheno$pat.kcal[pheno$pat.kcal<0]<-NA
+pheno$pat.kcal <- pheno$pat.kcal/4.184 # convert kj to kcal
+
+
+
+# Vegetables
+pheno$veg1000kcal <- (pheno$vegetables / pheno$pat.kcal * 1000)
+pheno$vegrmed <- with(pheno, factor(findInterval(pheno$veg1000kcal, c(-Inf, quantile(pheno$veg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$vegrmed <- revalue(as.character(pheno$vegrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$vegrmed <- as.numeric(pheno$vegrmed)
+
+# Legumes
+pheno$leg1000kcal <- (pheno$legumes / pheno$pat.kcal * 1000)
+pheno$legrmed <- with(pheno, factor(findInterval(pheno$leg1000kcal, c(-Inf, quantile(pheno$leg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$legrmed <- revalue(as.character(pheno$legrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$legrmed <- as.numeric(pheno$legrmed)
+
+# Fruit incl nuts	
+pheno$fruit1000kcal <- (pheno$fruitnuts / pheno$pat.kcal * 1000)
+pheno$fruitrmed <- with(pheno, factor(findInterval(pheno$fruit1000kcal, c(-Inf, quantile(pheno$fruit1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$fruitrmed <- revalue(as.character(pheno$fruitrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$fruitrmed <- as.numeric(pheno$fruitrmed)
+
+# Fish and seafood								
+pheno$fish1000kcal <- (pheno$fish / pheno$pat.kcal * 1000)
+pheno$fishrmed <- with(pheno, factor(findInterval(pheno$fish1000kcal, c(-Inf, quantile(pheno$fish1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$fishrmed <- revalue(as.character(pheno$fishrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$fishrmed <- as.numeric(pheno$fishrmed)
+
+# Cereals								
+pheno$cereal1000kcal <- (pheno$cereals / pheno$pat.kcal * 1000)
+pheno$cerealrmed <- with(pheno, factor(findInterval(pheno$cereal1000kcal, c(-Inf, quantile(pheno$cereal1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$cerealrmed <- revalue(as.character(pheno$cerealrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
+pheno$cerealrmed <- as.numeric(pheno$cerealrmed)
+
+# Meat								
+pheno$meat1000kcal <- (pheno$meat / pheno$pat.kcal * 1000)
+pheno$meatrmed <- with(pheno, factor(findInterval(pheno$meat1000kcal, c(-Inf, quantile(pheno$meat1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$meatrmed <- revalue(as.character(pheno$meatrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
+pheno$meatrmed <- as.numeric(pheno$meatrmed)
+
+# Dairy								
+pheno$dairy1000kcal <- (pheno$dairy / pheno$pat.kcal * 1000)
+pheno$dairyrmed <- with(pheno, factor(findInterval(pheno$dairy1000kcal, c(-Inf, quantile(pheno$dairy1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
+pheno$dairyrmed <- revalue(as.character(pheno$dairyrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
+pheno$dairyrmed <- as.numeric(pheno$dairyrmed)
+
+
+
+# Alcohol
+pheno$alcoholrmed <- 0
+pheno$alcoholrmed[pheno$alcohol>=5 & pheno$alcohol<=25] <- 2
+
+
+# in ALSPAC, we have to do this for oliveoil
+## Please note that the first "tertile" will be those with no oliveoil consumption, since >33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
+pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$pat.kcal * 1000)
+pheno$oliveoilrmed_notzero <- ifelse(pheno$oliveoil1000kcal == 0, NA, pheno$oliveoil1000kcal)
+pheno$oliveoilrmed <- with(pheno, factor(findInterval(pheno$oliveoilrmed_notzero, c(0.0000001, quantile(pheno$oliveoilrmed_notzero, probs=c(0.5), na.rm=T), Inf)), labels=c("1","2"))) ## CHECK WITH LEANNE AS I HAD TO CHANGE 0.01 TO 0.0000001
+pheno$oliveoilrmed <- as.numeric(pheno$oliveoilrmed)
+pheno$oliveoilrmed[pheno$oliveoil1000kcal==0] <- 0 #because more than 33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
+pheno$oliveoilrmed_notzero <-NULL
+
+## Check tertiles
+df <- melt(pheno[,grep("rmed",colnames(pheno))])
+
+################
+# Construct rMED
+################
+pheno$rmed <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed + pheno$cerealrmed + pheno$meatrmed + pheno$dairyrmed + pheno$oliveoilrmed + pheno$alcoholrmed
+
+################
+# Construct rMED2
+################
+pheno$rmed2 <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed + pheno$cerealrmed + pheno$meatrmed + pheno$dairyrmed + pheno$oliveoilrmed
+
+
+
+names(pheno) <- c("aln","qlet",paste0("diet_father_",names(pheno)[3:ncol(pheno)],"_ever_pregnancy_continuous"))
+
+
+dat <- left_join(dat,pheno,by=c("aln","qlet"),all.x=T)
+
+saveRDS(dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds")
 
 ```
 
