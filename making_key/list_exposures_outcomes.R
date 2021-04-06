@@ -1,6 +1,6 @@
 # Create list of exposures and outcomes
 
-sep_exposures <- names(dat)[grep(names(dat),pattern="covs_edu|covs_occu")]
+sep_exposures <- names(dat)[grep(names(dat),pattern="highestlowest")]
 smoking_exposures <- names(dat)[grep(names(dat),pattern="smoking_m|smoking_f|_smoking_")]
 prs_smoking_exposures <- names(dat)[grep(names(dat),pattern="mother_smoking|child_smoking")]
 alcohol_exposures <- names(dat)[grep(names(dat),pattern="alcohol_m|alcohol_f|score_child_alcohol|score_mother_alcohol")]
@@ -71,7 +71,6 @@ cognitive_schoolreadiness_outcomes <-names(dat)[grep(names(dat),pattern="schoolr
 cognitive_namingvocab_outcomes <-names(dat)[grep(names(dat),pattern="namingvocab")]
 cognitive_problemsolving_outcomes <-names(dat)[grep(names(dat),pattern="problemsolving")]
 cognitive_spatialawareness_outcomes <-names(dat)[grep(names(dat),pattern="spatialawareness")]
-
 
 sbp_outcomes <-names(dat)[grep(names(dat),pattern="cardio_sbp")]
 dbp_outcomes <-names(dat)[grep(names(dat),pattern="cardio_dbp")]

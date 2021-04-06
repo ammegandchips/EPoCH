@@ -2086,6 +2086,7 @@ dat<-dat[,-which(colnames(dat)%in%phys_act_vars)]
 The following code was developed in NutriPROGRAM so has a different format/approach to the rest of the code in this document. But it does the job.
 
 *Maternal diet
+
 ```{r eval=FALSE, include=TRUE}
 var.names <- c(#FFQ
 #start of weekly variables
@@ -2726,450 +2727,6 @@ rmed_summary <- df %>% group_by(variable) %>%
   kable()
 
 names(pheno) <- c("aln","qlet",paste0("diet_mother_",names(pheno)[3:ncol(pheno)],"_ever_pregnancy_continuous"))
-dat <- left_join(dat,pheno,by=c("aln","qlet"),all.x=T)
-
-```
-
-*Paternal diet
-
-```{r eval=FALSE, include=TRUE}
-##!! need to run and check this
-
-
-dads.var.names<-c(
-"pb020", # Frequency eating sausages or burgers
-"pb021", # Freq eating pies or pastries
-"pb022", # freq eating meat
-"pb023", # freq eating poultry
-"pb024", # freq eating offal
-"pb025", # freq eating white fish 
-"pb026", # freq eatig oily fish   
-"pb027", # freq eating shellfish
-"pb028", # freq eating fried food
-"pb029", # freq eating cabbage or sim
-"pb030", # freq eating carrots
-"pb031", # freq eating other veg
-"pb032", # freq eating salad
-"pb033", # freq eating fresh fruit
-"pb036", # freq eating nuts
-
-#coded different:
-  
-"pb040", # slices of bread or chappatis eaten per day
-"pb041a", # eat white bread (binary yes no)
-"pb042a", # eat brown/granary
-"pb043a", # eat wholemeal binary
-"pb044a", # eat chappaits binary
-"pb046", #eat bread with fat
-
-"pb047a", # milk in tea
-"pb048a", # milk in coffee
-"pb049a", # milk on breakfast cereal
-"pb050a", # milk as pudding
-"pb051a", # milk on its own
-"pb052a", # milk as milky drink
-
-#counted:
-  "pb054", # cups of tea per day
-"pb058" # cups of coffee per day
-)
-
-
-alspac.vars <-findVars(dads.var.names)
-
-alspac.table<-extractVars(dads.var.names)
-
-
-# Check variable names: 
-colnames(alspac.table) <- tolower(colnames(alspac.table))
-
-
-#########################################
-# Missing Data
-#########################################
-
-# Missing data are negative values
-
-# set missings to 0 for these variables
-# (ie if missing assume not consumed at all)
-
-vars=c(
-  "pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
-  "pb027", "pb028", "pb029", "pb030", "pb031", "pb032", "pb033", 
-  "pb036", "pb040", "pb041a", "pb042a", "pb043a", "pb044a", "pb046", "pb047a","pb048a", 
-  "pb049a", "pb050a", "pb051a", "pb052a","pb054","pb058")
-
-# replace missing values with 0
-
-alspac.table[,vars]<-replace(alspac.table[,vars],alspac.table[,vars]<0,0)
-
-
-keep_vars<-c("aln",
-             "pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
-             "pb027", "pb028", "pb029", "pb030", "pb031", "pb032", "pb033", 
-             "pb036", "pb040", "pb041a","pb042a", "pb043a", "pb044a","pb046", "pb047a","pb048a", 
-             "pb049a", "pb050a", "pb051a", "pb052a","pb054","pb058")
-
-dad.food.data <-alspac.table[,keep_vars]
-
-#########################################################
-# convert all categorical frequency variables into number 
-# of times eaten per week
-#########################################################
-
-# FREQ
-# 1  Never or rarely    0
-# 2  Once in 2WKS       0.5
-# 3  1-3 times PWK      2
-# 4  4-7 times PWK      5.5
-# 5  >once a day        10
-
-vars<-c("pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
-        "pb027", "pb028", "pb029", "pb030", "pb031", "pb032", "pb033", 
-        "pb036")
-
-dad.food.data[,vars]<-sapply(alspac.table[,vars],recode,
-                             "1"=0,
-                             "2"=0.5,
-                             "3"=2,
-                             "4"=5.5,
-                             "5"=10)
-
-# pb040 slices of bread
-# missing       1.5
-# 1 <1          0
-# 2 1-2         1.5
-# 3 3-4         3.5
-# 4 5 or more   6
-
-dad.food.data$pb040[alspac.table$pb040<0] <- 1.5
-dad.food.data$pb040<-recode(alspac.table$pb040, 
-                       "0"=0,
-                       "1"=0,
-                       "2"=1.5,
-                       "3"=3.5,
-                       "4"=6)
-
-# pb046 slices of bread with fat 
-# missing   2 !! why i missing 2 and not NA
-# values>7  6
-dad.food.data$pb046[alspac.table$pb046<0] <- 2
-dad.food.data$pb046[alspac.table$pb046>7] <- 6
-
-
-# eats types of bread
-# 1 Yes 1
-# 2 No  0
-# !! again missing coded to 0 (no). check
-dad.food.data$pb041a[alspac.table$pb041a!=1] <- 0
-dad.food.data$pb042a[alspac.table$pb042a!=1] <- 0
-dad.food.data$pb043a[alspac.table$pb043a!=1] <- 0
-
-
-#milk in tea, coffee, pudding, as drink, in milky drink
-# !! again missing coded to 0 (no). check
-
-# 0 (recoded from missing) 0
-# 1 Usually             1
-# 2 Sometimes           0.5
-# 3 Never               0
-vars=c("pb047a","pb048a","pb049a","pb050a","pb051a","pb052a") 
-
-dad.food.data[,vars]<-sapply(alspac.table[,vars], recode,
-                         "0"=0,
-                         "1"=1,
-                         "2"=0.5,
-                         "3"=0)
-
-
-# variables in dad.food.data now have appropriate frequencies
-
-  
-  ###########################################                        
-#Set up a data frame for the output: dad.food.gp
-
-
-
-# From EWAS Script:
-# 'Necessary variable names are: "sample.id","vegetables",
-# "legumes","fruitnuts","dairy","cereals","meat","fish",
-# "oliveoil","alcohol","sex","mat.edu","mat.age",
-# "mat.smoking","mat.bmi","mat.kcal","batch"
-# -in that order
-#
-# I don't have all these variables, so food.gp contains the 
-# first ten of these (ID plus nine food groups) in the correct 
-# order.
-# However, see (unchecked)  code at end from another file that 
-# purports to be the remaining variables needed
-
-dad.food.gp=data.frame(aln=alspac.table$aln,
-                   qlet=alspac.table$qlet,
-                   vegetables=NA,
-                   legumes=NA,
-                   fruitnuts=NA,
-                   dairy=NA,
-                   cereals=NA,
-                   meat=NA,
-                   fish=NA,
-                   oliveoil=NA,
-                   alcohol=NA)
-
-###########################################
-#"pb029", # freq eating cabbage or sim
-#"pb030", # freq eating carrots
-#"pb031", # freq eating other veg
-#"pb032", # freq eating salad
-#"pb033", # freq eating fresh fruit
-#"pb036", # freq eating nuts
-
-###################### Vegetables
-# Use variables: 
-#   pb029 leafy green    119g
-#   pb030 carrots        60g
-#   pb032 salad          80g
-# pb031 other veg (assuming this is root) 87g
-
-#in mums as:
-#()   c227 other root veg 87g
-#   c225 other green    132g)
-
-
-dad.food.gp$vegetables <- 119 * dad.food.data$pb029 +
-                        60 * dad.food.data$pb030 +
-                        80 * dad.food.data$pb032 +
-                        87 * dad.food.data$pb031
-
-# these are portions per week - convert to daily:
-dad.food.gp$vegetables <- dad.food.gp$vegetables/7
-
-
-###################### Fruit & Nuts
-# pb033 fresh fruit  118g
-# pb036 nuts          52g
-
-dad.food.gp$fruitnuts <- 118 * dad.food.data$pb033 +
-                          52 * dad.food.data$pb036
-
-# these are portions per week - convert to daily:
-dad.food.gp$fruitnuts <- dad.food.gp$fruitnuts/7
-
-###################### Dairy
-
-### milk:
-# pb047a  in tea          30g per cup
-# pb048a in coffee        30g per cup
-# pb049a in cereal        100g per cereal
-# pb050a in pudding       150g
-# pb051a as a drink       200g
-# pb052a in milky drink   260g
-# no measure of frequency for these  beyond usually/sometimes -
-# previous code has a factor 2/3 which I think is
-# interpreting 'usually have a milk drink' as on 2 in 3 days
-# 'sometimes' has a value of 0.5, so is thus on 1 in 3 days
-
-
-
-dad.food.data$milk <- 30 * dad.food.data$pb047a * 2/3 +
-                  30 * dad.food.data$pb048a * 2/3 +
-                   100 * dad.food.data$pb049a * 2/3 +
-  150 * dad.food.data$pb050a * 2/3 +
-  200 * dad.food.data$pb051a * 2/3 +
-  260 * dad.food.data$pb052a * 2/3
-  
-  
-  ###################### Cereals
-  
-  
-  ### bread:
-  # pb040 portions eaten per day
-  
-  # Types of bread eaten
-  # pb041a white    36g
-  # pb042a brown    36g
-# pb043a wholemeal    36g
-# pb044a chapati    68g
-# pb045a Dont usually eat any bread
-
-
-#vector of portion sizes for each type of bread
-b.portion <- matrix(c(36, 36, 36, 68),4,1)
-
-# matrix of bread types eaten: rows are observations, 4 cols for bread types
-# matrix contains 1 if type is eaten, 0 otherwise
-b.mat <- as.matrix(dad.food.data[,c("pb041a","pb042a","pb043a","pb044a")] )
-# count number of different types of bread eaten
-n.btype <- apply(b.mat ,1,sum,na.rm=T)
-
-# scale bread matrix to be proportions  - 
-# so if eat two types of bread, then half for each
-# (avoid dividing by zero if there are none)
-b.mat[n.btype>0,] <- b.mat[n.btype>0,]/n.btype[n.btype>0]
-
-# calculate total portion size for a person, given the breads they eat
-dad.food.data$bread <- b.mat %*% b.portion 
-
-# and calculate daily amount from portinos eaten per day
-dad.food.data$bread <- dad.food.data$bread * dad.food.data$pb040
-
-
-###################### Meat
-# pb020 sausages/burgers 80g
-# pb021 pies/pasties    129g
-# pb022 red meat         88g
-# pb023 poultry          100g
-# pb024 offal            98g
-
-
-dad.food.gp$meat <-  80 * dad.food.data$pb020 +
-  129 * dad.food.data$pb021 +
-  88 * dad.food.data$pb022 +
-  100 * dad.food.data$pb023 +
-  98 * dad.food.data$pb024
-
-# these are portions per week - convert to daily:
-dad.food.gp$meat <- dad.food.gp$meat/7
-
-
-###################### Fish
-
-# pb025 white fish   130g
-# pb026 oily fish    119g
-# pb027 shellfish    89g
-
-food.gp$fish <- 130 * dad.food.data$pb025 +
-  119 * dad.food.data$pb026 +
-  89 * dad.food.data$pb027
-
-# these are portions per week - convert to daily:
-dad.food.gp$fish <- dad.food.gp$fish/7
-
-#!! check below for dad. inclusion etc:
-  # Additional code
-  
-  pheno <- dad.food.gp
-pheno$pat.kcal <- alspac.table$c3804 #need to replace this with total energy intake for dads
-pheno$pat.kcal[pheno$pat.kcal<0]<-NA
-pheno$pat.kcal <- pheno$pat.kcal/4.184 # convert kj to kcal
-
-
-############################################
-# End of Med Diet calculations
-############################################
-
-# tidy up
-# remove interim variables
-rm(list=c("keep_vars","vars","nmiss","v",
-          "b.mat","n.btype","b.portion",
-          "f.mat","n.ftype","oil.p"))
-################
-# Construct food group tertiles
-# Please comment out (using # at beginning of each line) if your cohort does not have sufficient variation (not a normal distribution) in consumption of a food item (e.g. legumes or olive oil)
-# In that case, please see the next step of constructing alternative cut-offs
-################
-
-# first check the distribution of food items
-require(ggplot2)
-df <- melt(pheno[,-c(1:2)])
-fooditems_hist <- ggplot(df,aes(value))+
-  geom_histogram()+
-  facet_wrap(.~variable,scales="free")
-fooditems_summary <- df %>% group_by(variable) %>%
-  summarise(mean=mean(value,na.rm=T),sd=sd(value,na.rm=T),median=median(value,na.rm=T),lowerQ=quantile(value,0.25,na.rm=T),upperQ=quantile(value,0.75,na.rm=T)) %>%
-  kable()
-
-# Now generate tertiles
-
-# Vegetables
-pheno$veg1000kcal <- (pheno$vegetables / pheno$pat.kcal * 1000)
-pheno$vegrmed <- with(pheno, factor(findInterval(pheno$veg1000kcal, c(-Inf, quantile(pheno$veg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$vegrmed <- revalue(as.character(pheno$vegrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-pheno$vegrmed <- as.numeric(pheno$vegrmed)
-
-# Legumes
-pheno$leg1000kcal <- (pheno$legumes / pheno$pat.kcal * 1000)
-pheno$legrmed <- with(pheno, factor(findInterval(pheno$leg1000kcal, c(-Inf, quantile(pheno$leg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$legrmed <- revalue(as.character(pheno$legrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-pheno$legrmed <- as.numeric(pheno$legrmed)
-
-# Fruit incl nuts	
-pheno$fruit1000kcal <- (pheno$fruitnuts / pheno$pat.kcal * 1000)
-pheno$fruitrmed <- with(pheno, factor(findInterval(pheno$fruit1000kcal, c(-Inf, quantile(pheno$fruit1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$fruitrmed <- revalue(as.character(pheno$fruitrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-pheno$fruitrmed <- as.numeric(pheno$fruitrmed)
-
-# Fish and seafood								
-pheno$fish1000kcal <- (pheno$fish / pheno$pat.kcal * 1000)
-pheno$fishrmed <- with(pheno, factor(findInterval(pheno$fish1000kcal, c(-Inf, quantile(pheno$fish1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$fishrmed <- revalue(as.character(pheno$fishrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-pheno$fishrmed <- as.numeric(pheno$fishrmed)
-
-# Cereals								
-pheno$cereal1000kcal <- (pheno$cereals / pheno$pat.kcal * 1000)
-pheno$cerealrmed <- with(pheno, factor(findInterval(pheno$cereal1000kcal, c(-Inf, quantile(pheno$cereal1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$cerealrmed <- revalue(as.character(pheno$cerealrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-pheno$cerealrmed <- as.numeric(pheno$cerealrmed)
-
-# Meat								
-pheno$meat1000kcal <- (pheno$meat / pheno$pat.kcal * 1000)
-pheno$meatrmed <- with(pheno, factor(findInterval(pheno$meat1000kcal, c(-Inf, quantile(pheno$meat1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$meatrmed <- revalue(as.character(pheno$meatrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
-pheno$meatrmed <- as.numeric(pheno$meatrmed)
-
-# Dairy								
-pheno$dairy1000kcal <- (pheno$dairy / pheno$pat.kcal * 1000)
-pheno$dairyrmed <- with(pheno, factor(findInterval(pheno$dairy1000kcal, c(-Inf, quantile(pheno$dairy1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$dairyrmed <- revalue(as.character(pheno$dairyrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
-pheno$dairyrmed <- as.numeric(pheno$dairyrmed)
-
-# Olive oil [does not show a normal distribution in ALSPAC, so this code not used]
-##pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$pat.kcal * 1000)
-##pheno$oliveoilrmed <- with(pheno, factor(findInterval(pheno$oliveoil1000kcal, c(-Inf, quantile(pheno$oliveoil1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-##pheno$oliveoilrmed <- revalue(as.character(pheno$oliveoilrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-##pheno$oliveoilrmed <- as.numeric(pheno$oliveoilrmed)
-
-# Alcohol
-pheno$alcoholrmed <- 0
-pheno$alcoholrmed[pheno$alcohol>=5 & pheno$alcohol<=25] <- 2
-
-################
-# Construct alternative cut-offs if >33% has same intake, e.g. >33% of women in Generation R consumes no legumes
-# In this case remove this specific food group above from "Construct food group tertiles"
-################
-# in ALSPAC, we have to do this for oliveoil
-## Please note that the first "tertile" will be those with no oliveoil consumption, since >33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
-pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$pat.kcal * 1000)
-pheno$oliveoilrmed_notzero <- ifelse(pheno$oliveoil1000kcal == 0, NA, pheno$oliveoil1000kcal)
-pheno$oliveoilrmed <- with(pheno, factor(findInterval(pheno$oliveoilrmed_notzero, c(0.0000001, quantile(pheno$oliveoilrmed_notzero, probs=c(0.5), na.rm=T), Inf)), labels=c("1","2"))) ## CHECK WITH LEANNE AS I HAD TO CHANGE 0.01 TO 0.0000001
-pheno$oliveoilrmed <- as.numeric(pheno$oliveoilrmed)
-pheno$oliveoilrmed[pheno$oliveoil1000kcal==0] <- 0 #because more than 33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
-pheno$oliveoilrmed_notzero <-NULL
-
-## Check tertiles
-df <- melt(pheno[,grep("rmed",colnames(pheno))])
-tertile.table <- kable(table(df$variable, df$value))
-
-################
-# Construct rMED
-################
-pheno$rmed <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed + pheno$cerealrmed + pheno$meatrmed + pheno$dairyrmed + pheno$oliveoilrmed + pheno$alcoholrmed
-
-################
-# Construct rMED2
-################
-pheno$rmed2 <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed + pheno$cerealrmed + pheno$meatrmed + pheno$dairyrmed + pheno$oliveoilrmed
-
-# check distribution of med diet indices
-require(ggplot2)
-df <- melt(pheno[,c("rmed","rmed2")])
-rmed_hist <- ggplot(df,aes(value))+
-  geom_histogram()+
-  facet_wrap(.~variable,scales="free")
-rmed_summary <- df %>% group_by(variable) %>%
-  summarise(mean=mean(value,na.rm=T),sd=sd(value,na.rm=T),median=median(value,na.rm=T),lowerQ=quantile(value,0.25,na.rm=T),upperQ=quantile(value,0.75,na.rm=T)) %>%
-  kable()
-
-names(pheno) <- c("aln","qlet",paste0("diet_father_",names(pheno)[3:ncol(pheno)],"_ever_pregnancy_continuous"))
 dat <- left_join(dat,pheno,by=c("aln","qlet"),all.x=T)
 
 ```
@@ -4898,11 +4455,19 @@ dat$covs_edu_father[dat$c666a%in%c(2,3)]<-1 #O-level or vocational
 dat$covs_edu_father[dat$c666a==4]<-2 #A-level
 dat$covs_edu_father[dat$c666a==5]<-3 #Degree
 
+dat$covs_edu_father_highestlowest_binary <- NA
+dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==0] <- 0
+dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==3] <- 1
+
 dat$covs_edu_mother <- NA
 dat$covs_edu_mother[dat$c645a==1]<-0 #CSE/none
 dat$covs_edu_mother[dat$c645a%in%c(2,3)]<-1 #O-level or vocational
 dat$covs_edu_mother[dat$c645a==4]<-2 #A-level
 dat$covs_edu_mother[dat$c645a==5]<-3 #Degree
+
+dat$covs_edu_mother_highestlowest_binary <- NA
+dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==0] <- 0
+dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==3] <- 1
 
 dat$covs_occup_mother <- NA
 dat$covs_occup_mother[dat$c755%in%c(1,2)]<-3 #professional or managerial/technica
@@ -4910,11 +4475,19 @@ dat$covs_occup_mother[dat$c755==3]<-2 #skilled non-manual
 dat$covs_occup_mother[dat$c755==4]<-1 #skilled manual
 dat$covs_occup_mother[dat$c755%in%c(5,6)]<-0 #semi-skilled or unskilled
 
+dat$covs_occup_mother_highestlowest_binary <- NA
+dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==0] <- 0
+dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==3] <- 1
+
 dat$covs_occup_father <- NA
 dat$covs_occup_father[dat$c765%in%c(1,2)]<-3 #professional or managerial/technica
 dat$covs_occup_father[dat$c765==3]<-2 #skilled non-manual
 dat$covs_occup_father[dat$c765==4]<-1 #skilled manual
 dat$covs_occup_father[dat$c765%in%c(5,6)]<-0 #semi-skilled or unskilled
+
+dat$covs_occup_father_highestlowest_binary <- NA
+dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==0] <- 0
+dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==3] <- 1
 
 dat$covs_parity_mother_binary <-NA
 dat$covs_parity_mother_binary[dat$b032==0]<-0
@@ -8088,11 +7661,19 @@ dat$covs_edu_father[dat$c666a%in%c(2,3)]<-1 #O-level or vocational
 dat$covs_edu_father[dat$c666a==4]<-2 #A-level
 dat$covs_edu_father[dat$c666a==5]<-3 #Degree
 
+dat$covs_edu_father_highestlowest_binary <- NA
+dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==0] <- 0
+dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==3] <- 1
+
 dat$covs_edu_mother <- NA
 dat$covs_edu_mother[dat$c645a==1]<-0 #CSE/none
 dat$covs_edu_mother[dat$c645a%in%c(2,3)]<-1 #O-level or vocational
 dat$covs_edu_mother[dat$c645a==4]<-2 #A-level
 dat$covs_edu_mother[dat$c645a==5]<-3 #Degree
+
+dat$covs_edu_mother_highestlowest_binary <- NA
+dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==0] <- 0
+dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==3] <- 1
 
 dat$covs_occup_mother <- NA
 dat$covs_occup_mother[dat$c755%in%c(1,2)]<-3 #professional or managerial/technica
@@ -8100,11 +7681,19 @@ dat$covs_occup_mother[dat$c755==3]<-2 #skilled non-manual
 dat$covs_occup_mother[dat$c755==4]<-1 #skilled manual
 dat$covs_occup_mother[dat$c755%in%c(5,6)]<-0 #semi-skilled or unskilled
 
+dat$covs_occup_mother_highestlowest_binary <- NA
+dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==0] <- 0
+dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==3] <- 1
+
 dat$covs_occup_father <- NA
-dat$covs_occup_father[dat$c765%in%c(1,2)]<-3 #professional or managerial/technica
+dat$covs_occup_father[dat$c765%in%c(1,2)]<-3 #professional or managerial/technical
 dat$covs_occup_father[dat$c765==3]<-2 #skilled non-manual
 dat$covs_occup_father[dat$c765==4]<-1 #skilled manual
 dat$covs_occup_father[dat$c765%in%c(5,6)]<-0 #semi-skilled or unskilled
+
+dat$covs_occup_father_highestlowest_binary <- NA
+dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==0] <- 0
+dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==3] <- 1
 
 dat$covs_parity_mother_binary <-NA
 dat$covs_parity_mother_binary[dat$b032==0]<-0
@@ -8734,257 +8323,6 @@ principal_components_child<-read_dta("/Volumes/MRC-IEU-research/projects/ieu2/p5
 
 dat<-left_join(dat,principal_components_mother[,-which(colnames(principal_components_mother) =="qlet")], by =c("aln"))
 dat<-left_join(dat,principal_components_child, by =c("aln", "qlet"))
-
-
-#paternal med diet
-dat -> alspac.table
-
-colnames(alspac.table) <- tolower(colnames(alspac.table))
-
-
-vars=c(
-  "pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
-  "pb027", "pb028", "pb029", "pb030", "pb031", "pb032", "pb033", 
-  "pb036", "pb040", "pb041a", "pb042a", "pb043a", "pb044a", "pb046", "pb047a","pb048a", 
-  "pb049a", "pb050a", "pb051a", "pb052a","pb054","pb058")
-
-# replace missing values with 0
-
-alspac.table[,vars]<-replace(alspac.table[,vars],alspac.table[,vars]<0,0)
-
-
-
-keep_vars<-c("aln",
-             "pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
-             "pb027", "pb028", "pb029", "pb030", "pb031", "pb032", "pb033", 
-             "pb036", "pb040", "pb041a","pb042a", "pb043a", "pb044a","pb046", "pb047a","pb048a", 
-             "pb049a", "pb050a", "pb051a", "pb052a","pb054","pb058")
-
-dad.food.data <-alspac.table[,keep_vars]
-
-
-vars<-c("pb020", "pb021", "pb022", "pb023", "pb024", "pb025", "pb026",
-        "pb027", "pb028", "pb029", "pb030", "pb031", "pb032", "pb033", 
-        "pb036")
-
-dad.food.data[,vars]<-sapply(alspac.table[,vars],recode,
-                             "1"=0,
-                             "2"=0.5,
-                             "3"=2,
-                             "4"=5.5,
-                             "5"=10)
-
-dad.food.data$pb040[alspac.table$pb040<0] <- 1.5
-dad.food.data$pb040<-recode(alspac.table$pb040, 
-                       "0"=0,
-                       "1"=0,
-                       "2"=1.5,
-                       "3"=3.5,
-                       "4"=6)
-
-# pb046 slices of bread with fat 
-# missing   2 !! why i missing 2 and not NA
-# values>7  6
-dad.food.data$pb046[alspac.table$pb046<0] <- 2
-dad.food.data$pb046[alspac.table$pb046>7] <- 6
-
-
-# eats types of bread
-# 1 Yes 1
-# 2 No  0
-# !! again missing coded to 0 (no). check
-dad.food.data$pb041a[alspac.table$pb041a!=1] <- 0
-dad.food.data$pb042a[alspac.table$pb042a!=1] <- 0
-dad.food.data$pb043a[alspac.table$pb043a!=1] <- 0
-
-
-#milk in tea, coffee, pudding, as drink, in milky drink
-# !! again missing coded to 0 (no). check
-
-# 0 (recoded from missing) 0
-# 1 Usually             1
-# 2 Sometimes           0.5
-# 3 Never               0
-
-vars=c("pb047a","pb048a","pb049a","pb050a","pb051a","pb052a") 
-
-dad.food.data[,vars]<-sapply(alspac.table[,vars], recode,
-                         "0"=0,
-                         "1"=1,
-                         "2"=0.5,
-                         "3"=0)
-
-dad.food.gp=data.frame(aln=alspac.table$aln,
-                   qlet=alspac.table$qlet,
-                   vegetables=NA,
-                   legumes=NA,
-                   fruitnuts=NA,
-                   dairy=NA,
-                   cereals=NA,
-                   meat=NA,
-                   fish=NA,
-                   oliveoil=NA,
-                   alcohol=NA)
-
-
-dad.food.gp$vegetables <- 119 * dad.food.data$pb029 +
-                        60 * dad.food.data$pb030 +
-                        80 * dad.food.data$pb032 +
-                        87 * dad.food.data$pb031
-
-# these are portions per week - convert to daily:
-dad.food.gp$vegetables <- dad.food.gp$vegetables/7
-
-
-
-
-dad.food.gp$fruitnuts <- 118 * dad.food.data$pb033 +
-                          52 * dad.food.data$pb036
-
-# these are portions per week - convert to daily:
-dad.food.gp$fruitnuts <- dad.food.gp$fruitnuts/7
-
-
-
-dad.food.data$milk <- 30 * dad.food.data$pb047a * 2/3 +
-                  30 * dad.food.data$pb048a * 2/3 +
-                   100 * dad.food.data$pb049a * 2/3 +
-  150 * dad.food.data$pb050a * 2/3 +
-  200 * dad.food.data$pb051a * 2/3 +
-  260 * dad.food.data$pb052a * 2/3
-  
-### Other pat.kcal:
-# c209 cheese   46g
-# c210 pizza    60.3g
-
-
-# need  to add dairy (as in mums)
-
-
-  #vector of portion sizes for each type of bread
-b.portion <- matrix(c(36, 36, 36, 68),4,1)
-
-# matrix of bread types eaten: rows are observations, 4 cols for bread types
-# matrix contains 1 if type is eaten, 0 otherwise
-b.mat <- as.matrix(dad.food.data[,c("pb041a","pb042a","pb043a","pb044a")] )
-# count number of different types of bread eaten
-n.btype <- apply(b.mat ,1,sum,na.rm=T)
-
-
-b.mat[n.btype>0,] <- b.mat[n.btype>0,]/n.btype[n.btype>0]
-
-# calculate total portion size for a person, given the breads they eat
-dad.food.data$bread <- b.mat %*% b.portion 
-
-# and calculate daily amount from portinos eaten per day
-dad.food.data$bread <- dad.food.data$bread * dad.food.data$pb040
-
-
-
-dad.food.gp$meat <-  80 * dad.food.data$pb020 +
-  129 * dad.food.data$pb021 +
-  88 * dad.food.data$pb022 +
-  100 * dad.food.data$pb023 +
-  98 * dad.food.data$pb024
-
-
-# these are portions per week - convert to daily:
-dad.food.gp$meat <- dad.food.gp$meat/7
-
-
-
-dad.food.gp$fish <- 130 * dad.food.data$pb025 +
-  119 * dad.food.data$pb026 +
-  89 * dad.food.data$pb027
-
-# these are portions per week - convert to daily:
-dad.food.gp$fish <- dad.food.gp$fish/7
-
-#!! check below for dad. inclusion etc:
-  # Additional code
-  
-  pheno <- dad.food.gp
-pheno$pat.kcal <- alspac.table$c3804 # this is the wrong variable for total paternal energy intake
-pheno$pat.kcal[pheno$pat.kcal<0]<-NA
-pheno$pat.kcal <- pheno$pat.kcal/4.184 # convert kj to kcal
-
-
-
-# Vegetables
-pheno$veg1000kcal <- (pheno$vegetables / pheno$pat.kcal * 1000)
-pheno$vegrmed <- with(pheno, factor(findInterval(pheno$veg1000kcal, c(-Inf, quantile(pheno$veg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$vegrmed <- revalue(as.character(pheno$vegrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-pheno$vegrmed <- as.numeric(pheno$vegrmed)
-
-# Legumes
-pheno$leg1000kcal <- (pheno$legumes / pheno$pat.kcal * 1000)
-pheno$legrmed <- with(pheno, factor(findInterval(pheno$leg1000kcal, c(-Inf, quantile(pheno$leg1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$legrmed <- revalue(as.character(pheno$legrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-pheno$legrmed <- as.numeric(pheno$legrmed)
-
-# Fruit incl nuts	
-pheno$fruit1000kcal <- (pheno$fruitnuts / pheno$pat.kcal * 1000)
-pheno$fruitrmed <- with(pheno, factor(findInterval(pheno$fruit1000kcal, c(-Inf, quantile(pheno$fruit1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$fruitrmed <- revalue(as.character(pheno$fruitrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-pheno$fruitrmed <- as.numeric(pheno$fruitrmed)
-
-# Fish and seafood								
-pheno$fish1000kcal <- (pheno$fish / pheno$pat.kcal * 1000)
-pheno$fishrmed <- with(pheno, factor(findInterval(pheno$fish1000kcal, c(-Inf, quantile(pheno$fish1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$fishrmed <- revalue(as.character(pheno$fishrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-pheno$fishrmed <- as.numeric(pheno$fishrmed)
-
-# Cereals								
-pheno$cereal1000kcal <- (pheno$cereals / pheno$pat.kcal * 1000)
-pheno$cerealrmed <- with(pheno, factor(findInterval(pheno$cereal1000kcal, c(-Inf, quantile(pheno$cereal1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$cerealrmed <- revalue(as.character(pheno$cerealrmed), c("Q1"="0", "Q2"="1", "Q3"="2"))
-pheno$cerealrmed <- as.numeric(pheno$cerealrmed)
-
-# Meat								
-pheno$meat1000kcal <- (pheno$meat / pheno$pat.kcal * 1000)
-pheno$meatrmed <- with(pheno, factor(findInterval(pheno$meat1000kcal, c(-Inf, quantile(pheno$meat1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$meatrmed <- revalue(as.character(pheno$meatrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
-pheno$meatrmed <- as.numeric(pheno$meatrmed)
-
-# Dairy								
-pheno$dairy1000kcal <- (pheno$dairy / pheno$pat.kcal * 1000)
-pheno$dairyrmed <- with(pheno, factor(findInterval(pheno$dairy1000kcal, c(-Inf, quantile(pheno$dairy1000kcal, probs=c(0.33333, .66667),na.rm=T), Inf)), labels=c("Q1","Q2","Q3")))
-pheno$dairyrmed <- revalue(as.character(pheno$dairyrmed), c("Q1"="2", "Q2"="1", "Q3"="0"))
-pheno$dairyrmed <- as.numeric(pheno$dairyrmed)
-
-
-
-# Alcohol
-pheno$alcoholrmed <- 0
-pheno$alcoholrmed[pheno$alcohol>=5 & pheno$alcohol<=25] <- 2
-
-
-# in ALSPAC, we have to do this for oliveoil
-## Please note that the first "tertile" will be those with no oliveoil consumption, since >33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
-pheno$oliveoil1000kcal <- (pheno$oliveoil / pheno$pat.kcal * 1000)
-pheno$oliveoilrmed_notzero <- ifelse(pheno$oliveoil1000kcal == 0, NA, pheno$oliveoil1000kcal)
-pheno$oliveoilrmed <- with(pheno, factor(findInterval(pheno$oliveoilrmed_notzero, c(0.0000001, quantile(pheno$oliveoilrmed_notzero, probs=c(0.5), na.rm=T), Inf)), labels=c("1","2"))) ## CHECK WITH LEANNE AS I HAD TO CHANGE 0.01 TO 0.0000001
-pheno$oliveoilrmed <- as.numeric(pheno$oliveoilrmed)
-pheno$oliveoilrmed[pheno$oliveoil1000kcal==0] <- 0 #because more than 33% had olive oil intake of zero. The script won't run when one value crosses two tertiles
-pheno$oliveoilrmed_notzero <-NULL
-
-## Check tertiles
-df <- melt(pheno[,grep("rmed",colnames(pheno))])
-
-################
-# Construct rMED
-################
-pheno$rmed <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed + pheno$cerealrmed + pheno$meatrmed + pheno$dairyrmed + pheno$oliveoilrmed + pheno$alcoholrmed
-
-################
-# Construct rMED2
-################
-pheno$rmed2 <- pheno$vegrmed + pheno$legrmed + pheno$fruitrmed + pheno$fishrmed + pheno$cerealrmed + pheno$meatrmed + pheno$dairyrmed + pheno$oliveoilrmed
-
-
-
-names(pheno) <- c("aln","qlet",paste0("diet_father_",names(pheno)[3:ncol(pheno)],"_ever_pregnancy_continuous"))
-
 
 dat <- left_join(dat,pheno,by=c("aln","qlet"),all.x=T)
 

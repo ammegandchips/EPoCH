@@ -1070,6 +1070,21 @@ dat$covs_occup_father[raw_dat$apd05s00%in%c(2,3)]<-2 #intermediate and small emp
 dat$covs_occup_father[raw_dat$apd05s00==4]<-1 #low supervisory and technical
 dat$covs_occup_father[raw_dat$apd05s00==5]<-0 #semi-routine or routine
 
+dat$covs_edu_father_highestlowest_binary <- NA
+dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==0] <- 0
+dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==3] <- 1
+
+dat$covs_edu_mother_highestlowest_binary <- NA
+dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==0] <- 0
+dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==3] <- 1
+
+dat$covs_occup_mother_highestlowest_binary <- NA
+dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==0] <- 0
+dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==3] <- 1
+
+dat$covs_occup_father_highestlowest_binary <- NA
+dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==0] <- 0
+dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==3] <- 1
 
 ```
 

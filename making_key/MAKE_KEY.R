@@ -60,7 +60,7 @@ key$outcome_time <- NA
 key$outcome_type <- NA
 source_url(paste0(location_of_extra_functions,"specify_classes.R?raw=TRUE"))
 
-# define model 1a covariates (age and sex of child, + genetic principal components if exposure is PRS)
+# define model 1a covariates (age and sex of child, + ethnicity of parent + genetic principal components if exposure is PRS)
 
 print("defining model 1a covariates...")
 
@@ -87,6 +87,11 @@ key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","
 key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","snps")&key$person_exposed=="mother")]<-
   paste0(key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","snps")&key$person_exposed=="mother")],
          ",",paste0(names(dat)[grep(names(dat),pattern="mumpc")],collapse=","))
+
+## if exposure is NOT a PRS, add ethnicity of exposed parent
+
+key$covariates_model1a[key$person_exposed=="mother"]<-paste(key$covariates_model1a[key$person_exposed=="mother"],"covs_ethnicity_mother",sep=",")
+key$covariates_model1a[key$person_exposed=="father"]<-paste(key$covariates_model1a[key$person_exposed=="father"],"covs_ethnicity_father",sep=",")
 
 # define model 2a covariates 
 
@@ -161,9 +166,9 @@ key$other_parents_exposure<-unlist(lapply(x,paste,collapse=","))
 rm(x)
 
 key$covariates_model1b <- apply(key[,c("covariates_model1a","other_parents_exposure")],1,function(x) paste(na.omit(x),collapse=","))
-key$covariates_model2b <- apply(key[,c("covariates_model2a","other_parents_exposure")],1,function(x) paste(na.omit(x),collapse=","))
-key$covariates_model3b <- apply(key[,c("covariates_model3a","other_parents_exposure")],1,function(x) paste(na.omit(x),collapse=","))
-key$covariates_model4b <- apply(key[,c("covariates_model4a","other_parents_exposure")],1,function(x) paste(na.omit(x),collapse=","))
+key$covariates_model2b <- apply(key[,c("covariates_model2a","other_parents_exposure","other_parents_covariates")],1,function(x) paste(na.omit(x),collapse=","))
+key$covariates_model3b <- apply(key[,c("covariates_model3a","other_parents_exposure","other_parents_covariates")],1,function(x) paste(na.omit(x),collapse=","))
+key$covariates_model4b <- apply(key[,c("covariates_model4a","other_parents_exposure","other_parents_covariates")],1,function(x) paste(na.omit(x),collapse=","))
 
 key$covariates_model2b[key$exposure_subclass=="polygenic risk score"]<-NA
 key$covariates_model3b[key$exposure_subclass=="polygenic risk score"]<-NA
@@ -184,7 +189,7 @@ key$covariates_model4b <- unlist(lapply(lapply(str_split(key$covariates_model4b,
 
 # remove unnecessary columns
 
-key <- key[,-which(colnames(key) %in% c("child_age_covariates","basic_covariates","other_health_behaviours","extra_parent_covariates","previous_exposure_timepoints","potential_mediators","other_parents_exposure"))]
+key <- key[,-which(colnames(key) %in% c("child_age_covariates","basic_covariates","other_health_behaviours","extra_parent_covariates","previous_exposure_timepoints","potential_mediators","other_parents_exposure","other_parents_covariates"))]
 
 # save key
 
