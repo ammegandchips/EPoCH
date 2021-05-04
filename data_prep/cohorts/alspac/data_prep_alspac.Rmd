@@ -245,7 +245,7 @@ The benefit of using this package is that the withdrawals of consent are done au
 It is regularly updated, so may need to be re-installed periodically.
 ```{r eval=FALSE, include=TRUE}
 #install.packages("devtools")
-#library(devtools)
+library(devtools)
 #install_github("explodecomputer/alspac")
 ```
 
@@ -254,6 +254,7 @@ Loading the package and variables:
 library(alspac)
 
 setDataDir("/Volumes/sscm alspac/Data/") #telling the package where the data is stored (make sure you are connected to the ALSPAC server before running this)
+#setDataDir("/Volumes/Data/")
 
 current <- createDictionary("Current", name="current")
 useful <- createDictionary("Useful_data", name="useful")
@@ -2179,9 +2180,9 @@ var.names <- c(#FFQ
 "c305", #Cups of coffee per day
 "c306", #Spoons of sugar per cup of coffee
 "c310", #Drinks of cola PWK
-#"c373", #Total alcohol pwk
+"c373", #Total alcohol pwk
 				#covariates
-				"kz021", ## gender; 1 =male; 2= female
+			#	"kz021", ## gender; 1 =male; 2= female
                 "c3804"# DV: Daily energy intake (kJ) FFQ for mothers: 32-week gestation
 )
 
