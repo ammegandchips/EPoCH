@@ -218,7 +218,7 @@ childcif_vars <- c("cf054", "cf055", "cf056", "cf057", "cf058", "cf059","cf075",
                    "cf015", "cf016", "cf017","cf018","cf811","cf812","cf813","cf124","cf134", "cf144",
                    "cf143", "cf133", "cf123","cf018")
 
-childsamples_location <- "/Volumes/ALSPAC-Data/Current/Other/Samples/Child/child_bloods_4d.dta"
+childsamples_location <- "/Volumes/ALSPAC-Data/Current/Other/Samples/Child/Child_bloods_4e.dta"
 childsamples_vars <- c("trig_cord","Trig_CIF31", "Trig_CIF43", "TRIG_F7", "trig_f9","HDL_cord", "HDL_CIF31",
                        "HDL_CIF43", "HDL_F7", "HDL_f9","LDL_cord", "LDL_CIF31", "LDL_CIF43", "LDL_F7", "LDL_f9",
                        "chol_cord", "Chol_CIF31", "Chol_CIF43", "CHOL_F7", "CHOL_F9","Insulin_cord", 
@@ -235,7 +235,14 @@ df$idvars <- "aln"
 df$idvars[grepl("child|Child|kz|Cohort|Obstetric|centiles",df$location)] <-"aln,qlet"
 df$allvars <- apply(df,1,function(x) paste(c(as.character(x)[3],as.character(x)[2]),collapse=","))
 
-## READ IN DATA FROM ALSPAC
+## CHECK FILES EXIST (NEED TO UPDATE LOCATIONS IF NOT)
+useful_files <- list.files("/Volumes/ALSPAC-Data/Useful_data",full.names = TRUE,include.dirs = TRUE,recursive = TRUE)
+current_files <- list.files("/Volumes/ALSPAC-Data/Current",full.names = TRUE,include.dirs = TRUE,recursive = TRUE)
+
+all(df$locations[grep("Useful_data",df$locations)] %in% useful_files)==TRUE
+all(df$locations[grep("Current",df$locations)] %in% current_files)==TRUE
+
+## IF BOTH ABOVE LINES RETURN TRUE, READ IN DATA FROM ALSPAC
 require(haven)
 child_based <- apply(df[df$idvars=="aln,qlet",],1,function(x) try(read_dta(as.character(x[1]),col_select = unlist(strsplit(as.character(x[4]),split=",")))))
 parent_based <- apply(df[df$idvars=="aln",],1,function(x) try(read_dta(as.character(x[1]),col_select = unlist(strsplit(as.character(x[4]),split=",")))))
@@ -253,7 +260,6 @@ child_based <-c(list(child_df),child_based) #add kz back in at the start of the 
 child_df <- child_based  %>% purrr::reduce(left_join, by = c("aln","qlet"))
 
 dat <- full_join(child_df,parent_df,by="aln")
-dat <- haven::zap_labels(dat)
 
 # at this stage, we have 19982 children in dat. This matches the number in the kz file. 
 # It's made up of 14676 children in the core ALSPAC sample + 5306 children from non-core pregnancies. 

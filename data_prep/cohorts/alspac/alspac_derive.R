@@ -7,7 +7,7 @@ library(tidyverse)
 library(haven)
 raw_dat <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno_raw.rds")
 
-dat <- raw_dat
+dat <- haven::zap_labels(raw_dat)
 
 ##### ADMIN VARIABLES
 
@@ -1656,7 +1656,3 @@ dat <- left_join(dat,genetic_data,by=c("aln","qlet"),all.x=T)
 
 ##### Save file
 saveRDS(dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds")
-
-
-
-

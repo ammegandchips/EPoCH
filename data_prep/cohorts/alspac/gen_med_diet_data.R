@@ -1,7 +1,7 @@
 #Function for generating mediterranean diet data from raw_dat (ALSPAC)
 gen_med_diet_data <- function(){
   #Maternal mediterranean diet
-  alspac.table <- raw_dat
+  alspac.table <- haven::zap_labels(raw_dat)
   colnames(alspac.table) <- tolower(colnames(alspac.table))
   # set missings to 0 for these variables
   # (ie if missing assume not consumed at all)
