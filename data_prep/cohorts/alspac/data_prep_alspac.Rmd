@@ -2059,7 +2059,7 @@ dat <- left_join(dat,pa_data,by=c("aln","qlet"))
 ## Derive clean variables
 
 From Liu et al 2011 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3898349/: 
-"ALSPAC has included a series of physical activity questions, which were derived by the study team and tested by Wildschut et al. [29] Information on the frequency of women’s physical activity during pregnancy was collected using identical questions in both the 18 and 32-week antenatal self-administrated questionnaire. Women were asked “nowadays, at least once a week do you engage in any regular activity like brisk walking, gardening, housework, jogging, cycling etc., long enough to work up a sweat?” We defined these activities as strenuous on the basis that the participants were specifically asked to respond “yes” only if the activity was done to a level that induced sweating. Those who answered “Yes” were asked to report their number of hours per week spent in such an activity. Because the duration of strenuous physical activity was reported in hours not in minutes, we chose a cut-off point (≥3 h per week) to dichotomize women into two groups. The cut-off point is used to approximate the level of exercise at moderate intensity for 30 min or more a day for most days of the week recommended by ACOG for healthy pregnant women [24] and recognized by RCOG [26]."
+"ALSPAC has included a series of physical activity questions, which were derived by the study team and tested by Wildschut et al. [29] Information on the frequency of women’s physical activity during pregnancy was collected using identical questions in both the 18 and 32-week antenatal self-administrated questionnaire. Women were asked “nowadays, at least once a week do you engage in any regular activity like brisk walking, gardening, housework, jogging, cycling etc., long enough to work up a sweat?” We defined these activities as strenuous on the basis that the participants were specifically asked to respond “yes” only if the activity was done to a level that induced sweating. Those who answered “Yes” were asked to report their number of hours per week spent in such an activity. Because the duration of strenuous physical activity was reported in hours not in minutes, we chose a cut-off point (≥3 h per week) to define moderate PA. The cut-off point is used to approximate the level of exercise at moderate intensity for 30 min or more a day for most days of the week recommended by ACOG for healthy pregnant women [24] and recognized by RCOG [26]."
 
 * Maternal and paternal PA in the second trimester
 
@@ -3857,8 +3857,6 @@ dat$immuno_asthma_stage3_binary <-NA
 dat$immuno_asthma_stage3_binary[which(dat$kp3030==1 | dat$kq034a==2 | dat$kr041a==2 | dat$kr105a==2)] <-0
 dat$immuno_asthma_stage3_binary[which(dat$kp3030%in%c(2,3) | dat$kq034a==1 | dat$kr041a==1 | dat$kr105a==1)]  <-1
 
-# replace if doctor diagnosed
-dat$immuno_asthma_stage3_binary[which(dat$kr050==1)] <-1
 ```
 Stage 4 (around age 9; >=8 to <11) - ks1041 A3v: Child had asthma in past year, ks1240 A8p: Child given asthma medication in past year, kv1059 A4t: Child had asthma in past 12 months
 ```{r eval=FALSE, include=TRUE}
@@ -3866,8 +3864,7 @@ dat$immuno_asthma_stage4_binary <-NA
 dat$immuno_asthma_stage4_binary[which(dat$ks1041==3 | dat$ks1240==1 | dat$kv1059==3)] <-0
 dat$immuno_asthma_stage4_binary[which(dat$ks1041%in%c(1,2) | dat$ks1240%in%c(2,3)|dat$kv1059%in%c(1,2))] <-1
 
-# replace if doctor diagnosed
-dat$immuno_asthma_stage4_binary[which(dat$kv1070%in%c(1,3))] <-1
+
 ```
 
 Any timepoint
@@ -3875,6 +3872,10 @@ Any timepoint
 dat$immuno_asthma_allstages_binary <- rowSums(dat[,c("immuno_asthma_stage3_binary","immuno_asthma_stage4_binary")],na.rm=T)
 dat$immuno_asthma_allstages_binary[dat$immuno_asthma_allstages_binary>0]<-1
 dat$immuno_asthma_allstages_binary[which(is.na(dat$immuno_asthma_stage3_binary)&is.na(dat$immuno_asthma_stage4_binary))] <- NA
+
+# replace if doctor diagnosed
+dat$immuno_asthma_allstages_binary[which(dat$kr050==1)] <-1
+dat$immuno_asthma_allstages_binary[which(dat$kv1070%in%c(1,3))] <-1
 ```
 
 **Eczema-like rash or Eczema**
@@ -3909,7 +3910,6 @@ dat$immuno_eczema_stage4_binary <-NA
 dat$immuno_eczema_stage4_binary[which(dat$ks1042==3 | dat$ks1280==2 | dat$kv1110==2 | dat$kv1111==2)] <-0
 dat$immuno_eczema_stage4_binary[which(dat$ks1042%in%c(1,2) | dat$ks1280==1 | dat$kv1110==1 | dat$kv1111==1)] <-1
 
-dat$immuno_eczema_stage4_binary[which(dat$kv1070%in%c(2,3))] <-1
 ```
 
 Any timepoint
@@ -3917,8 +3917,9 @@ Any timepoint
 dat$immuno_eczema_allstages_binary <- rowSums(dat[,c("immuno_eczema_stage0_binary","immuno_eczema_stage1_binary","immuno_eczema_stage2_binary","immuno_eczema_stage3_binary","immuno_eczema_stage4_binary")],na.rm=T)
 dat$immuno_eczema_allstages_binary[dat$immuno_eczema_allstages_binary>0]<-1
 dat$immuno_eczema_allstages_binary[which(is.na(dat$immuno_eczema_stage0_binary) & is.na(dat$immuno_eczema_stage1_binary) & is.na(dat$immuno_eczema_stage2_binary)&is.na(dat$immuno_eczema_stage3_binary)&is.na(dat$immuno_eczema_stage4_binary))] <- NA
-```
 
+dat$immuno_eczema_allstages_binary[which(dat$kv1070%in%c(2,3))] <-1 #replace with 1 if doctor diagnosed
+```
 
 **Allergies**
 
@@ -4067,7 +4068,7 @@ dat$immuno_allergy_any_stage3_binary[which(dat$immuno_allergy_food_stage3_binary
 Stage 4
 ```{r eval=FALSE, include=TRUE}
 dat$immuno_allergy_any_stage4_binary <- NA
-dat$immuno_allergy_any_stage4_binary[which(dat$immuno_allergy_food_stage2_binary==0&dat$immuno_allergy_pollen_stage4_binary==0&dat$immuno_allergy_cat_stage4_binary==0&dat$immuno_allergy_dog_stage4_binary==0&dat$immuno_allergy_insect_stage4_binary==0&dat$immuno_allergy_dust_stage4_binary==0)] <-0
+dat$immuno_allergy_any_stage4_binary[which(dat$immuno_allergy_food_stage4_binary==0&dat$immuno_allergy_pollen_stage4_binary==0&dat$immuno_allergy_cat_stage4_binary==0&dat$immuno_allergy_dog_stage4_binary==0&dat$immuno_allergy_insect_stage4_binary==0&dat$immuno_allergy_dust_stage4_binary==0)] <-0
 dat$immuno_allergy_any_stage4_binary[which(dat$immuno_allergy_food_stage4_binary==1|dat$immuno_allergy_pollen_stage4_binary==1|dat$immuno_allergy_cat_stage4_binary==1|dat$immuno_allergy_dog_stage4_binary==1|dat$immuno_allergy_insect_stage4_binary==1|dat$immuno_allergy_dust_stage4_binary==1)] <-1
 ```
 
@@ -4122,6 +4123,9 @@ dat <- left_join(dat,cardiomet_data,by=c("aln","qlet"))
 ```
 
 ## Derive clean variables
+
+Some of the below (ApoA and B at stage 3 and Glucose) have been removed as they come from the metabolomics dataset rather than the samples dataset. Removed because we're not doing a metabolomic analysis.
+
 SBP
 ```{r eval=FALSE, include=TRUE}
 
@@ -4131,17 +4135,14 @@ dat$cardio_sbp_stage2<- NA
 dat$cardio_sbp_stage2[which(dat$stage2_timepoint=="37")] <-dat$cf123[which(dat$stage2_timepoint=="37")]
 dat$cardio_sbp_stage2[which(dat$stage2_timepoint=="49")] <-dat$cf133[which(dat$stage2_timepoint=="49")]
 dat$cardio_sbp_stage2[dat$cardio_sbp_stage2<0]<-NA
-dat$cardio_sbp_stage2<- remove.iqr3.outliers(dat$cardio_sbp_stage2)
 dat$cardio_sbp_stage2_zscore <- scale(dat$cardio_sbp_stage2)
 
 dat$cardio_sbp_stage3 <- dat$f7sa021
 dat$cardio_sbp_stage3[dat$f7sa021<0]<-NA
-dat$cardio_sbp_stage3<- remove.iqr3.outliers(dat$cardio_sbp_stage3)
 dat$cardio_sbp_stage3_zscore <- scale(dat$cardio_sbp_stage3)
 
 dat$cardio_sbp_stage4 <- dat$f9sa021
 dat$cardio_sbp_stage4[dat$f9sa021<0]<-NA
-dat$cardio_sbp_stage4<- remove.iqr3.outliers(dat$cardio_sbp_stage4)
 dat$cardio_sbp_stage4_zscore <- scale(dat$cardio_sbp_stage4)
 ```
 DBP
@@ -4150,44 +4151,36 @@ dat$cardio_dbp_stage2<- NA
 dat$cardio_dbp_stage2[which(dat$stage2_timepoint=="37")] <-dat$cf124[which(dat$stage2_timepoint=="37")]
 dat$cardio_dbp_stage2[which(dat$stage2_timepoint=="49")] <-dat$cf134[which(dat$stage2_timepoint=="49")]
 dat$cardio_dbp_stage2[dat$cardio_dbp_stage2<0]<-NA
-dat$cardio_dbp_stage2<- remove.iqr3.outliers(dat$cardio_dbp_stage2)
 dat$cardio_dbp_stage2_zscore <- scale(dat$cardio_dbp_stage2)
 
 dat$cardio_dbp_stage3 <- dat$f7sa022
 dat$cardio_dbp_stage3[dat$f7sa022<0]<-NA
-dat$cardio_dbp_stage3<- remove.iqr3.outliers(dat$cardio_dbp_stage3)
 dat$cardio_dbp_stage3_zscore <- scale(dat$cardio_dbp_stage3)
 
 dat$cardio_dbp_stage4 <- dat$f9sa022
 dat$cardio_dbp_stage4[dat$f9sa022<0]<-NA
-dat$cardio_dbp_stage4<- remove.iqr3.outliers(dat$cardio_dbp_stage4)
 dat$cardio_dbp_stage4_zscore <- scale(dat$cardio_dbp_stage4)
 ```
 Triglycerides
 ```{r eval=FALSE, include=TRUE}
 dat$cardio_trig_stage0 <- dat$trig_cord
 dat$cardio_trig_stage0[dat$trig_cord<0]<-NA
-dat$cardio_trig_stage0<- remove.iqr3.outliers(dat$cardio_trig_stage0)
 dat$cardio_trig_stage0_zscore <- scale(dat$cardio_trig_stage0)
 
 dat$cardio_trig_stage1 <- dat$Trig_CIF31
 dat$cardio_trig_stage1[dat$Trig_CIF31<0]<-NA
-dat$cardio_trig_stage1<- remove.iqr3.outliers(dat$cardio_trig_stage1)
 dat$cardio_trig_stage1_zscore <- scale(dat$cardio_trig_stage1)
 
 dat$cardio_trig_stage2 <- dat$Trig_CIF43
 dat$cardio_trig_stage2[dat$Trig_CIF43<0]<-NA
-dat$cardio_trig_stage2<- remove.iqr3.outliers(dat$cardio_trig_stage2)
 dat$cardio_trig_stage2_zscore <- scale(dat$cardio_trig_stage2)
 
 dat$cardio_trig_stage3 <- dat$TRIG_F7
 dat$cardio_trig_stage3[dat$TRIG_F7<0]<-NA
-dat$cardio_trig_stage3<- remove.iqr3.outliers(dat$cardio_trig_stage3)
 dat$cardio_trig_stage3_zscore <- scale(dat$cardio_trig_stage3)
 
 dat$cardio_trig_stage4 <- dat$trig_f9
 dat$cardio_trig_stage4[dat$trig_f9<0]<-NA
-dat$cardio_trig_stage4<- remove.iqr3.outliers(dat$cardio_trig_stage4)
 dat$cardio_trig_stage4_zscore <- scale(dat$cardio_trig_stage4)
 
 ```
@@ -4195,148 +4188,121 @@ HDL
 ```{r eval=FALSE, include=TRUE}
 dat$cardio_HDL_stage0 <- dat$HDL_cord
 dat$cardio_HDL_stage0[dat$HDL_cord<0]<-NA
-dat$cardio_HDL_stage0<- remove.iqr3.outliers(dat$cardio_HDL_stage0)
 dat$cardio_HDL_stage0_zscore <- scale(dat$cardio_HDL_stage0)
 
 dat$cardio_HDL_stage1 <- dat$HDL_CIF31
 dat$cardio_HDL_stage1[dat$HDL_CIF31<0]<-NA
-dat$cardio_HDL_stage1<- remove.iqr3.outliers(dat$cardio_HDL_stage1)
 dat$cardio_HDL_stage1_zscore <- scale(dat$cardio_HDL_stage1)
 
 dat$cardio_HDL_stage2 <- dat$HDL_CIF43
 dat$cardio_HDL_stage2[dat$HDL_CIF43<0]<-NA
-dat$cardio_HDL_stage2<- remove.iqr3.outliers(dat$cardio_HDL_stage2)
 dat$cardio_HDL_stage2_zscore <- scale(dat$cardio_HDL_stage2)
 
 dat$cardio_HDL_stage3 <- dat$HDL_F7
 dat$cardio_HDL_stage3[dat$HDL_F7<0]<-NA
-dat$cardio_HDL_stage3<- remove.iqr3.outliers(dat$cardio_HDL_stage3)
 dat$cardio_HDL_stage3_zscore <- scale(dat$cardio_HDL_stage3)
 
 dat$cardio_HDL_stage4 <- dat$HDL_f9
 dat$cardio_HDL_stage4[dat$HDL_f9<0]<-NA
-dat$cardio_HDL_stage4<- remove.iqr3.outliers(dat$cardio_HDL_stage4)
 dat$cardio_HDL_stage4_zscore <- scale(dat$cardio_HDL_stage4)
 ```
 LDL
 ```{r eval=FALSE, include=TRUE}
 dat$cardio_LDL_stage0 <- dat$LDL_cord
 dat$cardio_LDL_stage0[dat$LDL_cord<0]<-NA
-dat$cardio_LDL_stage0<- remove.iqr3.outliers(dat$cardio_LDL_stage0)
 dat$cardio_LDL_stage0_zscore <- scale(dat$cardio_LDL_stage0)
 
 dat$cardio_LDL_stage1 <- dat$LDL_CIF31
 dat$cardio_LDL_stage1[dat$LDL_CIF31<0]<-NA
-dat$cardio_LDL_stage4<- remove.iqr3.outliers(dat$cardio_LDL_stage1)
 dat$cardio_LDL_stage1_zscore <- scale(dat$cardio_LDL_stage1)
 
 dat$cardio_LDL_stage2 <- dat$LDL_CIF43
 dat$cardio_LDL_stage2[dat$LDL_CIF43<0]<-NA
-dat$cardio_LDL_stage2<- remove.iqr3.outliers(dat$cardio_LDL_stage2)
 dat$cardio_LDL_stage2_zscore <- scale(dat$cardio_LDL_stage2)
 
 dat$cardio_LDL_stage3 <- dat$LDL_F7
 dat$cardio_LDL_stage3[dat$LDL_F7<0]<-NA
-dat$cardio_LDL_stage3<- remove.iqr3.outliers(dat$cardio_LDL_stage3)
 dat$cardio_LDL_stage3_zscore <- scale(dat$cardio_LDL_stage3)
 
 dat$cardio_LDL_stage4 <- dat$LDL_f9
 dat$cardio_LDL_stage4[dat$LDL_f9<0]<-NA
-dat$cardio_LDL_stage4<- remove.iqr3.outliers(dat$cardio_LDL_stage4)
 dat$cardio_LDL_stage4_zscore <- scale(dat$cardio_LDL_stage4)
 ```
 Total cholesterol
 ```{r eval=FALSE, include=TRUE}
 dat$cardio_chol_stage0 <- dat$chol_cord
 dat$cardio_chol_stage0[dat$chol_cord<0]<-NA
-dat$cardio_chol_stage0<- remove.iqr3.outliers(dat$cardio_chol_stage0)
 dat$cardio_chol_stage0_zscore <- scale(dat$cardio_chol_stage0)
 
 dat$cardio_chol_stage1 <- dat$Chol_CIF31
 dat$cardio_chol_stage1[dat$Chol_CIF31<0]<-NA
-dat$cardio_chol_stage1<- remove.iqr3.outliers(dat$cardio_chol_stage1)
 dat$cardio_chol_stage1_zscore <- scale(dat$cardio_chol_stage1)
 
 dat$cardio_chol_stage2 <- dat$Chol_CIF43
 dat$cardio_chol_stage2[dat$Chol_CIF43<0]<-NA
-dat$cardio_chol_stage2<- remove.iqr3.outliers(dat$cardio_chol_stage2)
 dat$cardio_chol_stage2_zscore <- scale(dat$cardio_chol_stage2)
 
 dat$cardio_chol_stage3 <- dat$CHOL_F7
 dat$cardio_chol_stage3[dat$CHOL_F7<0]<-NA
-dat$cardio_chol_stage3<- remove.iqr3.outliers(dat$cardio_chol_stage3)
 dat$cardio_chol_stage3_zscore <- scale(dat$cardio_chol_stage3)
 
 dat$cardio_chol_stage4 <- dat$CHOL_F9
 dat$cardio_chol_stage4[dat$CHOL_F9<0]<-NA
-dat$cardio_chol_stage4<- remove.iqr3.outliers(dat$cardio_chol_stage4)
 dat$cardio_chol_stage4_zscore <- scale(dat$cardio_chol_stage4)
 ```
 Glucose
 ```{r eval=FALSE, include=TRUE}
-dat$cardio_glucose_stage3 <- dat$Glc_F7
-dat$cardio_glucose_stage3[dat$Glc_F7<0]<-NA
-dat$cardio_glucose_stage3<- remove.iqr3.outliers(dat$cardio_glucose_stage3)
-dat$cardio_glucose_stage3_zscore <- scale(dat$cardio_glucose_stage3)
+# dat$cardio_glucose_stage3 <- dat$Glc_F7
+# dat$cardio_glucose_stage3[dat$Glc_F7<0]<-NA
+# dat$cardio_glucose_stage3_zscore <- scale(dat$cardio_glucose_stage3)
 ```
 Insulin
 ```{r eval=FALSE, include=TRUE}
 dat$cardio_insulin_stage0 <- dat$Insulin_cord
 dat$cardio_insulin_stage0[dat$Insulin_cord<0]<-NA
-dat$cardio_insulin_stage0<- remove.iqr3.outliers(dat$cardio_insulin_stage0)
 dat$cardio_insulin_stage0_zscore <- scale(dat$cardio_insulin_stage0)
 
 dat$cardio_insulin_stage4 <- dat$insulin_F9
 dat$cardio_insulin_stage4[dat$insulin_F9<0]<-NA
-dat$cardio_insulin_stage4<- remove.iqr3.outliers(dat$cardio_insulin_stage4)
 dat$cardio_insulin_stage4_zscore <- scale(dat$cardio_insulin_stage4)
 ```
 CRP
 ```{r eval=FALSE, include=TRUE}
-# removed cord because mostly missing or 0; when outliers removed, all 0
 
-#dat$cardio_CRP_stage0 <- dat$CRP_cord
-#dat$cardio_CRP_stage0[dat$CRP_cord<0]<-NA
-#dat$cardio_CRP_stage0<- remove.iqr3.outliers(dat$cardio_CRP_stage0)
-#dat$cardio_CRP_stage0_zscore <- scale(dat$cardio_CRP_stage0)
+dat$cardio_CRP_stage0 <- dat$CRP_cord
+dat$cardio_CRP_stage0[dat$CRP_cord<0]<-NA
+dat$cardio_CRP_stage0_zscore <- scale(dat$cardio_CRP_stage0)
 
 dat$cardio_CRP_stage4 <- dat$CRP_f9
 dat$cardio_CRP_stage4[dat$CRP_f9<0]<-NA
-dat$cardio_CRP_stage4<- remove.iqr3.outliers(dat$cardio_CRP_stage4)
 dat$cardio_CRP_stage4_zscore <- scale(dat$cardio_CRP_stage4)
 ```
 Apolipoprotein-A
 ```{r eval=FALSE, include=TRUE}
-dat$cardio_apoA_stage3 <- dat$ApoA1_F7
-dat$cardio_apoA_stage3[dat$ApoA1_F7<0]<-NA
-dat$cardio_apoA_stage3<- remove.iqr3.outliers(dat$cardio_apoA_stage3)
-dat$cardio_apoA_stage3_zscore <- scale(dat$cardio_apoA_stage3)
+# dat$cardio_apoA_stage3 <- dat$ApoA1_F7
+# dat$cardio_apoA_stage3[dat$ApoA1_F7<0]<-NA
+# dat$cardio_apoA_stage3_zscore <- scale(dat$cardio_apoA_stage3)
 
 dat$cardio_apoA_stage4 <- dat$ApoAI_f9
 dat$cardio_apoA_stage4[dat$ApoAI_f9<0]<-NA
-dat$cardio_apoA_stage4<- remove.iqr3.outliers(dat$cardio_apoA_stage4)
 dat$cardio_apoA_stage4_zscore <- scale(dat$cardio_apoA_stage4)
 ```
 Apolipoprotein-B
 ```{r eval=FALSE, include=TRUE}
-dat$cardio_apoB_stage3 <- dat$ApoB_F7
-dat$cardio_apoB_stage3[dat$ApoB_F7<0]<-NA
-dat$cardio_apoB_stage3<- remove.iqr3.outliers(dat$cardio_apoB_stage3)
-dat$cardio_apoB_stage3_zscore <- scale(dat$cardio_apoB_stage3)
+# dat$cardio_apoB_stage3 <- dat$ApoB_F7
+# dat$cardio_apoB_stage3[dat$ApoB_F7<0]<-NA
+# dat$cardio_apoB_stage3_zscore <- scale(dat$cardio_apoB_stage3)
 
 dat$cardio_apoB_stage4 <- dat$ApoB_f9
 dat$cardio_apoB_stage4[dat$ApoB_f9<0]<-NA
-dat$cardio_apoB_stage4<- remove.iqr3.outliers(dat$cardio_apoB_stage4)
 dat$cardio_apoB_stage4_zscore <- scale(dat$cardio_apoB_stage4)
 ```
 IL-6
 ```{r eval=FALSE, include=TRUE}
 dat$cardio_il6_stage4 <- dat$IL6_f9
 dat$cardio_il6_stage4[dat$IL6_f9<0]<-NA
-dat$cardio_il6_stage4<- remove.iqr3.outliers(dat$cardio_il6_stage4)
 dat$cardio_il6_stage4_zscore <- scale(dat$cardio_il6_stage4)
 ```
-
 
 # Covariates {.tabset}
 
@@ -7438,7 +7404,7 @@ dat$immuno_allergy_any_stage3_binary[which(dat$immuno_allergy_food_stage3_binary
 
 
 dat$immuno_allergy_any_stage4_binary <- NA
-dat$immuno_allergy_any_stage4_binary[which(dat$immuno_allergy_food_stage2_binary==0&dat$immuno_allergy_pollen_stage4_binary==0&dat$immuno_allergy_cat_stage4_binary==0&dat$immuno_allergy_dog_stage4_binary==0&dat$immuno_allergy_insect_stage4_binary==0&dat$immuno_allergy_dust_stage4_binary==0)] <-0
+dat$immuno_allergy_any_stage4_binary[which(dat$immuno_allergy_food_stage4_binary==0&dat$immuno_allergy_pollen_stage4_binary==0&dat$immuno_allergy_cat_stage4_binary==0&dat$immuno_allergy_dog_stage4_binary==0&dat$immuno_allergy_insect_stage4_binary==0&dat$immuno_allergy_dust_stage4_binary==0)] <-0
 dat$immuno_allergy_any_stage4_binary[which(dat$immuno_allergy_food_stage4_binary==1|dat$immuno_allergy_pollen_stage4_binary==1|dat$immuno_allergy_cat_stage4_binary==1|dat$immuno_allergy_dog_stage4_binary==1|dat$immuno_allergy_insect_stage4_binary==1|dat$immuno_allergy_dust_stage4_binary==1)] <-1
 
 
@@ -7596,10 +7562,10 @@ dat$cardio_chol_stage4_zscore <- scale(dat$cardio_chol_stage4)
 
 
 
-dat$cardio_glucose_stage3 <- dat$Glc_F7
-dat$cardio_glucose_stage3[dat$Glc_F7<0]<-NA
-dat$cardio_glucose_stage3<- remove.iqr3.outliers(dat$cardio_glucose_stage3)
-dat$cardio_glucose_stage3_zscore <- scale(dat$cardio_glucose_stage3)
+# dat$cardio_glucose_stage3 <- dat$Glc_F7
+# dat$cardio_glucose_stage3[dat$Glc_F7<0]<-NA
+# dat$cardio_glucose_stage3<- remove.iqr3.outliers(dat$cardio_glucose_stage3)
+# dat$cardio_glucose_stage3_zscore <- scale(dat$cardio_glucose_stage3)
 
 
 
@@ -7628,21 +7594,21 @@ dat$cardio_CRP_stage4_zscore <- scale(dat$cardio_CRP_stage4)
 
 
 
-dat$cardio_apoA_stage3 <- dat$ApoA1_F7
-dat$cardio_apoA_stage3[dat$ApoA1_F7<0]<-NA
-dat$cardio_apoA_stage3<- remove.iqr3.outliers(dat$cardio_apoA_stage3)
-dat$cardio_apoA_stage3_zscore <- scale(dat$cardio_apoA_stage3)
+# dat$cardio_apoA_stage3 <- dat$ApoA1_F7
+# dat$cardio_apoA_stage3[dat$ApoA1_F7<0]<-NA
+# dat$cardio_apoA_stage3<- remove.iqr3.outliers(dat$cardio_apoA_stage3)
+# dat$cardio_apoA_stage3_zscore <- scale(dat$cardio_apoA_stage3)
 
 dat$cardio_apoA_stage4 <- dat$ApoAI_f9
 dat$cardio_apoA_stage4[dat$ApoAI_f9<0]<-NA
 dat$cardio_apoA_stage4<- remove.iqr3.outliers(dat$cardio_apoA_stage4)
 dat$cardio_apoA_stage4_zscore <- scale(dat$cardio_apoA_stage4)
 
-
-dat$cardio_apoB_stage3 <- dat$ApoB_F7
-dat$cardio_apoB_stage3[dat$ApoB_F7<0]<-NA
-dat$cardio_apoB_stage3<- remove.iqr3.outliers(dat$cardio_apoB_stage3)
-dat$cardio_apoB_stage3_zscore <- scale(dat$cardio_apoB_stage3)
+# 
+# dat$cardio_apoB_stage3 <- dat$ApoB_F7
+# dat$cardio_apoB_stage3[dat$ApoB_F7<0]<-NA
+# dat$cardio_apoB_stage3<- remove.iqr3.outliers(dat$cardio_apoB_stage3)
+# dat$cardio_apoB_stage3_zscore <- scale(dat$cardio_apoB_stage3)
 
 dat$cardio_apoB_stage4 <- dat$ApoB_f9
 dat$cardio_apoB_stage4[dat$ApoB_f9<0]<-NA
@@ -7780,14 +7746,12 @@ dat$covs_stressfulevents_father_zscore <- scale(dat$covs_stressfulevents_father)
 
 #confusion over paternal variable name for exposure to fumes/chemicals (c768 extracted but doesn't appear in the documentation) so not included here
 
-
 dat$covs_mother_depression_binary <- NA #severe depression
-dat$covs_mother_depression_binary[dat$d171a==0]<-0
-dat$covs_mother_depression_binary[dat$d171a>0]<-1
-
+dat$covs_mother_depression_binary[dat$d171a==2]<-0
+dat$covs_mother_depression_binary[dat$d171a==1]<-1
 dat$covs_father_depression_binary <- NA
-dat$covs_father_depression_binary[dat$pa191a==0]<-0
-dat$covs_father_depression_binary[dat$pa191a>0]<-1
+dat$covs_father_depression_binary[dat$pa191a==2]<-0
+dat$covs_father_depression_binary[dat$pa191a==1]<-1
 
 dat$covs_supplements_mother_binary <-NA
 temp <- dat[,c("b140","b141","b142","b143","b144","b149")]

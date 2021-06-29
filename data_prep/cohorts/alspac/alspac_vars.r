@@ -1,3 +1,9 @@
+######################################################################
+## Code to create alspac_pheno_raw.rds                              ##
+## This code extracts all the raw variables from the ALSPAC server  ##
+## and removes tripquads etc and performs WoCs                      ##
+######################################################################
+
 ## CONNECT TO ALSPAC SERVER AT smb://central-gpfs.isys.bris.ac.uk/ALSPAC-Data
 
 ## Begin by clearing the environment
@@ -14,7 +20,7 @@ cp_vars <- c("aln","qlet","in_alsp","in_core","in_phase2","in_phase3","in_phase4
 
 # Mums' profile (MZ)
 mz_location <- "/Volumes/ALSPAC-Data/Current/Other/Sample Definition/mz_5a.dta"
-mz_vars <- c("mz001","mz010","mz010a","mz011b","mz028a","mz028b")
+mz_vars <- c("mz001","mz010","mz010a","mz011b","mz028a","mz028b","mz024a","mz024b")
 
 # Kids' profile (KZ)
 kz_location <- "/Volumes/ALSPAC-Data/Current/Other/Sample Definition/kz_5c.dta"
@@ -31,6 +37,10 @@ bestgest_vars<-c("bestgest")
 # Obstetrics
 obs_location<-"/Volumes/ALSPAC-Data/Current/Other/Obstetric/OA_r1b.dta"
 obs_vars<-c("HDP","pregnancy_diabetes")
+
+# Birthweight centiles
+centiles_location<-"/Volumes/ALSPAC-Data/Useful_data/birthweight_centile/data for centile program II.dta"
+centiles_vars<-"centiles"
 
 ###########################################
 #######          Partners'        #########
@@ -222,7 +232,7 @@ df <- data.frame(locations=sapply(sort(ls()[grepl("location",ls())]),function(x)
 
 ## ADD ID VARIABLES
 df$idvars <- "aln"
-df$idvars[grepl("child|Child|kz|Cohort|Obstetric",df$location)] <-"aln,qlet"
+df$idvars[grepl("child|Child|kz|Cohort|Obstetric|centiles",df$location)] <-"aln,qlet"
 df$allvars <- apply(df,1,function(x) paste(c(as.character(x)[3],as.character(x)[2]),collapse=","))
 
 ## READ IN DATA FROM ALSPAC
@@ -243,6 +253,7 @@ child_based <-c(list(child_df),child_based) #add kz back in at the start of the 
 child_df <- child_based  %>% purrr::reduce(left_join, by = c("aln","qlet"))
 
 dat <- full_join(child_df,parent_df,by="aln")
+dat <- haven::zap_labels(dat)
 
 # at this stage, we have 19982 children in dat. This matches the number in the kz file. 
 # It's made up of 14676 children in the core ALSPAC sample + 5306 children from non-core pregnancies. 
@@ -267,10 +278,12 @@ length(unique(dat$aln))==14468 #should be 14541 core pregnancies - 69 with no kn
 sum(dat$in_core==1,na.rm=T)==14663 #should be 14676 fetuses from core pregnancies - 13 tripquads = 14663 fetuses
 
 ## Withdrawal of consent
-# as of 14/5/2021
+# as of 29/6/2021
+# dat <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno_raw.rds")
 partners_woc <- c(42034,51798,52381) 
-mothersquest_woc <- c(31075,32812,42568,35366,51798,38666,30484,53371,37355,40755,52237,36828,46659,46312,52177,50491,45194,52689,42034,40393)
-childbased_woc <- c(31075,32812,42568,35366,51798,38666,30484,53371,37355,40755,52237,36828,46659,46312,52177,50491,45194,52689,42034,40393)
+mothersquest_woc <- c(31075,32812,42568,35366,51798,38666,30484,53371,37355,40755,52237,36828,46659,46312,52177,50491,45194,52689,42034,40393,45544)
+childbased_woc <- c(31075,32812,42568,35366,51798,38666,30484,53371,37355,40755,52237,36828,46659,46312,52177,50491,45194,52689,42034,40393,45544)
+childcompleted_woc <- c(32778,32803,39444,53228,54074,34657,32230,47080,36194,34688,30006,47430,38685,47501,46814,38666,39400,53032,50035,30484,38831,36828,46659,50371,44307)
 
 partners_vars <- unique(unlist(lapply(df[grep("Partner",df$locations),"vars"],strsplit,split=",")))
 child_vars <- unique(c(unlist(lapply(df[grep("Child|bestgest|kz",df$locations),"vars"],strsplit,split=",")),"kz011b","kz021"))
@@ -278,12 +291,13 @@ mother_vars <- unique(unlist(lapply(df[grep("Mother|Multiple|Obstetric|mz",df$lo
 
 dat[dat$aln %in% partners_woc,partners_vars] <- NA
 dat[dat$aln %in% childbased_woc,child_vars] <- NA
+dat[dat$aln %in% childcompleted_woc,child_vars] <- NA
 dat[dat$aln %in% mothersquest_woc,mother_vars] <- NA
 
 dat$partners_woc <-NA
 dat$partners_woc[dat$aln %in% partners_woc] <- 1
 dat$child_woc <-NA
-dat$child_woc[dat$aln %in% childbased_woc] <- 1
+dat$child_woc[dat$aln %in% c(childbased_woc,childcompleted_woc)] <- 1
 dat$mothers_woc <-NA
 dat$mothers_woc[dat$aln %in% mothersquest_woc] <- 1
 
