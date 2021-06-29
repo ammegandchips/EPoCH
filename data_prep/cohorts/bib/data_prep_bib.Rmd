@@ -1055,7 +1055,7 @@ NB. The Smoking initiation one is problematic, and seems to be related to impuls
 
 * PRS for physical activity were only derived for 'sedentary', there are SNPs related to 'overall activity' but the n(=2 after clumping) is so small and unable to make PRS. The SNP n for sedentary is also very small to note .
 
-## Read in PRS data
+## Read in PRS data and clean
 
 PRS created using Plink v1.9, then read in here:
 ```{r eval=FALSE, include=TRUE}
@@ -1147,6 +1147,7 @@ prs_sedentary$prs_score_sedentary<-prs_sedentary$SCORE
 prs_sedentary<-prs_sedentary[, which(names(prs_sedentary) %in% c("prs_score_sedentary","id"))]
 ```
 
+## Read in individual SNP data and clean
 
 ```{r eval=FALSE, include=TRUE}
 #! Potential for duplicate snps to present in final dataset, as come from different snp lists for exposures - an option round this, is to rename with 'alc' 'smok' etc before name of snp??
@@ -1190,6 +1191,8 @@ snps_caffeine<-snps_caffeine[, -which(colnames(snps_caffeine) %in% c("FID","IID"
 ```
 
 ## Quality control
+
+PRS data
 ```{r eval=FALSE, include=TRUE}
 #install.packages("readstata13")
 library(readstata13)
@@ -1386,15 +1389,23 @@ link_genetic <- left_join(link_genetic, snps_sedentary, by = "id")
 link_genetic <- left_join(link_genetic, snps_overall_activity, by = "id")
 
 #saveRDS(link_genetic,"/Volumes/data/bib/bib_all_genetic.rds")
-
-#bib_genetic_data <- readRDS("/Volumes/data/bib/bib_all_genetic.rds")
 ```
+
 
 Merge genetic and phenotypic data
 ```{r eval=FALSE, include=TRUE}
 dat <- left_join(dat,bib_genetic_data, by = c("PregnancyID", "MotherID","ChildID","FatherID"), all.x = TRUE)
 ```
 
+Z scores PRS
+```{r eval=FALSE, include=TRUE}
+prs_vars <- names(dat)[grep(names(dat),pattern="prs")]
+scaled_prs <- as.data.frame(apply(dat[,prs_vars],2,scale))
+names(scaled_prs) <- paste0(prs_vars,"_zscore")
+library(dplyr)
+dat <- bind_cols(dat,scaled_prs)
+
+```
 
 # Stratify by ethnicity
 

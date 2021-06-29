@@ -714,7 +714,7 @@ dat$anthro_fatpc_stage4_zscore <- scale(dat$anthro_fatpc_stage4)
 Ideal harmonised psychosocial and cognitive measures for offspring are:
 
 Total behavioural difficulties (SDQ) - maternal report, continuous and dichotomised at >=17 [this is a combination of 4 subscales - excluding prosocial behaviour]
-Hyperactivity (SDQ) - maternal report, continuous and dichotomised at >=17
+Hyperactivity (SDQ) - maternal report, continuous and dichotomised at >=7
 Emotional symptoms (SDQ) - maternal report, continuous and dichotomised at >=5
 Conduct problems (SDQ) - maternal report, continuous and dichotomised at >=4
 Peer problems (SDQ) - maternal report, continuous and dichotomised at >=4
@@ -756,7 +756,7 @@ dat$neuro_totalsdq_stage3_binary <- NA
 dat$neuro_totalsdq_stage3_binary[dat$neuro_totalsdq_stage3>=17]<-1
 dat$neuro_totalsdq_stage3_binary[dat$neuro_totalsdq_stage3<17]<-0
 
-#Hyperactivity (SDQ) - maternal report, continuous and dichotomised at >=17
+#Hyperactivity (SDQ) - maternal report, continuous and dichotomised at >=7
 #Stage 2
 dat$neuro_hyperactivity_stage2<-raw_dat$bdhypea0
 dat$neuro_hyperactivity_stage2[raw_dat$bdhypea0<0]<-NA
@@ -770,7 +770,7 @@ dat$neuro_hyperactivity_stage3[raw_dat$ddhypea0<0]<-NA
 dat$neuro_hyperactivity_stage3_zscore <- scale(dat$neuro_hyperactivity_stage3)
 dat$neuro_hyperactivity_stage3_binary <- NA
 dat$neuro_hyperactivity_stage3_binary[dat$neuro_hyperactivity_stage3>=7]<-1
-dat$neuro_hyperactivity_stage3_binary[dat$neuro_hyperactivity_stage3<7]<-
+dat$neuro_hyperactivity_stage3_binary[dat$neuro_hyperactivity_stage3<7]<-0
 
 #Emotional symptoms (SDQ) - maternal report, continuous and dichotomised at >=5
 #Stage 2

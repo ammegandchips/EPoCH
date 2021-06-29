@@ -1917,6 +1917,17 @@ dat$caffeine_mother_total_postnatal_binary[dat$caffeine_mother_total_postnatal_c
 dat$caffeine_mother_total_postnatal_binary[dat$caffeine_mother_total_postnatal_continuous>0]<-1
 ```
 
+**Ordinal variables**
+```{r eval=FALSE, include=TRUE}
+
+dat$caffeine_mother_total_firsttrim_ordinal <- cut(dat$caffeine_mother_total_firsttrim_continuous,breaks = c(-1,0,200,400,Inf),labels = c("None","Light","Moderate","Heavy"),ordered_result = T)
+dat$caffeine_mother_total_secondtrim_ordinal <- cut(dat$caffeine_mother_total_secondtrim_continuous,breaks = c(-1,0,200,400,Inf),labels = c("None","Light","Moderate","Heavy"),ordered_result = T)
+dat$caffeine_mother_total_thirdtrim_ordinal <- cut(dat$caffeine_mother_total_thirdtrim_continuous,breaks = c(-1,0,200,400,Inf),labels = c("None","Light","Moderate","Heavy"),ordered_result = T)
+dat$caffeine_mother_total_postnatal_ordinal <- cut(dat$caffeine_mother_total_postnatal_continuous,breaks = c(-1,0,200,400,Inf),labels = c("None","Light","Moderate","Heavy"),ordered_result = T)
+dat$caffeine_mother_total_ever_pregnancy_ordinal <- cut(dat$caffeine_mother_total_ever_pregnancy_continuous,breaks = c(-1,0,200,400,Inf),labels = c("None","Light","Moderate","Heavy"),ordered_result = T)
+```
+
+
 ### Paternal
 
 For dads, we only have one time point (in the second trimester), which can be used for "any time in pregnancy". The problem is that the questions on how many cups of tea/coffee/cola were decaf were different in different versions of the questionnaire. In the beginning, they were asked to say whether "some" "all" or "none" of their beverages were decaf, but in later versions they were asked to give the number of cups that were decaf. If we just take the question from the latter version, we end up with a lot of missing data, so we need to consider all versions of that question.
@@ -1987,6 +1998,14 @@ dat$caffeine_father_total_ever_pregnancy_binary <- dat$caffeine_father_total_sec
 dat$caffeine_father_total_ever_pregnancy_continuous <- dat$caffeine_father_total_secondtrim_continuous
 ```
 
+**Ordinal variables**
+```{r eval=FALSE, include=TRUE}
+
+dat$caffeine_father_total_secondtrim_ordinal <- cut(dat$caffeine_father_total_secondtrim_continuous,breaks = c(-1,0,200,400,Inf),labels = c("None","Light","Moderate","Heavy"),ordered_result = T)
+
+dat$caffeine_father_total_ever_pregnancy_ordinal <- cut(dat$caffeine_father_total_ever_pregnancy_continuous,breaks = c(-1,0,200,400,Inf),labels = c("None","Light","Moderate","Heavy"),ordered_result = T)
+```
+
 ## Remove original variables
 ```{r eval=FALSE, include=TRUE}
 dat<-dat[,-which(colnames(dat)%in%parent_caffeine_vars)]
@@ -2046,35 +2065,44 @@ From Liu et al 2011 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3898349/:
 
 ```{r eval=FALSE, include=TRUE}
 dat$physact_mother_secondtrim_ordinal <- NA
-dat$physact_mother_secondtrim_ordinal[dat$b635==0|dat$b634==2]<-"Inactive" #0
-dat$physact_mother_secondtrim_ordinal[which(dat$b635>0&dat$b635<3)]<-"Somewhat" #<3
-dat$physact_mother_secondtrim_ordinal[dat$b635>=3]<-"Active" #>=3
-dat$physact_mother_secondtrim_ordinal<-factor(dat$physact_mother_secondtrim_ordinal,levels=c("Inactive","Somewhat","Active"),ordered=T)
+dat$physact_mother_secondtrim_ordinal[dat$b635==0|dat$b634==2]<-"None" #0
+dat$physact_mother_secondtrim_ordinal[which(dat$b635>0&dat$b635<=3)]<-"Light" #<=3
+dat$physact_mother_secondtrim_ordinal[which(dat$b635>3&dat$b635<=6)]<-"Moderate" #<=6
+dat$physact_mother_secondtrim_ordinal[dat$b635>6]<-"Heavy" #>6
+dat$physact_mother_secondtrim_ordinal<-factor(dat$physact_mother_secondtrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
 
 dat$physact_father_secondtrim_ordinal <- NA
-dat$physact_father_secondtrim_ordinal[dat$pb014==0|dat$pb013==2]<-"Inactive" #0
-dat$physact_father_secondtrim_ordinal[which(dat$pb014>0&dat$pb014<3)]<-"Somewhat" #<3
-dat$physact_father_secondtrim_ordinal[dat$pb014>=3]<-"Active" #>=3
-dat$physact_father_secondtrim_ordinal<-factor(dat$physact_father_secondtrim_ordinal,levels=c("Inactive","Somewhat","Active"),ordered=T)
+dat$physact_father_secondtrim_ordinal[dat$pb014==0|dat$pb013==2]<-"None" #0
+dat$physact_father_secondtrim_ordinal[which(dat$pb014>0&dat$pb014<=3)]<-"Light" #<=3
+dat$physact_father_secondtrim_ordinal[which(dat$pb014>3&dat$pb014<=6)]<-"Moderate" #<=6
+dat$physact_father_secondtrim_ordinal[dat$pb014>6]<-"Heavy" #>6
+dat$physact_father_secondtrim_ordinal<-factor(dat$physact_father_secondtrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
 ```
 
 * Maternal PA in the third trimester
 
 ```{r eval=FALSE, include=TRUE}
 dat$physact_mother_thirdtrim_ordinal <- NA
-dat$physact_mother_thirdtrim_ordinal[dat$c504==0|dat$c503==2]<-"Inactive" #0
-dat$physact_mother_thirdtrim_ordinal[dat$c504>0&dat$c504<3]<-"Somewhat" #<3
-dat$physact_mother_thirdtrim_ordinal[dat$c504>=3]<-"Active" #>=3
-dat$physact_mother_thirdtrim_ordinal<-factor(dat$physact_mother_thirdtrim_ordinal,levels=c("Inactive","Somewhat","Active"),ordered=T)
+dat$physact_mother_thirdtrim_ordinal[dat$c504==0|dat$c503==2]<-"None" #0
+dat$physact_mother_thirdtrim_ordinal[which(dat$c504>0&dat$c504<=3)]<-"Light" #<=3
+dat$physact_mother_thirdtrim_ordinal[which(dat$c504>3&dat$c504<=6)]<-"Moderate" #<=6
+dat$physact_mother_thirdtrim_ordinal[dat$c504>6]<-"Heavy" #>6
+dat$physact_mother_thirdtrim_ordinal<-factor(dat$physact_mother_thirdtrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
 ```
 
 * Maternal PA in the postnatal period up to age 2
+NOTE THAT THIS IS NOT THE SAME AS IN TRIMESTER 2 AND 3 (DAYS NOT WEEKS) THEREFORE NOT DIRECTLY COMPARABLE
 ```{r eval=FALSE, include=TRUE}
 dat$physact_mother_postnatal_ordinal <- NA
-dat$physact_mother_postnatal_ordinal[dat$g761==2]<-"Inactive" #0
-dat$physact_mother_postnatal_ordinal[dat$g762>0&dat$g762<3]<-"Somewhat" #<3
-dat$physact_mother_postnatal_ordinal[dat$g762>=3]<-"Active" #>=3
-dat$physact_mother_postnatal_ordinal<-factor(dat$physact_mother_postnatal_ordinal,levels=c("Inactive","Somewhat","Active"),ordered=T)
+dat$physact_mother_postnatal_ordinal[dat$g761==2]<-"None" #0
+dat$physact_mother_postnatal_ordinal[dat$g762%in%c(1,2)]<-"Light" #1-2 days
+dat$physact_mother_postnatal_ordinal[which(dat$g762>=3&dat$g762<=5)]<-"Moderate" #3-5 days
+dat$physact_mother_postnatal_ordinal[dat$g762>=6]<-"Heavy" #6-7 days per week
+dat$physact_mother_postnatal_ordinal<-factor(dat$physact_mother_postnatal_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
 ```
 
 ## Remove original variables
