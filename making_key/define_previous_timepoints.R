@@ -1,17 +1,20 @@
-# define exposures at previous timepoints in pregnancy
+# define exposures at previous timepoints in pregnancy or before
 
 select_previous_timepoints <- function(expclass, exptime, expparent, exptype, expsource, expsubclass){
   if(exptime =="first two postnatal years"){
-    adjustment_timepoints <- c("first trimester","start of pregnancy","second trimester","third trimester")
+    adjustment_timepoints <- c("preconception","first trimester","start of pregnancy","second trimester","third trimester")
   }else{
     if(exptime =="third trimester"){
-      adjustment_timepoints <- c("first trimester","start of pregnancy","second trimester")
+      adjustment_timepoints <- c("preconception","first trimester","start of pregnancy","second trimester")
     }else{
       if(exptime=="second trimester"){
-        adjustment_timepoints <- c("first trimester","start of pregnancy")
+        adjustment_timepoints <- c("preconception","first trimester","start of pregnancy")
       }else{
+        if(exptime=="first trimester|start of pregnancy"){
+          adjustment_timepoints <- c("preconception")
+        }else{
         adjustment_timepoints <- "none"
-      }}}
+      }}}}
   
   if(adjustment_timepoints == "none"){
     res <- NA

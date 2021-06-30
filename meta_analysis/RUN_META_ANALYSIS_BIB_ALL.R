@@ -102,8 +102,6 @@ all_results$exposure_dose<-NA
 all_results$exposure_dose[grep(all_results$regression_term,pattern="Light")]<-"light"
 all_results$exposure_dose[grep(all_results$regression_term,pattern="Moderate")]<-"moderate"
 all_results$exposure_dose[grep(all_results$regression_term,pattern="Heavy")]<-"heavy"
-all_results$exposure_dose[grep(all_results$regression_term,pattern="Somewhat")]<-"somewhat active"
-all_results$exposure_dose[grep(all_results$regression_term,pattern="Active")]<-"active"
 
 # save results
 
