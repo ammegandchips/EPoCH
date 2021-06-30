@@ -83,7 +83,7 @@ key$outcome_subclass1[key$outcome %in% depression_outcomes] <-"depressive sympto
 key$outcome_subclass1[key$outcome %in% sdq_outcomes] <-"strengths and difficulties"
 key$outcome_subclass1[key$outcome %in% cognitive_outcomes] <-"cognitive ability"
 key$outcome_subclass1[key$outcome %in% social_outcomes] <-"autistic traits"
-key$outcome_subclass1[key$outcome %in% schoolreadiness_outcomes] <-"school readiness"
+key$outcome_subclass1[key$outcome %in% cognitive_schoolreadiness_outcomes] <-"school readiness"
 
 key$outcome_subclass1[key$outcome %in% mice_outcomes] <-"home invaded by mice"
 key$outcome_subclass1[key$outcome %in% pigeon_outcomes] <-"home invaded by pigeons"
