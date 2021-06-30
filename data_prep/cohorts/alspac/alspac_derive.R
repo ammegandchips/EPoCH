@@ -335,23 +335,22 @@ dat$covs_passivesmk_child_before2_binary[dat$covs_passivesmk_child_stage0_binary
 dat$covs_passivesmk_child_before2_binary[dat$covs_passivesmk_child_stage0_binary==1|dat$covs_passivesmk_child_stage1_binary==1] <-1
 
 ##### PERINATAL OUTCOMES
-
 #survive one year
-dat$peri_survive_one_year <-NA
-dat$peri_survive_one_year[dat$kz011b==1] <-1
-dat$peri_survive_one_year[dat$kz011b==2] <-0
+dat$peri_survive_one_year_binary <-NA
+dat$peri_survive_one_year_binary[dat$kz011b==1] <-1
+dat$peri_survive_one_year_binary[dat$kz011b==2] <-0
 #live births (could be useful outcome, or way to select sample)
-dat$peri_live_birth <-NA
-dat$peri_live_birth[dat$kz011==1]<-1
-dat$peri_live_birth[dat$kz011==2]<-0
+dat$peri_live_birth_binary <-NA
+dat$peri_live_birth_binary[dat$kz011==1]<-1
+dat$peri_live_birth_binary[dat$kz011==2]<-0
 #miscarriage or termination before 20 weeks vs live birth (could be useful outcome, or way to select sample)
-dat$peri_miscarriage_termination_b420wks <- NA
-dat$peri_miscarriage_termination_b420wks[dat$kz011==0]<-1
-dat$peri_miscarriage_termination_b420wks[dat$peri_live_birth==1]<-0
+dat$peri_miscarriage_termination_b420wks_binary <- NA
+dat$peri_miscarriage_termination_b420wks_binary[dat$kz011==0]<-1
+dat$peri_miscarriage_termination_b420wks_binary[dat$peri_live_birth_binary==1]<-0
 #fetal death/stillbirth after 20 weeks vs live birth (could be useful outcome, or way to select sample)
-dat$peri_fetal_death_after_20wks <- NA
-dat$peri_fetal_death_after_20wks[dat$kz011==1]<-1
-dat$peri_fetal_death_after_20wks[dat$peri_live_birth==1]<-0
+dat$peri_fetal_death_after_20wks_binary <- NA
+dat$peri_fetal_death_after_20wks_binary[dat$kz011==1]<-1
+dat$peri_fetal_death_after_20wks_binary[dat$peri_live_birth_binary==1]<-0
 # #termination for congenital malformation (could be useful outcome, or way to select sample)
 # dat$peri_congenital_malf_termination <-NA
 # dat$peri_congenital_malf_termination[dat$mz011b==1]<-1
