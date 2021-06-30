@@ -104,7 +104,7 @@ lapply(1:length(models),
 
 print("selecting exposures and outcomes for pheWAS data summaries...")
 exposures <- unique(key$exposure)
-outcomes <- unique(key$outcome[grep(key$outcome,pattern="zscore|_sds")]) # note: different to above, here we are removing standardised variables
+outcomes <- unique(key$outcome[-grep(key$outcome,pattern="zscore")]) # note: different to above, here we are removing standardised variables
 
 ## summarise data input for each model
 
