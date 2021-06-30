@@ -97,7 +97,7 @@ key$covariates_model1a[key$person_exposed=="mother"]<-paste(key$covariates_model
 key$covariates_model1a[key$person_exposed=="father"]<-paste(key$covariates_model1a[key$person_exposed=="father"],"covs_ethnicity_father",sep=",")
 
 # define model 2a covariates 
-
+ 
 print("defining model 2a covariates...")
 ## most models: 1a + age + SEP (+ parity if exposed parent = mother)
 ## plus other health behaviours 
