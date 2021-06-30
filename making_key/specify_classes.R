@@ -61,8 +61,14 @@ key$outcome_class[key$outcome %in% neuro_outcomes]<-"psychosocial and cognitive 
 key$outcome_class[key$outcome %in% immuno_outcomes]<-"immunological outcomes"
 key$outcome_class[key$outcome %in% negcon_outcomes]<-"negative control outcomes"
 key$outcome_class[key$outcome %in% cardio_outcomes]<-"cardiometabolic outcomes"
+key$outcome_class[key$outcome %in% peri_outcomes]<-"perinatal survival outcomes"
  
 ## subclass of outcome (level 1)
+key$outcome_subclass1[grep(pattern="survive_one_year",key$outcome)]<-"alive at 1y"
+key$outcome_subclass1[grep(pattern="live_birth",key$outcome)]<-"live birth"
+key$outcome_subclass1[grep(pattern="miscarriage",key$outcome)]<-"miscarriage" #before 20 weeks
+key$outcome_subclass1[grep(pattern="fetal_death",key$outcome)]<-"fetal death >20 wks" #after 20 weeks
+
 key$outcome_subclass1[key$outcome %in% asthma_outcomes] <-"asthma"
 key$outcome_subclass1[key$outcome %in% eczema_outcomes] <-"eczema"
 key$outcome_subclass1[key$outcome %in% wheeze_outcomes] <-"wheezing"

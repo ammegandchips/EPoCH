@@ -352,15 +352,15 @@ dat$peri_miscarriage_termination_b420wks[dat$peri_live_birth==1]<-0
 dat$peri_fetal_death_after_20wks <- NA
 dat$peri_fetal_death_after_20wks[dat$kz011==1]<-1
 dat$peri_fetal_death_after_20wks[dat$peri_live_birth==1]<-0
-#termination for congenital malformation (could be useful outcome, or way to select sample)
-dat$peri_congenital_malf_termination <-NA
-dat$peri_congenital_malf_termination[dat$mz011b==1]<-1
-dat$peri_congenital_malf_termination[dat$mz011b==3]<-0
-dat$peri_congenital_malf_termination[dat$mz011b==7]<-0
-#death with a congenital defect up to one year (vs deaths before 1 with no congenital malformation)
-dat$peri_congenital_malf_death_before_one_year <-NA
-dat$peri_congenital_malf_death_before_one_year[dat$kz017==1] <-1
-dat$peri_congenital_malf_death_before_one_year[dat$kz017==2] <-0
+# #termination for congenital malformation (could be useful outcome, or way to select sample)
+# dat$peri_congenital_malf_termination <-NA
+# dat$peri_congenital_malf_termination[dat$mz011b==1]<-1
+# dat$peri_congenital_malf_termination[dat$mz011b==3]<-0
+# dat$peri_congenital_malf_termination[dat$mz011b==7]<-0
+# #death with a congenital defect up to one year (vs deaths before 1 with no congenital malformation)
+# dat$peri_congenital_malf_death_before_one_year <-NA
+# dat$peri_congenital_malf_death_before_one_year[dat$kz017==1] <-1
+# dat$peri_congenital_malf_death_before_one_year[dat$kz017==2] <-0
 
 ##### ANTHROPOMETRIC OUTCOMES
 
