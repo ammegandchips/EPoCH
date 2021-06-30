@@ -18,7 +18,7 @@ summarise_reg_models <- function(exposures,outcomes,model_number,df){
     }
   })
   names(list_of_summaries)<-apply(key_here,1,function(x){
-    paste0(exposure,".",outcome,".",model_number)
+    paste0(as.character(x[1]),".",as.character(x[2]),".",model_number)
   })
   list_of_summaries
 }
