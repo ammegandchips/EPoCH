@@ -30,6 +30,7 @@ key$child_age_covariates[which(key$outcome%in%c(cardio_outcomes)&key$outcome_tim
 key$child_age_covariates[which(key$outcome%in%c(cardio_outcomes)&key$outcome_time=="age 8, 9, 10 or 11")] <-names(dat[grep(names(dat),pattern="stage4_f9|covs_stage4_timepoint")])
 
 }
+
 ## MCS
 if(cohort=="MCS"|cohort=="mcs"){
 # anthro stage 3 was c
@@ -38,7 +39,6 @@ key$child_age_covariates[which((key$outcome=="anthro_weight_stage0")&(key$outcom
 key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 3 or 4"))] <-names(dat[grep(names(dat),pattern="age_child_stage2")])
 key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 5, 6 or 7"))] <-names(dat[grep(names(dat),pattern="age_child_stage3c")])
 key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 8, 9, 10 or 11"))] <-names(dat[grep(names(dat),pattern="age_child_stage4")])
-
 
 # anthro stage 3 was c
 key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="first year"))] <-names(dat[grep(names(dat),pattern="age_child_stage0")])
@@ -74,9 +74,9 @@ if(cohort=="BIB"|cohort=="bib"|cohort=="BiB"){
   key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 3 or 4"))] <-names(dat[grep(names(dat),pattern="covs_stage2_timepoint")])
   key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 5, 6 or 7"))] <-names(dat[grep(names(dat),pattern="covs_stage3_timepoint")])
   key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 8, 9, 10 or 11"))] <-names(dat[grep(names(dat),pattern="covs_stage4_timepoint")])
-  
-  
+
 }
+
 
 
 

@@ -8,7 +8,7 @@ library(haven)
 raw_dat <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno_raw.rds")
 
 dat <- haven::zap_labels(raw_dat)
-
+  
 ##### ADMIN VARIABLES
 
 #time at which parents completed questionnaires

@@ -21,6 +21,7 @@ meddiet_rmed <- names(dat)[grep(names(dat),pattern="_rmed_")]
 meddiet_rmed2 <- names(dat)[grep(names(dat),pattern="_rmed2_")]
 all_exposures <- na.omit(c(diet_exposures,sep_exposures,smoking_exposures,alcohol_exposures,caffeine_exposures,physact_exposures))
 
+peri_outcomes <- names(dat)[grep(names(dat),pattern="peri_")]
 anthro_outcomes <- names(dat)[grep(names(dat),pattern="anthro_")]
 neuro_outcomes <- names(dat)[grep(names(dat),pattern="neuro_")]
 immuno_outcomes <- names(dat)[grep(names(dat),pattern="immuno_")]
@@ -89,4 +90,4 @@ mice_outcomes<-names(dat)[grep(names(dat),pattern="negcon_mice")]
 pigeon_outcomes<-names(dat)[grep(names(dat),pattern="negcon_pigeon")]
 lefthand_outcomes<-names(dat)[grep(names(dat),pattern="negcon_lefthand")]
 
-all_outcomes <- c(anthro_outcomes,neuro_outcomes,immuno_outcomes,negcon_outcomes,cardio_outcomes)
+all_outcomes <- c(anthro_outcomes,neuro_outcomes,immuno_outcomes,negcon_outcomes,cardio_outcomes,peri_outcomes)
