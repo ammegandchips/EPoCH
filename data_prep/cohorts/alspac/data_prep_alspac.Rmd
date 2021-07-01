@@ -4833,6 +4833,8 @@ dat<-dat[,-which(colnames(dat)%in%negcon_vars)]
 
 * Alcohol and tobacco SNPs were taken from Liu et al 2019 'Association Studies of Up to 1.2 Million Individuals Yield New Insights Into the Genetic Etiology of Tobacco and Alcohol Use'
 
+Alcohol: drinks per week
+
 There are 4 different exposures for smoking:
 1)	Cigarettes per day. Categorical (5)
 2)	Smoking initiation. Binary (Regular current V non smoker)
