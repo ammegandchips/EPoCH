@@ -1,3 +1,8 @@
+# Remove prs sensitivity analysis names if neccessary
+if(cohort=="ALSPAC"){
+dat <- dat[,-grep("sens_exc",colnames(dat))]
+}
+
 # Create list of exposures and outcomes
 
 sep_exposures <- names(dat)[grep(names(dat),pattern="highestlowest")]
@@ -62,6 +67,10 @@ internalising_outcomes <-names(dat)[grep(names(dat),pattern="neuro_internalising
 externalising_outcomes <-names(dat)[grep(names(dat),pattern="neuro_externalising")]
 sdq_outcomes <- c(hyperactivity_outcomes,emotional_outcomes,conduct_outcomes,peer_outcomes,prosocial_outcomes,totalsdq_outcomes,internalising_outcomes,externalising_outcomes)
 social_outcomes <-names(dat)[grep(names(dat),pattern="neuro_scdc|csbq")]
+scdc_outcomes <-names(dat)[grep(names(dat),pattern="neuro_scdc")] 
+csbqindependence_outcomes <-names(dat)[grep(names(dat),pattern="csbqindep")] 
+csbqemotional_outcomes <-names(dat)[grep(names(dat),pattern="csbqemo")] 
+
 cognitive_outcomes <-names(dat)[grep(names(dat),pattern="neuro_cognition")]
 cognitive_performance_outcomes <-names(dat)[grep(names(dat),pattern="neuro_cognition_performance|spatialawareness|problemsolving")]
 cognitive_verbal_outcomes <-names(dat)[grep(names(dat),pattern="neuro_cognition_verbal|reading|namingvocab")]

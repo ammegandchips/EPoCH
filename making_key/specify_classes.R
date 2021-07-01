@@ -13,8 +13,8 @@ key$exposure_class[key$exposure %in% snps_exposures]<-"snps"
 key$exposure_subclass <-"basic"
 key$exposure_subclass[key$exposure %in% meddiet_rmed]<-"mediterranean diet rmed"
 key$exposure_subclass[key$exposure %in% meddiet_rmed2]<-"mediterranean diet rmed2"
-key$exposure_subclass[key$exposure %in% c("covs_edu_father","covs_edu_mother")]<-"highest education"
-key$exposure_subclass[key$exposure %in% c("covs_occup_father","covs_occup_mother")]<-"occupation"
+key$exposure_subclass[grep("covs_edu_father|covs_edu_mother",key$exposure)]<-"highest education"
+key$exposure_subclass[grep("covs_occup_father|covs_occup_mother",key$exposure)]<-"occupation"
 key$exposure_subclass[key$exposure %in% coffee_exposures]<-"coffee"
 key$exposure_subclass[key$exposure %in% tea_exposures]<-"tea"
 key$exposure_subclass[key$exposure %in% cola_exposures]<-"cola"
@@ -110,12 +110,17 @@ key$outcome_subclass1[key$outcome %in% trig_outcomes] <-"triglycerides"
 
 ## subclass of outcome (level 2)
 key$outcome_subclass2<-key$outcome_subclass1
+
 key$outcome_subclass2[key$outcome %in% overweight_outcomes] <-"overweight or obese"
 key$outcome_subclass2[key$outcome %in% obese_outcomes] <-"obese"
 key$outcome_subclass2[grep(key$outcome,pattern="sga")] <-"small for gestational age"
 key$outcome_subclass2[grep(key$outcome,pattern="lga")] <-"large for gestational age"
 key$outcome_subclass2[grep(key$outcome,pattern="birthweight_low")] <-"birthweight <2500g"
 key$outcome_subclass2[grep(key$outcome,pattern="birthweight_high")] <-"birthweight >4500g"
+
+key$outcome_subclass2[key$outcome %in% scdc_outcomes] <-"social and communications disorders scale"
+key$outcome_subclass2[key$outcome %in% csbqindependence_outcomes] <-"social behaviour: independence"
+key$outcome_subclass2[key$outcome %in% csbqemotional_outcomes] <-"social behaviour: emotional dysregulation"
 
 key$outcome_subclass2[key$outcome %in% hyperactivity_outcomes] <-"hyperactivity/inattention"
 key$outcome_subclass2[key$outcome %in% emotional_outcomes] <-"emotional symptoms"
@@ -144,7 +149,12 @@ key$outcome_subclass2[key$outcome %in% insect_allergy_outcomes] <-"insect allerg
 key$outcome_subclass2[key$outcome %in% any_allergy_outcomes] <-"any allergy"
  
 ## timing of outcome
-key$outcome_time[grep(key$outcome,pattern="stage0|birth")]<-"first year"
+key$outcome_time[grep(key$outcome,pattern="birth")]<-"delivery"
+key$outcome_time[grep(pattern="survive_one_year",key$outcome)]<-"first year"
+key$outcome_time[grep(pattern="miscarriage",key$outcome)]<-"pregnancy" #before 20 weeks
+key$outcome_time[grep(pattern="fetal_death",key$outcome)]<-"pregnancy" #after 20 weeks
+
+key$outcome_time[grep(key$outcome,pattern="stage0")]<-"first year"
 key$outcome_time[grep(key$outcome,pattern="stage1")]<-"age 1 or 2"
 key$outcome_time[grep(key$outcome,pattern="stage2")]<-"age 3 or 4"
 key$outcome_time[grep(key$outcome,pattern="stage3")]<-"age 5, 6 or 7"

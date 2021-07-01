@@ -194,6 +194,13 @@ key$covariates_model4b <- unlist(lapply(lapply(str_split(key$covariates_model4b,
 
 key <- key[,-which(colnames(key) %in% c("child_age_covariates","basic_covariates","other_health_behaviours","extra_parent_covariates","previous_exposure_timepoints","potential_mediators","other_parents_exposure","other_parents_covariates"))]
 
+## add exposure and outcome linkage terms (without dose)
+
+print("adding exposure and outcomes linkage terms...")
+
+key$exposure_linker <- paste0(key$exposure_class,"-",key$exposure_subclass,"-",key$exposure_time,"-",key$person_exposed,"-",key$exposure_type,"-",key$exposure_source)
+key$outcome_linker <- paste0(key$outcome_class,"-",key$outcome_subclass1,"-",key$outcome_subclass2,"-",key$outcome_time,"-",key$outcome_type)
+
 # save key
 
 print("saving key...")

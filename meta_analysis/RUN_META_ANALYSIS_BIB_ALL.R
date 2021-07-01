@@ -35,9 +35,18 @@ cohort_phewas <- lapply(1:length(cohorts),function(x){
   res$cohort <- cohorts[x]
   key <- readRDS(paste0(location_of_key,tolower(cohorts[x]),"_key.rds"))
   res <- merge(res,key,by=c("exposure","outcome"),all.y=F)
-  res$outcome_term <- paste0(res$outcome_subclass2," - ",res$outcome_time)
+  res$exposure_dose <-NA
+  res$exposure_dose[grep("Heavy",res$regression_term)]<-"heavy"
+  res$exposure_dose[grep("Light",res$regression_term)]<-"light"
+  res$exposure_dose[grep("Moderate",res$regression_term)]<-"moderate"
+  res$exposure_term <- paste0(res$exposure_class,"-",res$exposure_subclass,"-",res$exposure_time,"-",res$person_exposed,"-",res$exposure_type,"-",res$exposure_source,"-",res$exposure_dose)
+  res$outcome_term <- paste0(res$outcome_class,"-",res$outcome_subclass1,"-",res$outcome_subclass2,"-",res$outcome_time,"-",res$outcome_type)
+  res$exposure <-NULL
+  res$regression_term <-NULL
+  res<-res[,-grep(colnames(res),pattern="covariate")]
   res
 })
+
 
 # combine results from all cohorts into long and wide format
 
@@ -48,10 +57,19 @@ all_cohort_phewas_long <- bind_rows(cohort_phewas)
 print("combining cohort results in wide format...")
 
 all_cohort_phewas_wide <- pivot_wider(all_cohort_phewas_long,
-                                      id_cols = c("regression_term","exposure","outcome","exposure_class","exposure_subclass","exposure_time","person_exposed","exposure_source","exposure_type","outcome_class","outcome_subclass1","outcome_subclass2","outcome_time","outcome_type","outcome_term"),
+                                      id_cols = c("exposure_term","outcome_term"),
                                       names_from = "cohort",
-                                      values_from = c("est","se","p","n",paste0("covariates_",model))
+                                      values_from = c("est","se","p","n")
 )
+
+head(paste(all_cohort_phewas_long$exposure_term,all_cohort_phewas_long$outcome_term)[duplicated(paste(all_cohort_phewas_long$exposure_term,all_cohort_phewas_long$outcome_term))])
+
+all_cohort_phewas_long<-all_cohort_phewas_long[-grep("socioe",all_cohort_phewas_long$exposure_term),]
+
+table(all_cohort_phewas_long$exposure_term[duplicated(paste(all_cohort_phewas_long$exposure_term,all_cohort_phewas_long$outcome_term))])
+
+
+all_cohort_phewas_long <- all_cohort_phewas_long[-grep("socioe|polygenic",all_cohort_phewas_long$exposure_term),]
 
 # add some extra information (total n, number of participating cohorts, which cohorts they are, and a combination of regression term and outcome for merging)
 

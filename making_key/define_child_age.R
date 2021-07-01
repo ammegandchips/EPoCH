@@ -41,7 +41,7 @@ key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_
 key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 8, 9, 10 or 11"))] <-names(dat[grep(names(dat),pattern="age_child_stage4")])
 
 # anthro stage 3 was c
-key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="first year"))] <-names(dat[grep(names(dat),pattern="age_child_stage0")])
+key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="first year"))] <-names(dat[grep(names(dat),pattern="age_child_stage0")]) # check what's going on here and next line - is stage 0 weight different from birthweight? Is it being classified as such in the key?
 key$child_age_covariates[which((key$outcome=="anthro_weight_stage0")&(key$outcome_time=="first year"))] <-names(dat[grep(names(dat),pattern="age_child_stage0wt")])
 key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 3 or 4"))] <-names(dat[grep(names(dat),pattern="age_child_stage2")])
 key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 5, 6 or 7"))] <-names(dat[grep(names(dat),pattern="age_child_stage3c")])
@@ -52,8 +52,8 @@ key$child_age_covariates[which((key$outcome%in%c(sdq_outcomes))&(key$outcome_tim
 key$child_age_covariates[which((key$outcome%in%c(sdq_outcomes))&(key$outcome_time=="age 5, 6 or 7"))] <-names(dat[grep(names(dat),pattern="age_child_stage3d")])
 
 # csbq stage 3 was c
-key$child_age_covariates[which((key$outcome=="neuro_csbqindependence_stage3")&(key$outcome_time=="age 5, 6 or 7"))] <-names(dat[grep(names(dat),pattern="age_child_stage3d")])
-key$child_age_covariates[which((key$outcome=="neuro_csbqemotionaldysreg_stage3")&(key$outcome_time=="age 5, 6 or 7"))] <-names(dat[grep(names(dat),pattern="age_child_stage3d")])
+key$child_age_covariates[which((key$outcome=="neuro_csbqindependence_stage3")&(key$outcome_time=="age 5, 6 or 7"))] <-names(dat[grep(names(dat),pattern="age_child_stage3c")])
+key$child_age_covariates[which((key$outcome=="neuro_csbqemotionaldysreg_stage3")&(key$outcome_time=="age 5, 6 or 7"))] <-names(dat[grep(names(dat),pattern="age_child_stage3c")])
 
 # naming vocab, spatial awareness, problemsolving stage 3 was c
 key$child_age_covariates[which((key$outcome%in%c(cognitive_outcomes))&(key$outcome_time=="age 3 or 4"))] <-names(dat[grep(names(dat),pattern="age_child_stage2")])
