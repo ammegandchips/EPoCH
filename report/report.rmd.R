@@ -10,11 +10,18 @@ require(ggstance)
 key <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/meta_analysis_results/master_key.RDS")
 
 # select exposure of interest
-eoi <- c("smoking","ever in pregnancy","basic","binary")
-key_here <- key[key$exposure_class==eoi[1]&key$exposure_time==eoi[2]&key$exposure_subclass==eoi[3]&key$exposure_type==eoi[4],]
-key_here <- key_here[-which(key_here$outcome_class=="negative control outcomes"),]
-key_here <- key_here[-intersect(grep(key_here$outcome_type, pattern="numerical"),grep(key_here$outcome,pattern="zscore|sds",invert = T)),]
-key_here <- key_here[-intersect(grep(key_here$outcome,pattern="bmi"),grep(key_here$outcome,pattern="zscore")),]
+eoi1 <- c("smoking","ever in pregnancy","basic","binary","father","self-reported or measured")
+eoi2 <- c("smoking","preconception","basic","binary","father","self-reported or measured")
+
+key_here1 <- key[key$exposure_class==eoi1[1]&key$exposure_time==eoi1[2]&key$exposure_subclass==eoi1[3]&key$exposure_type==eoi1[4]&key$person_exposed==eoi1[5]&key$exposure_source==eoi1[6],]
+key_here1 <- key_here1[-which(key_here1$outcome_class=="negative control outcomes"),]
+key_here1 <- key_here1[-intersect(grep(key_here1$outcome_type, pattern="numerical"),grep(key_here1$outcome,pattern="zscore|sds",invert = T)),]
+key_here1 <- key_here1[-intersect(grep(key_here1$outcome,pattern="bmi"),grep(key_here1$outcome,pattern="zscore")),]
+
+key_here2 <- key[key$exposure_class==eoi2[1]&key$exposure_time==eoi2[2]&key$exposure_subclass==eoi2[3]&key$exposure_type==eoi2[4]&key$person_exposed==eoi2[5]&key$exposure_source==eoi2[6],]
+key_here2 <- key_here2[-which(key_here2$outcome_class=="negative control outcomes"),]
+key_here2 <- key_here2[-intersect(grep(key_here2$outcome_type, pattern="numerical"),grep(key_here2$outcome,pattern="zscore|sds",invert = T)),]
+key_here2 <- key_here2[-intersect(grep(key_here2$outcome,pattern="bmi"),grep(key_here2$outcome,pattern="zscore")),]
 
 # Table 1 (summarise the maximum N exposed and unexposed in each cohort and in total, and the mean ages of parents, proportion parity>1, proportion female, proportion each SEP level, ethnicity)
 

@@ -65,8 +65,8 @@ dat <- dat[dat$multiple_pregnancy==1,] #select singleton pregnancies
 ## select exposures and outcomes
 
 print("selecting exposures and outcomes for pheWAS...")
-exposures <- unique(key$exposure)
-outcomes <- unique(key$outcome[grep(key$outcome,pattern="zscore|_sds|binary")])
+exposures <- unique(key$exposure[grepl(key$exposure,pattern="_zscore|binary|ordinal|continuous")])
+outcomes <- unique(key$outcome[grepl(key$outcome,pattern="_zscore|_sds|binary")])
 
 ## run pheWAS for each model
 
