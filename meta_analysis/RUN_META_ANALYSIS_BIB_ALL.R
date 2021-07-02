@@ -32,6 +32,9 @@ cohort_phewas <- lapply(1:length(cohorts),function(x){
   res <- readRDS(paste0(location_of_phewas_res,cohorts[x],"_",model,"_phewas.rds"))
   res <- res[,c("exposure","regression_term","outcome","est","se","p","n")]
   res <- res[which(res$regression_term!="error"),] # can remove this once we have sorted the issue with MCS
+#  if(cohorts[x]=="BIB_ALL"){
+#  res <- res[-grep("bmi_stage0_zscore|bmi_stage1_zscore|bmi_stage2_zscore|bmi_stage3_zscore|bmi_stage4_zscore",res$outcome),] # can remove this once we have sorted the issue with BIB  
+#  }
   res$cohort <- cohorts[x]
   key <- readRDS(paste0(location_of_key,tolower(cohorts[x]),"_key.rds"))
   res <- merge(res,key,by=c("exposure","outcome"),all.y=F)
@@ -46,7 +49,6 @@ cohort_phewas <- lapply(1:length(cohorts),function(x){
   res
 })
 
-
 # combine results from all cohorts into long and wide format
 
 print("combining cohort results in long format...")
@@ -56,7 +58,7 @@ all_cohort_phewas_long <- bind_rows(cohort_phewas)
 print("combining cohort results in wide format...")
 
 all_cohort_phewas_wide <- pivot_wider(all_cohort_phewas_long,
-                                      id_cols = c("exposure_linker","outcome_linker"),
+                                      id_cols = c("exposure_linker","outcome_linker","exposure_class","exposure_subclass","exposure_time","exposure_type","exposure_source","person_exposed","outcome_class","outcome_subclass1","outcome_subclass2","outcome_time","outcome_type","exposure_dose"),
                                       names_from = "cohort",
                                       values_from = c("est","se","p","n")
 )
@@ -70,13 +72,14 @@ cohort_missing <- is.na(all_cohort_phewas_wide[,paste0("est_",cohorts)])
 cohorts_participating <- apply(cohort_missing,1,function(x)cohorts[x==F])
 all_cohort_phewas_wide$cohorts_n <- sapply(cohorts_participating,length)
 all_cohort_phewas_wide$cohorts <- unlist(lapply(cohorts_participating,function(x) paste(x,collapse=", ")))
-all_cohort_phewas_wide$regressionterm.outcome <- paste(all_cohort_phewas_wide$regression_term,all_cohort_phewas_wide$outcome,sep=".")
+all_cohort_phewas_wide$linker <- paste(all_cohort_phewas_wide$exposure_linker,all_cohort_phewas_wide$outcome_linker,sep=".")
+
 
 # run the meta analysis
 
 print("running meta-analysis...")
 
-meta_res <- split(all_cohort_phewas_long, paste(all_cohort_phewas_long$regression_term,all_cohort_phewas_long$outcome,sep="."),drop = FALSE)
+meta_res <- split(all_cohort_phewas_long, paste(all_cohort_phewas_long$exposure_linker,all_cohort_phewas_long$outcome_linker,sep="."),drop = FALSE)
 meta_res = lapply(meta_res, function(x) try(rma.uni(slab=x$cohort,yi=x$est,sei=x$se,method="FE",weighted=TRUE)))
 
 # extract key information from the meta-analysis results
@@ -93,23 +96,18 @@ meta_res_extracted  = lapply(meta_res, function(x){
     extracted_data
   })
 
-meta_res_extracted <- bind_rows(meta_res_extracted,.id="regressionterm.outcome")
+meta_res_extracted <- bind_rows(meta_res_extracted,.id="linker")
 
 # merging cohort-level results with meta-analysis results
 
 print("merging cohort-level results with meta-analysis results...")
 
-all_results <- full_join(all_cohort_phewas_wide,meta_res_extracted,by="regressionterm.outcome")
+all_results <- full_join(all_cohort_phewas_wide,meta_res_extracted,by="linker")
 
 # adding some extra information and tidying up results
 
 all_results$model <- model
 all_results <- all_results[order(all_results$est),]
-
-all_results$exposure_dose<-NA
-all_results$exposure_dose[grep(all_results$regression_term,pattern="Light")]<-"light"
-all_results$exposure_dose[grep(all_results$regression_term,pattern="Moderate")]<-"moderate"
-all_results$exposure_dose[grep(all_results$regression_term,pattern="Heavy")]<-"heavy"
 
 # save results
 

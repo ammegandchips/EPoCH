@@ -231,7 +231,10 @@ raw_dat$paternal_participation <- NA
 raw_dat$paternal_participation[raw_dat$apdres00%in%c(2,4,6,8,26,25,31)]<-1
 raw_dat$paternal_participation[raw_dat$apdres00%in%c(-1,7,21,22,16,12,24,22,28,30)]<-0
 
+saveRDS(raw_dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno_raw.rds")
+# raw_dat <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno_raw.rds")
 dat<- raw_dat[,c(names(raw_dat)[1:7],"covs_biological_father","paternal_participation")]
+
 
 ```
 
@@ -677,6 +680,7 @@ dat$anthro_bmi_stage2_sds <- sds(value = dat$anthro_bmi_stage2,
 		      age = dat$covs_age_child_stage2,
 		      sex = dat$covs_sex, male = "male", female = "female",
 		      ref = ukwho.ref, item = "bmi")
+dat$anthro_bmi_stage2_sds[dat$anthro_bmi_stage2_sds=="Inf"]<-NA # Think 33 come out as Inf maybe because age is not normally distributed? (only thing I can think of...)
 
 dat$anthro_bmi_stage3_sds <- sds(value = dat$anthro_bmi_stage3,
 		      age = dat$covs_age_child_stage3c,

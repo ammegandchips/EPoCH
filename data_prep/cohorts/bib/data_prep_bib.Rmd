@@ -1433,9 +1433,6 @@ datwe$anthro_weight_stage1_zscore <-scale(datwe$anthro_weight_stage1)
 datwe$anthro_weight_stage2_zscore <-scale(datwe$anthro_weight_stage2)
 datwe$anthro_weight_stage3_zscore <-scale(datwe$anthro_weight_stage3)
 
-datwe$anthro_bmi_stage1_zscore <-scale(datwe$anthro_bmi_stage1)
-datwe$anthro_bmi_stage2_zscore <-scale(datwe$anthro_bmi_stage2)
-datwe$anthro_bmi_stage3_zscore <-scale(datwe$anthro_bmi_stage3)
 
 datwe$anthro_head_circ_stage1_zscore <-scale(datwe$anthro_head_circ_stage1)
 datwe$anthro_head_circ_stage2_zscore <-scale(datwe$anthro_head_circ_stage2)
@@ -1459,10 +1456,6 @@ datsa$anthro_weight_stage1_zscore <-scale(datsa$anthro_weight_stage1)
 datsa$anthro_weight_stage2_zscore <-scale(datsa$anthro_weight_stage2)
 datsa$anthro_weight_stage3_zscore <-scale(datsa$anthro_weight_stage3)
 
-datsa$anthro_bmi_stage1_zscore <-scale(datsa$anthro_bmi_stage1)
-datsa$anthro_bmi_stage2_zscore <-scale(datsa$anthro_bmi_stage2)
-datsa$anthro_bmi_stage3_zscore <-scale(datsa$anthro_bmi_stage3)
-
 datsa$anthro_head_circ_stage1_zscore <-scale(datsa$anthro_head_circ_stage1)
 datsa$anthro_head_circ_stage2_zscore <-scale(datsa$anthro_head_circ_stage2)
 
@@ -1485,10 +1478,6 @@ dat$anthro_height_stage3_zscore <-scale(dat$anthro_height_stage3)
 dat$anthro_weight_stage1_zscore <-scale(dat$anthro_weight_stage1)
 dat$anthro_weight_stage2_zscore <-scale(dat$anthro_weight_stage2)
 dat$anthro_weight_stage3_zscore <-scale(dat$anthro_weight_stage3)
-
-dat$anthro_bmi_stage1_zscore <-scale(dat$anthro_bmi_stage1)
-dat$anthro_bmi_stage2_zscore <-scale(dat$anthro_bmi_stage2)
-dat$anthro_bmi_stage3_zscore <-scale(dat$anthro_bmi_stage3)
 
 dat$anthro_head_circ_stage1_zscore <-scale(dat$anthro_head_circ_stage1)
 dat$anthro_head_circ_stage2_zscore <-scale(dat$anthro_head_circ_stage2)
