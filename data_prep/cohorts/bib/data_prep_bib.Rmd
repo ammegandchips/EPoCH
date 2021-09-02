@@ -9,6 +9,8 @@ output:
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(error = TRUE)
 ```
+NOTE THIS IS NOW OUT OF DATE! KEEPING IT SO WE CAN SEE WHAT WE WERE THINKING WITH CERTAIN BITS, BUT THE UPDATED VERSION OF THIS CODE IS NOW IN "bib_vars.r", "bib_derive.r" and "gen_genetic_data.r".
+
 
 ## Description {.tabset}
 This is the annotated code to prepare the BiB dataset for use in EPoCH. To run this code, copy and paste the relevant sections. 
@@ -726,7 +728,7 @@ dat$anthro_obese_stage3_binary[which(dat$anthro_bmi_stage3_sds<=1 &dat$anthro_bm
 
 ```
 
-Fat mass index is not available for offspring
+Fat mass index is available see bib_derive.r
 
 # Child's psychosocial & cognitive outcomes  {.tabset}
 
@@ -933,10 +935,6 @@ dat$covs_edu_mother_highestlowest_binary <- NA
 dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==0] <- 0
 dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==3] <- 1
 
-dat$covs_occup_mother_highestlowest_binary <- NA
-dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==0] <- 0
-dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==3] <- 1
-
 dat$covs_occup_father_highestlowest_binary <- NA
 dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==0] <- 0
 dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==3] <- 1
@@ -1060,7 +1058,7 @@ NB. The Smoking initiation one is problematic, and seems to be related to impuls
 PRS created using Plink v1.9, then read in here:
 ```{r eval=FALSE, include=TRUE}
 ##nb I created the file labeled as 'mothers' but this holds both mums and child
-prs_alcohol <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210303_scores_alcohol_mothers.profile",
+prs_alcohol <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210303_scores_alcohol_mothers.profile",
                               header = T,
                               check.names = F)
 
@@ -1073,7 +1071,7 @@ prs_alcohol<-prs_alcohol[, which(names(prs_alcohol) %in% c("prs_score_alcohol","
 
 ### Smoking
 #Smoking age initiation
-prs_smoking_age_init <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210324_scores_smoking_age_init.profile",
+prs_smoking_age_init <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210324_scores_smoking_age_init.profile",
                           header = T,
                           check.names = F)
 
@@ -1085,7 +1083,7 @@ prs_smoking_age_init$prs_score_smoking_age_init<-prs_smoking_age_init$SCORE
 prs_smoking_age_init<-prs_smoking_age_init[, which(names(prs_smoking_age_init) %in% c("prs_score_smoking_age_init","id"))]
 
 #Smoking cessation
-prs_smoking_cessation <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210325_scores_smoking_cessation.profile",
+prs_smoking_cessation <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210325_scores_smoking_cessation.profile",
                                    header = T,
                                    check.names = F)
 
@@ -1097,7 +1095,7 @@ prs_smoking_cessation$prs_score_smoking_cessation<-prs_smoking_cessation$SCORE
 prs_smoking_cessation<-prs_smoking_cessation[, which(names(prs_smoking_cessation) %in% c("prs_score_smoking_cessation","id"))]
 
 #smoking cigs per day
-prs_smoking_cigs_pd <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210325_scores_smoking_cigs_pd.profile",
+prs_smoking_cigs_pd <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210325_scores_smoking_cigs_pd.profile",
                                     header = T,
                                     check.names = F)
 
@@ -1109,7 +1107,7 @@ prs_smoking_cigs_pd$prs_score_smoking_cigs_pd<-prs_smoking_cigs_pd$SCORE
 prs_smoking_cigs_pd<-prs_smoking_cigs_pd[, which(names(prs_smoking_cigs_pd) %in% c("prs_score_smoking_cigs_pd","id"))]
 
 #Smoking initiation
-prs_smoking_initiation <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210325_scores_smoking_initiation.profile",
+prs_smoking_initiation <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210325_scores_smoking_initiation.profile",
                                   header = T,
                                   check.names = F)
 
@@ -1121,7 +1119,7 @@ prs_smoking_initiation$prs_score_smoking_initiation<-prs_smoking_initiation$SCOR
 prs_smoking_initiation<-prs_smoking_initiation[, which(names(prs_smoking_initiation) %in% c("prs_score_smoking_initiation","id"))]
 
 #Caffeine
-prs_caffeine <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210325_scores_caffeine.profile",
+prs_caffeine <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210325_scores_caffeine.profile",
                              header = T,
                              check.names = F)
 
@@ -1137,7 +1135,7 @@ prs_caffeine<-prs_caffeine[, which(names(prs_caffeine) %in% c("prs_score_caffein
 
 #Sedentary
 
-prs_sedentary <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210326_scores_pa_sedentary.profile",
+prs_sedentary <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/final_scores/20210326_scores_pa_sedentary.profile",
                                   header = T,
                                   check.names = F)
 prs_sedentary$id<-paste(prs_sedentary$FID,prs_sedentary$IID,sep="_")
@@ -1152,14 +1150,14 @@ prs_sedentary<-prs_sedentary[, which(names(prs_sedentary) %in% c("prs_score_sede
 ```{r eval=FALSE, include=TRUE}
 #! Potential for duplicate snps to present in final dataset, as come from different snp lists for exposures - an option round this, is to rename with 'alc' 'smok' etc before name of snp??
 
-snps_alcohol<-read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/alcohol_mothers_excluded_numb.raw", header=T)
-snps_smoking_initiation<-read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/smoking_initiation_excluded_numb.raw", header=T)
-snps_smoking_cigs_pd<-read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/smoking_cigs_pd_excluded_numb.raw", header=T)
-snps_smoking_cessation<-read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/smoking_cessation_excluded_numb.raw", header=T)
-snps_smoking_age_init<-read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/smoking_age_init_excluded_numb.raw", header=T)
-snps_sedentary<-read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/pa_sedentary_excluded_numb.raw", header=T)
-snps_overall_activity<-read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/pa_overall_activity_excluded_numb.raw", header=T)
-snps_caffeine<-read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/caffeine_excluded_numb.raw", header=T)
+snps_alcohol<-read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/alcohol_mothers_excluded_numb.raw", header=T)
+snps_smoking_initiation<-read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/smoking_initiation_excluded_numb.raw", header=T)
+snps_smoking_cigs_pd<-read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/smoking_cigs_pd_excluded_numb.raw", header=T)
+snps_smoking_cessation<-read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/smoking_cessation_excluded_numb.raw", header=T)
+snps_smoking_age_init<-read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/smoking_age_init_excluded_numb.raw", header=T)
+snps_sedentary<-read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/pa_sedentary_excluded_numb.raw", header=T)
+snps_overall_activity<-read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/pa_overall_activity_excluded_numb.raw", header=T)
+snps_caffeine<-read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/genetic scores/individual_snp_score/caffeine_excluded_numb.raw", header=T)
 
 
 snps_alcohol$id<-paste(snps_alcohol$FID,snps_alcohol$IID,sep="_")
@@ -1197,9 +1195,9 @@ PRS data
 #install.packages("readstata13")
 library(readstata13)
 
-exclude <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/cohorts/bib/pca_prep/directly_genotyped_released_ibd.genome.exclusions.uniq.txt")
+exclude <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/cohorts/bib/pca_prep/directly_genotyped_released_ibd.genome.exclusions.uniq.txt")
 exclude <- exclude$V1 #15628 to 14439
-exclude_child <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/cohorts/bib/pca_prep/child/directly_genotyped_released_ibd.genome.exclusions.uniq.txt")
+exclude_child <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/cohorts/bib/pca_prep/child/directly_genotyped_released_ibd.genome.exclusions.uniq.txt")
 exclude_child <- exclude_child$V1 #13859
 
 # EXCLUDE those on exclusion list - 
@@ -1318,14 +1316,14 @@ dim(snps_overall_activity)
 PCs made using Plink. Run mapping.R script and then bib_pc.sh/bib_pc_child.sh in Plink
 ```{r eval=FALSE, include=TRUE}
 #Mum PCAs #7533
-bib_pca <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/pca_prep/pcs/directly_genotyped_released_pca.eigenvec", header = TRUE)
+bib_pca <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/pca_prep/pcs/directly_genotyped_released_pca.eigenvec", header = TRUE)
 bib_pca=subset(subset(bib_pca,select=-c(IID)))
 bib_pca<-bib_pca%>%rename_with(tolower)
 names(bib_pca)<-paste0("mum",names(bib_pca))
 colnames(bib_pca)[1] <- "id"
 
 ## Child PCAs #6308
-bib_pca_child <- read.table("/Users/ke14426/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/pca_prep/pcs/child/directly_genotyped_released_pca.eigenvec", header = TRUE)
+bib_pca_child <- read.table("~/University of Bristol/grp-EPoCH - Documents/EPoCH Github/data_prep/cohorts/bib/pca_prep/pcs/child/directly_genotyped_released_pca.eigenvec", header = TRUE)
 bib_pca_child=subset(subset(bib_pca_child,select=-c(IID)))
 
 bib_pca_child<-bib_pca_child%>%rename_with(tolower)

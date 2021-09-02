@@ -544,8 +544,13 @@ dat$anthro_obese_stage4_binary[which(dat$anthro_bmi_stage4_sds<=1 &dat$anthro_bm
 #Fat mass index **
 dat$anthro_fmi_stage4 <- dat$f9dx135
 dat$anthro_fmi_stage4[dat$f9dx135<0]<-NA
-dat$anthro_fmi_stage4 <- dat$anthro_fmi_stage4 / dat$anthro_height_stage4
+dat$anthro_fmi_stage4 <- dat$anthro_fmi_stage4  / ((dat$anthro_height_stage4/100)^2)
 dat$anthro_fmi_stage4_zscore <- scale(dat$anthro_fmi_stage4)
+
+dat$anthro_fatpc_stage4 <- dat$f9dx135
+dat$anthro_fatpc_stage4[dat$f9dx135<0]<-NA
+dat$anthro_fatpc_stage4 <- (dat$anthro_fatpc_stage4  / (dat$anthro_weight_stage4*1000))*100
+dat$anthro_fatpc_stage4_zscore <- scale(dat$anthro_fatpc_stage4)
 
 ##### IMMUNOLOGICAL OUTCOMES
 
@@ -631,6 +636,10 @@ dat$immuno_allergy_food_stage3_binary[which(dat$kq195a==1)]<-1
 dat$immuno_allergy_food_stage4_binary <- NA
 dat$immuno_allergy_food_stage4_binary[which(dat$ks3000%in%c(1,2))]<-1
 dat$immuno_allergy_food_stage4_binary[which(dat$ks3000==3)]<-0
+#Any time
+dat$immuno_allergy_food_allstages_binary <- NA
+dat$immuno_allergy_food_allstages_binary[dat$immuno_allergy_food_stage2_binary==0|dat$immuno_allergy_food_stage3_binary==0|dat$immuno_allergy_food_stage4_binary==0] <-0
+dat$immuno_allergy_food_allstages_binary[dat$immuno_allergy_food_stage2_binary==1|dat$immuno_allergy_food_stage3_binary==1|dat$immuno_allergy_food_stage4_binary==1] <-1
 #Pollen*
 #Stage 2 (around age 4; >=3 to <5) - kk (km?)
 dat$immuno_allergy_pollen_stage2_binary <- NA
@@ -644,6 +653,10 @@ dat$immuno_allergy_pollen_stage3_binary[dat$kq217==1]<-1
 dat$immuno_allergy_pollen_stage4_binary <-NA
 dat$immuno_allergy_pollen_stage4_binary[which(dat$ks3030%in%c(1,2))] <-0 #set to no if give valid answer to "apart from food and drink, is your child allergic to anything else?
 dat$immuno_allergy_pollen_stage4_binary[which(dat$ks3031==1)] <-1 # replace with yes if they ticked this box
+#Any time
+dat$immuno_allergy_pollen_allstages_binary <- NA
+dat$immuno_allergy_pollen_allstages_binary[dat$immuno_allergy_pollen_stage2_binary==0|dat$immuno_allergy_pollen_stage3_binary==0|dat$immuno_allergy_pollen_stage4_binary==0] <-0
+dat$immuno_allergy_pollen_allstages_binary[dat$immuno_allergy_pollen_stage2_binary==1|dat$immuno_allergy_pollen_stage3_binary==1|dat$immuno_allergy_pollen_stage4_binary==1] <-1
 #Cats*
 #Stage 2 (around age 4; >=3 to <5) - kk (km?)
 dat$immuno_allergy_cat_stage2_binary <- NA
@@ -657,6 +670,10 @@ dat$immuno_allergy_cat_stage3_binary[dat$kq218==1]<-1
 dat$immuno_allergy_cat_stage4_binary <-NA
 dat$immuno_allergy_cat_stage4_binary[which(dat$ks3030%in%c(1,2))] <-0 #set to no if give valid answer to "apart from food and drink, is your child allergic to anything else?
 dat$immuno_allergy_cat_stage4_binary[which(dat$ks3032==1)] <-1 # replace with yes if they ticked this box
+#Any time
+dat$immuno_allergy_cat_allstages_binary <- NA
+dat$immuno_allergy_cat_allstages_binary[dat$immuno_allergy_cat_stage2_binary==0|dat$immuno_allergy_cat_stage3_binary==0|dat$immuno_allergy_cat_stage4_binary==0] <-0
+dat$immuno_allergy_cat_allstages_binary[dat$immuno_allergy_cat_stage2_binary==1|dat$immuno_allergy_cat_stage3_binary==1|dat$immuno_allergy_cat_stage4_binary==1] <-1
 #Dogs*
 #Stage 2 (around age 4; >=3 to <5) - kk (km?)
 dat$immuno_allergy_dog_stage2_binary <- NA
@@ -670,6 +687,11 @@ dat$immuno_allergy_dog_stage3_binary[dat$kq219==1]<-1
 dat$immuno_allergy_dog_stage4_binary <-NA
 dat$immuno_allergy_dog_stage4_binary[which(dat$ks3030%in%c(1,2))] <-0 #set to no if give valid answer to "apart from food and drink, is your child allergic to anything else?
 dat$immuno_allergy_dog_stage4_binary[which(dat$ks3033==1)] <-1 # replace with yes if they ticked this box
+#Any time
+dat$immuno_allergy_dog_allstages_binary <- NA
+dat$immuno_allergy_dog_allstages_binary[dat$immuno_allergy_dog_stage2_binary==0|dat$immuno_allergy_dog_stage3_binary==0|dat$immuno_allergy_dog_stage4_binary==0] <-0
+dat$immuno_allergy_dog_allstages_binary[dat$immuno_allergy_dog_stage2_binary==1|dat$immuno_allergy_dog_stage3_binary==1|dat$immuno_allergy_dog_stage4_binary==1] <-1
+
 #Insect sting*
 #Stage 2 (around age 4; >=3 to <5) - kk (km?)
 dat$immuno_allergy_insect_stage2_binary <- NA
@@ -683,6 +705,10 @@ dat$immuno_allergy_insect_stage3_binary[dat$kq220==1]<-1
 dat$immuno_allergy_insect_stage4_binary <-NA
 dat$immuno_allergy_insect_stage4_binary[which(dat$ks3030%in%c(1,2))] <-0 #set to no if give valid answer to "apart from food and drink, is your child allergic to anything else?
 dat$immuno_allergy_insect_stage4_binary[which(dat$ks3034==1)] <-1 # replace with yes if they ticked this box
+#Any time
+dat$immuno_allergy_insect_allstages_binary <- NA
+dat$immuno_allergy_insect_allstages_binary[dat$immuno_allergy_insect_stage2_binary==0|dat$immuno_allergy_insect_stage3_binary==0|dat$immuno_allergy_insect_stage4_binary==0] <-0
+dat$immuno_allergy_insect_allstages_binary[dat$immuno_allergy_insect_stage2_binary==1|dat$immuno_allergy_insect_stage3_binary==1|dat$immuno_allergy_insect_stage4_binary==1] <-1
 #House dust*
 #Stage 2 (around age 4; >=3 to <5) - kk (km?)
 dat$immuno_allergy_dust_stage2_binary <- NA
@@ -696,6 +722,10 @@ dat$immuno_allergy_dust_stage3_binary[dat$kq221==1]<-1
 dat$immuno_allergy_dust_stage4_binary <-NA
 dat$immuno_allergy_dust_stage4_binary[which(dat$ks3030%in%c(1,2))] <-0 #set to no if give valid answer to "apart from food and drink, is your child allergic to anything else?
 dat$immuno_allergy_dust_stage4_binary[which(dat$ks3035==1)] <-1 # replace with yes if they ticked this box
+#Any time
+dat$immuno_allergy_dust_allstages_binary <- NA
+dat$immuno_allergy_dust_allstages_binary[dat$immuno_allergy_dust_stage2_binary==0|dat$immuno_allergy_dust_stage3_binary==0|dat$immuno_allergy_dust_stage4_binary==0] <-0
+dat$immuno_allergy_dust_allstages_binary[dat$immuno_allergy_dust_stage2_binary==1|dat$immuno_allergy_dust_stage3_binary==1|dat$immuno_allergy_dust_stage4_binary==1] <-1
 #Any allergy*
 #Stage 2
 dat$immuno_allergy_any_stage2_binary <- NA
