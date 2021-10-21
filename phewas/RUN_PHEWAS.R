@@ -89,15 +89,6 @@ lapply(1:length(models),
        saveRDS(phewas_res[[i]],file=paste0(save_directory,cohort,"_",models[i],"_phewas.rds"))
        })
 
-# save a smaller version of the results for the web app
-
-print("saving pheWAS results with fewer columns for web app...")
-
-lapply(1:length(models),
-       function(i){
-         saveRDS(phewas_res[[i]][,c(1:3,6,7,9:11)],file=paste0(save_directory,cohort,"_",models[i],"forApp_phewas.rds"))
-       })
-
 # summarise the phewas inputs
 
 ## select exposures and outcomes
