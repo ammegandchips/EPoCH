@@ -6,7 +6,7 @@
 library(knitr)
 library(haven)
 
-# raw_dat <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno_raw.rds")
+raw_dat <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno_raw.rds")
 dat<- raw_dat[,c(names(raw_dat)[1:7],"covs_biological_father","paternal_participation")]
 
 # Timing specific smoking
@@ -338,9 +338,6 @@ dat$anthro_height_stage3 <- raw_dat$cyhtcm00
 dat$anthro_height_stage3[dat$anthro_height_stage3<0]<-NA
 dat$anthro_height_stage3_zscore <- scale(dat$anthro_height_stage3)
 
-  according to the documentation, wave 4 (d, i.e. stage 3 age 7) seems to have child
-  anthropometry data, but the variables don't appear in the datasets...
-
 dat$anthro_height_stage4 <- raw_dat$echtcma0
 dat$anthro_height_stage4[dat$anthro_height_stage4<0]<-NA
 dat$anthro_height_stage4_zscore <- scale(dat$anthro_height_stage4)
@@ -359,7 +356,6 @@ dat$anthro_weight_stage3 <- raw_dat$cywtcm00
 dat$anthro_weight_stage3[dat$anthro_weight_stage3<0]<-NA
 dat$anthro_weight_stage3_zscore <- scale(dat$anthro_weight_stage3)
 
-  according to the documentation, wave 4 (d, i.e. stage 3 age 7) seems to have child      anthropometry data, but the variables don't appear in the datasets...
 
 dat$anthro_weight_stage4 <- raw_dat$ecwtcma0
 dat$anthro_weight_stage4[dat$anthro_weight_stage4<0]<-NA

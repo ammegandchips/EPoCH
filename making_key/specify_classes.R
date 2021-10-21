@@ -83,7 +83,7 @@ key$outcome_subclass1[key$outcome %in% height_outcomes] <-"height"
 key$outcome_subclass1[key$outcome %in% birthweight_outcomes] <-"birthweight"
 key$outcome_subclass1[key$outcome %in% birthlength_outcomes] <-"birthlength"
 key$outcome_subclass1[key$outcome %in% headcirc_outcomes] <-"head circumference"
-key$outcome_subclass1[key$outcome %in% fatmass_outcomes] <-"fat mass index"
+key$outcome_subclass1[key$outcome %in% fatmass_outcomes] <-"fat mass"
 
 key$outcome_subclass1[key$outcome %in% depression_outcomes] <-"depressive symptoms"
 key$outcome_subclass1[key$outcome %in% sdq_outcomes] <-"strengths and difficulties"
@@ -117,6 +117,8 @@ key$outcome_subclass2[grep(key$outcome,pattern="sga")] <-"small for gestational 
 key$outcome_subclass2[grep(key$outcome,pattern="lga")] <-"large for gestational age"
 key$outcome_subclass2[grep(key$outcome,pattern="birthweight_low")] <-"birthweight <2500g"
 key$outcome_subclass2[grep(key$outcome,pattern="birthweight_high")] <-"birthweight >4500g"
+key$outcome_subclass2[grep(key$outcome,pattern="fmi")] <-"fat mass index"
+key$outcome_subclass2[grep(key$outcome,pattern="fatpc")] <-"fat mass percentage"
 
 key$outcome_subclass2[key$outcome %in% scdc_outcomes] <-"social and communications disorders scale"
 key$outcome_subclass2[key$outcome %in% csbqindependence_outcomes] <-"social behaviour: independence"
