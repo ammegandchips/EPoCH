@@ -148,3 +148,7 @@ To check on the status of a job (for my username gs8094):
 ```
 qstat -u "gs8094"
 ```
+Or to check the output from the script, e.g.:
+```
+less EPoCH/out/ALSPAC_MAKE_KEY.out
+```
