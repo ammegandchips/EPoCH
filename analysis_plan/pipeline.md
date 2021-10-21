@@ -92,6 +92,7 @@ wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/before.sh -P ~/E
 chmod +x ~/EPoCH/scripts/before.sh
 ~/EPoCH/scripts/before.sh
 
+# STEP 2
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/epoch_master.sh -P ~/EPoCH/scripts/
 chmod +x ~/EPoCH/scripts/epoch_master.sh
 
