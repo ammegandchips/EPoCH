@@ -80,7 +80,7 @@ all_cohort_phewas_wide$linker <- paste(all_cohort_phewas_wide$exposure_linker,al
 print("running meta-analysis...")
 
 meta_res <- split(all_cohort_phewas_long, paste(all_cohort_phewas_long$exposure_linker,all_cohort_phewas_long$outcome_linker,sep="."),drop = FALSE)
-meta_res = lapply(meta_res, function(x) try(rma.uni(slab=x$cohort,yi=x$est,sei=x$se,method="FE",weighted=TRUE)))
+meta_res <- lapply(meta_res, function(x) try(rma.uni(slab=x$cohort,yi=x$est,sei=x$se,method="FE",weighted=TRUE)))
 
 # extract key information from the meta-analysis results
 

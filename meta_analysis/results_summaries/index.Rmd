@@ -1,0 +1,16 @@
+---
+title: "Born in Bradford PheWAS summaries"
+author: "Gemma Sharp"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+---
+# Born in Bradford {-}
+
+```{r, results="asis",echo=FALSE, message=FALSE}
+summaries <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/results/BIB_ALL_model1a_summaries.rds") 
+table_names <- names(summaries)
+table_names_split <- strsplit(table_names,split=".",fixed = T)
+exposures <- unlist(lapply(table_names_split,function(X) X[[1]]))
+outcomes <- unlist(lapply(table_names_split,function(X) X[[2]]))
+```

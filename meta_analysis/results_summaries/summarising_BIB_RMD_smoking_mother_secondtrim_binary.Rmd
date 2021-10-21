@@ -1,0 +1,18 @@
+
+# smoking_mother_secondtrim_binary
+```{r, results="asis",echo=FALSE, message=FALSE}
+outcomes <- outcomes[exposures=="smoking_mother_secondtrim_binary"]
+
+for (i in 1:length(outcomes)) {
+  outcome <- outcomes[i]
+  cat(paste("## ",outcome))
+  print(summaries[[i]])
+  cat("
+
+<!-- -->
+
+")
+}
+
+```
+
