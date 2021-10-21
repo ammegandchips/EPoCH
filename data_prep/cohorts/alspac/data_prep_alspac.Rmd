@@ -3284,7 +3284,7 @@ FMI at stage 4 (age 9): fat mass index is calcualted as fat mass in kg / height^
 ```{r eval=FALSE, include=TRUE}
 dat$anthro_fmi_stage4 <- dat$f9dx135
 dat$anthro_fmi_stage4[dat$f9dx135<0]<-NA
-dat$anthro_fmi_stage4 <- dat$anthro_fmi_stage4 / dat$anthro_height_stage4
+dat$anthro_fmi_stage4 <- dat$anthro_fmi_stage4 / dat$anthro_height_stage4^2
 dat$anthro_fmi_stage4_zscore <- scale(dat$anthro_fmi_stage4)
 ```
 
@@ -6955,7 +6955,7 @@ dat$anthro_obese_stage4_binary[which(dat$anthro_bmi_stage4_sds<=1 &dat$anthro_bm
 
 dat$anthro_fmi_stage4 <- dat$f9dx135
 dat$anthro_fmi_stage4[dat$f9dx135<0]<-NA
-dat$anthro_fmi_stage4 <- dat$anthro_fmi_stage4 / dat$anthro_height_stage4
+dat$anthro_fmi_stage4 <- dat$anthro_fmi_stage4 / dat$anthro_height_stage4^2
 dat$anthro_fmi_stage4_zscore <- scale(dat$anthro_fmi_stage4)
 
 
