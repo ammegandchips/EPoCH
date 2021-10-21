@@ -1,6 +1,6 @@
 ######################################################################
 ## Code to create bib_pheno.rds                                     ##
-## This code cleans and derives variables from bibc_pheno_raw.rds   ##
+## This code cleans and derives variables from bib_pheno_raw.rds   ##
 ######################################################################
 
 library(tidyverse)

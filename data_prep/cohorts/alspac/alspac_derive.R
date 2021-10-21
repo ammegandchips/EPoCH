@@ -546,7 +546,7 @@ dat$anthro_fmi_stage4 <- dat$f9dx135
 dat$anthro_fmi_stage4[dat$f9dx135<0]<-NA
 dat$anthro_fmi_stage4 <- dat$anthro_fmi_stage4  / ((dat$anthro_height_stage4/100)^2)
 dat$anthro_fmi_stage4_zscore <- scale(dat$anthro_fmi_stage4)
-
+#Fat mass percentage
 dat$anthro_fatpc_stage4 <- dat$f9dx135
 dat$anthro_fatpc_stage4[dat$f9dx135<0]<-NA
 dat$anthro_fatpc_stage4 <- (dat$anthro_fatpc_stage4  / (dat$anthro_weight_stage4*1000))*100
@@ -691,7 +691,19 @@ dat$immuno_allergy_dog_stage4_binary[which(dat$ks3033==1)] <-1 # replace with ye
 dat$immuno_allergy_dog_allstages_binary <- NA
 dat$immuno_allergy_dog_allstages_binary[dat$immuno_allergy_dog_stage2_binary==0|dat$immuno_allergy_dog_stage3_binary==0|dat$immuno_allergy_dog_stage4_binary==0] <-0
 dat$immuno_allergy_dog_allstages_binary[dat$immuno_allergy_dog_stage2_binary==1|dat$immuno_allergy_dog_stage3_binary==1|dat$immuno_allergy_dog_stage4_binary==1] <-1
-
+#Pets *
+dat$immuno_allergy_pet_stage2_binary <- NA
+dat$immuno_allergy_pet_stage2_binary[dat$immuno_allergy_dog_stage2_binary==0 |dat$immuno_allergy_cat_stage2_binary==0]<-0
+dat$immuno_allergy_pet_stage2_binary[dat$immuno_allergy_dog_stage2_binary==1 |dat$immuno_allergy_cat_stage2_binary==1]<-1
+dat$immuno_allergy_pet_stage3_binary <- NA
+dat$immuno_allergy_pet_stage3_binary[dat$immuno_allergy_dog_stage3_binary==0 |dat$immuno_allergy_cat_stage3_binary==0]<-0
+dat$immuno_allergy_pet_stage3_binary[dat$immuno_allergy_dog_stage3_binary==1 |dat$immuno_allergy_cat_stage3_binary==1]<-1
+dat$immuno_allergy_pet_stage4_binary <- NA
+dat$immuno_allergy_pet_stage4_binary[dat$immuno_allergy_dog_stage4_binary==0 |dat$immuno_allergy_cat_stage4_binary==0]<-0
+dat$immuno_allergy_pet_stage4_binary[dat$immuno_allergy_dog_stage4_binary==1 |dat$immuno_allergy_cat_stage4_binary==1]<-1
+dat$immuno_allergy_pet_allstages_binary <- NA
+dat$immuno_allergy_pet_allstages_binary[dat$immuno_allergy_dog_allstages_binary==0 |dat$immuno_allergy_cat_allstages_binary==0]<-0
+dat$immuno_allergy_pet_allstages_binary[dat$immuno_allergy_dog_allstages_binary==1 |dat$immuno_allergy_cat_allstages_binary==1]<-1
 #Insect sting*
 #Stage 2 (around age 4; >=3 to <5) - kk (km?)
 dat$immuno_allergy_insect_stage2_binary <- NA
