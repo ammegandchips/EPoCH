@@ -157,9 +157,11 @@ key$covariates_model4a <- apply(key[,c("covariates_model2a","potential_mediators
 
 key$covariates_model4a[key$exposure_subclass=="polygenic risk score"]<-NA
 
-# define model 1b/2b/3b/4b covariates (1a/2b/3b/4b + other parent's exposure)
+# define model 1b/2b/3b/4b covariates (1a/2a/3a/4a + other parent's exposure + other parent's covariates)
 
 print("defining model 1b/2b/3b/4b covariates...")
+                                
+## add other parent's exposure
 
 key$other_parents_exposure <- NA
 source_url(paste0(location_of_extra_functions,"define_other_parents_exposure.R?raw=TRUE"))
@@ -168,11 +170,24 @@ x<-apply(key[,c("exposure_class","exposure_time","person_exposed","exposure_type
 key$other_parents_exposure<-unlist(lapply(x,paste,collapse=","))
 rm(x)
 
+## add covariates from 1a/2a/3a/4a + other parent's exposure + other parent's covariates
+         
 key$covariates_model1b <- apply(key[,c("covariates_model1a","other_parents_exposure")],1,function(x) paste(na.omit(x),collapse=","))
 key$covariates_model2b <- apply(key[,c("covariates_model2a","other_parents_exposure","other_parents_covariates")],1,function(x) paste(na.omit(x),collapse=","))
 key$covariates_model3b <- apply(key[,c("covariates_model3a","other_parents_exposure","other_parents_covariates")],1,function(x) paste(na.omit(x),collapse=","))
 key$covariates_model4b <- apply(key[,c("covariates_model4a","other_parents_exposure","other_parents_covariates")],1,function(x) paste(na.omit(x),collapse=","))
 
+## add ethnicity of other parent
+
+key$covariates_model1b[key$person_exposed=="mother"]<-paste(key$covariates_model1b[key$person_exposed=="mother"],"covs_ethnicity_father",sep=",")
+key$covariates_model1b[key$person_exposed=="father"]<-paste(key$covariates_model1b[key$person_exposed=="father"],"covs_ethnicity_mother",sep=",")
+key$covariates_model2b[key$person_exposed=="mother"]<-paste(key$covariates_model2b[key$person_exposed=="mother"],"covs_ethnicity_father",sep=",")
+key$covariates_model2b[key$person_exposed=="father"]<-paste(key$covariates_model2b[key$person_exposed=="father"],"covs_ethnicity_mother",sep=",")
+key$covariates_model3b[key$person_exposed=="mother"]<-paste(key$covariates_model3b[key$person_exposed=="mother"],"covs_ethnicity_father",sep=",")
+key$covariates_model3b[key$person_exposed=="father"]<-paste(key$covariates_model3b[key$person_exposed=="father"],"covs_ethnicity_mother",sep=",")
+key$covariates_model4b[key$person_exposed=="mother"]<-paste(key$covariates_model4b[key$person_exposed=="mother"],"covs_ethnicity_father",sep=",")
+key$covariates_model4b[key$person_exposed=="father"]<-paste(key$covariates_model4b[key$person_exposed=="father"],"covs_ethnicity_mother",sep=",")
+                                
 key$covariates_model2b[key$exposure_subclass=="polygenic risk score"]<-NA
 key$covariates_model3b[key$exposure_subclass=="polygenic risk score"]<-NA
 key$covariates_model4b[key$exposure_subclass=="polygenic risk score"]<-NA
