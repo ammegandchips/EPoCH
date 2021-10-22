@@ -73,15 +73,25 @@ adjustmentSets(g1,"pAlc","oBW") #maternal age, alc, parity, sep, smoking; patern
 adjustmentSets(g1,"mAlc","oBW") #maternal age, smoking, parity, sep; paternal age, smoking, SEP, alcohol
 ```
 
-SUMMARY OF DAG1: adjust for both parents' age and SEP and maternal parity
+SUMMARY OF DAG1: adjust for both parents' age, ethnicity, and SEP, and maternal parity
 also adjust for other health behaviours correlated with the main exposure
 
 so if exposure is maternal smoking, adjust for maternal alcohol PLUS paternal alcohol and smoking
+
+THIS IS MODEL 2b
 
 ### DAG2: considering timing of exposure (maternal exposures)
 
 ```{r}
 g2 <- dagitty( "dag {
+  mEth -> mAlc_preconception
+  mEth -> mAlc_secondtrim
+  mEth -> mAlc_thirdtrim
+  mEth -> mBMI
+  mEth -> mPar
+  mEth -> mSm_preconception
+  mEth -> oBW
+  mEth -> mAge
   mAge -> mAlc_preconception
   mAge -> mAlc_secondtrim
   mAge -> mAlc_thirdtrim
@@ -123,16 +133,18 @@ g2 <- dagitty( "dag {
 
 plot(graphLayout(g2))
 
-adjustmentSets(g2,"mSm_preconception","oBW") #age, parity, alcohol preconception, SEP
-adjustmentSets(g2,"mSm_pregnancy","oBW") #age, parity, alcohol preconception, alcohol in preg, smoking preconception, SEP
-adjustmentSets(g2,"mAlc_preconception","oBW") #age, parity, smoking preconception, SEP
+adjustmentSets(g2,"mSm_preconception","oBW") #age, parity, alcohol preconception, SEP, eth
+adjustmentSets(g2,"mSm_pregnancy","oBW") #age, parity, alcohol preconception, alcohol in preg, smoking preconception, SEP, eth
+adjustmentSets(g2,"mAlc_preconception","oBW") #age, parity, smoking preconception, SEP, eth
 adjustmentSets(g2,"mAlc_secondtrim","oBW") #returns nothing, but this is because it doesn't know that third trim alcohol is a time-dependent variable that doesn't "exist" at second trim
-adjustmentSets(g2,"mAlc_thirdtrim","oBW") #age, parity, alcohol preconception, alcohol in previous trimesters, smoking preconception, smoking in pregnancy, SEP)
+adjustmentSets(g2,"mAlc_thirdtrim","oBW") #age, parity, alcohol preconception, alcohol in previous trimesters, smoking preconception, smoking in pregnancy, SEP, eth
 ```
 
-SUMMARY OF DAG2: adjust for age and SEP and maternal parity
+SUMMARY OF DAG2: adjust for age and (and ethnicity) and SEP and maternal parity
 
 also adjust for correlated health behaviours in the current and previous timepoints
+
+THIS IS MODEL 3a
 
 ### DAG3: considering timing of exposure (paternal exposures)
 
@@ -142,6 +154,10 @@ also adjust for correlated health behaviours in the current and previous timepoi
 
 ```{r}
 g3 <- dagitty( "dag {
+  pAge -> pAlc_preconception
+  pAge -> pAlc_secondtrim
+  pAge -> pAlc_thirdtrim
+  pAge -> pBMI
   pAge -> pAlc_preconception
   pAge -> pAlc_secondtrim
   pAge -> pAlc_thirdtrim
@@ -219,8 +235,10 @@ g3 <- dagitty( "dag {
 
 plot(graphLayout(g3))
 
+(ETHNICITY NOT MODELLED BUT WILL BE SIMILAR TO AGE/SEP)
+
 adjustmentSets(g3,"mSm_preconception","oBW") # mother: age, parity, alcohol preconception, SEP; father: age, alcohol preconception, SEP, smoking preconception
-adjustmentSets(g3,"mSm_pregnancy","oBW") # mother: age, parity, alcohol preconception, alcohol in preg, smoking preconception, SEP; father: age, SEP, smoking preconception, smoking in pregnancy
+adjustmentSets(g3,"mSm_pregnancy","oBW") # mother: age, parity, alcohol preconception, alcohol in preg, smoking preconception, SEP; father: age, SEP, smoking preconception, smoking in pregnancy 
 adjustmentSets(g3,"mAlc_preconception","oBW") # mother: age, parity, smoking preconception, SEP; father: age, alcohol preconception, SEP, smoking preconception
 adjustmentSets(g3,"mAlc_secondtrim","oBW") #returns nothing, but this is because it doesn't know that third trim alcohol is a time-dependent variable that doesn't "exist" at second trim
 adjustmentSets(g3,"mAlc_thirdtrim","oBW") # mother: age, parity, smoking preconception, smoking in pregnancy, alcohol in previous trimesters & preconception, SEP; father: age, SEP, smoking preconception, smoking in pregnancy
@@ -233,7 +251,7 @@ adjustmentSets(g3,"pAlc_thirdtrim","oBW") # mother: age, parity, alcohol preconc
 
 ```
 
-SUMMARY OF DAG3: adjust for age and SEP and maternal parity
+SUMMARY OF DAG3: adjust for age and SEP and maternal parity, and ethnicity
 
 also adjust for correlated health behaviours in the current and previous timepoints (for the exposed parent)
 
