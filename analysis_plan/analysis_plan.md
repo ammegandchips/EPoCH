@@ -142,23 +142,23 @@ Directed Acyclic Graphs (DAGs) were used to select the covariates for adjustment
 
 **Model 2a**
 
-* As Model 1a but with additional adjustment for exposed parent's age, SEP, (parity if exposed parent is mother), correlated health behaviours (in the current and previous timepoints where exposures are time-specific).
+* As Model 1a but with additional adjustment for exposed parent's age, SEP, (parity if exposed parent is mother), correlated health behaviours in the current timepoint, exposed parent's outcome relevant disease (i.e. if the outcome is asthma/wheeze or mental health additional adjustment for the exposed parent's asthma/mental health will be made)
 
 **Model 2b**
 
-* As Model 2a but with additional adjustment for the other parent's ethnicity, age, SEP, and correlated health behaviours in previous timepoints IF they can have a direct effect (or via secondhandsmoke) on fetal development. 
+* As Model 2a but with additional adjustment for the other parent's exposure + their ethnicity, age and SEP
 
 **Model 3a**
 
-* As Model 2a but with additional adjustment for exposed parent's health issue IF the exposure can plausibly be influenced by the health issue AND the outcome is the same/a similar health issue (e.g. adjust for parents' asthma if exposure is smoking and outcome is child's asthma).
+* As Model 2a but with additional adjustment for exposed parent's health behaviour in previous timepoints (since this only applies when the exposure is time-sensitive, e.g. second trimester, model 3 and 2 will be the same if the exposure is not time-sensitive)
 
 **Model 3b**
 
-* As Model 2b but with additional adjustment for both parents' health issues in the same circumstances as described for Model 3a.
+* As Model 3a but with additional adjustment for the other parent's exposure and their ethnicity age and SEP
 
 **Model 4a**
 
-* As Model 3a, with additional adjustment for potential mediators:
+* As Model 2a, with additional adjustment for potential mediators:
 
 	* Gestational age at birth (if outcome is not LGA/SGA)
 	* Birthweight (if outcome is something to do with body size after birth)
@@ -168,7 +168,7 @@ Directed Acyclic Graphs (DAGs) were used to select the covariates for adjustment
 
 **Model 4b**
 
-* As Model 3b, with additional adjustment for potential mediators as defined above
+* As Model 4a, with additional adjustment for the other parent's exposure and their ethnicity age and SEP
 
 **Research question: Is there evidence of potentially causal independent effects of the maternal/paternal exposure (i.e. after mutual adjustment, is there still evidence of a maternal/paternal association?)**
 
