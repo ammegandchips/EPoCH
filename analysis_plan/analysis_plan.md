@@ -110,7 +110,7 @@ We also use very simple model for the pheWAS:
 
 **Model 1a**
 
-* Observational pheWAS: adjusted for child's sex and age at outcome where necessary (e.g. we would adjust for age at outcome if outcome was BMI in the second stage of childhood, but not if the outcome was birthweight)
+* Observational pheWAS: adjusted for exposed parent's ethnicity, child's sex, and child's age at outcome where necessary (e.g. we would adjust for age at outcome if outcome was BMI in the second stage of childhood, but not if the outcome was birthweight)
 * MR pheWAS: adjusted for child's sex and exposed parent's genetic PCs for ancestry
 
 **Model 1b**
@@ -142,11 +142,11 @@ Directed Acyclic Graphs (DAGs) were used to select the covariates for adjustment
 
 **Model 2a**
 
-* As Model 1a but with additional adjustment for exposed parent's ethnicity, age, SEP, (parity if exposed parent is mother), correlated health behaviours (in the current and previous timepoints where exposures are time-specific).
+* As Model 1a but with additional adjustment for exposed parent's age, SEP, (parity if exposed parent is mother), correlated health behaviours (in the current and previous timepoints where exposures are time-specific).
 
 **Model 2b**
 
-* As Model 1b but with additional adjustment for the other parent's ethnicity, age, SEP, and correlated health behaviours in previous timepoints IF they can have a direct effect (or via secondhandsmoke) on fetal development. 
+* As Model 2a but with additional adjustment for the other parent's ethnicity, age, SEP, and correlated health behaviours in previous timepoints IF they can have a direct effect (or via secondhandsmoke) on fetal development. 
 
 **Model 3a**
 
