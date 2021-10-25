@@ -11,9 +11,13 @@ mkdir -p /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/meta_analy
 
 cp ~/EPoCH/results/ALSPAC_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/
 cp ~/EPoCH/results/BIB_ALL_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/
-cp ~/EPoCH/results/BIB_SA_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/
-cp ~/EPoCH/results/BIB_WE_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/
 cp ~/EPoCH/results/MCS_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/
+cp ~/EPoCH/results/ALSPAC_FEMALE_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/
+cp ~/EPoCH/results/BIB_ALL_FEMALE_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/
+cp ~/EPoCH/results/MCS_FEMALE_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/
+cp ~/EPoCH/results/ALSPAC_MALE_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/
+cp ~/EPoCH/results/BIB_ALL_MALE_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/
+cp ~/EPoCH/results/MCS_MALE_model* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/
 cp ~/EPoCH/results/meta_analysis* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/meta_analysis/
 
 mkdir -p /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/data_checks/

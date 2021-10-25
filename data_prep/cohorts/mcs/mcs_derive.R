@@ -624,7 +624,7 @@ dat$neuro_cognition_reading_stage3_zscore <- scale(dat$neuro_cognition_reading_s
 
 dat$neuro_cognition_schoolreadiness_stage2 <- raw_dat$bdbsrc00
 dat$neuro_cognition_schoolreadiness_stage2[dat$neuro_cognition_schoolreadiness_stage2<0]<-NA
-dat$neuro_cognition_schoolreadiness_stage2_zscore  <- dat$neuro_cognition_schoolreadiness_stage2
+dat$neuro_cognition_schoolreadiness_stage2_zscore  <- scale(dat$neuro_cognition_schoolreadiness_stage2)
 
 # Number skills
 # This test was adapted from the NFER Progress in Maths test which is aimed for 7-
@@ -634,7 +634,7 @@ dat$neuro_cognition_schoolreadiness_stage2_zscore  <- dat$neuro_cognition_school
 
 dat$neuro_cognition_numberskills_stage3 <- raw_dat$maths7sc
 dat$neuro_cognition_numberskills_stage3[dat$neuro_cognition_numberskills_stage3<0]<-NA
-dat$neuro_cognition_numberskills_stage3_zscore  <- dat$neuro_cognition_numberskills_stage3
+dat$neuro_cognition_numberskills_stage3_zscore  <- scale(dat$neuro_cognition_numberskills_stage3)
 
 #Educational attainment
 

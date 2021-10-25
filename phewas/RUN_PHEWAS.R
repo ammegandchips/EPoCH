@@ -60,6 +60,15 @@ if("multiple_pregnancy" %in% colnames(dat)){
 dat <- dat[dat$multiple_pregnancy==1,] #select singleton pregnancies
 }
 
+if(grepl("_FEMALE",cohort)){
+        dat <- dat[dat$covs_sex%in%c("female"),]
+}
+if(grepl("_MALE",cohort)){
+        dat <- dat[dat$covs_sex%in%c("male"),]
+}
+
+print(paste0("There are now",nrow(dat)," observations and ",ncol(dat)," variables in the ",cohort," dataset"))
+
 # run phewas
 
 ## select exposures and outcomes
@@ -71,7 +80,8 @@ outcomes <- unique(key$outcome[grepl(key$outcome,pattern="_zscore|_sds|binary")]
 ## run pheWAS for each model
 
 models <- c(paste0("model",1:4,rep("a",4)),
-            paste0("model",1:4,rep("b",4)))
+            paste0("model",1:4,rep("b",4)),
+            paste0("model",1:4,rep("c",4)))
 
 print("running pheWAS...")
 phewas_res <- lapply(models, 

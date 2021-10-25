@@ -57,11 +57,12 @@ key$exposure_type[grep(key$exposure,pattern="binary")]<-"binary"
  
 ## class of outcome
 key$outcome_class[key$outcome %in% anthro_outcomes]<-"body size and composition"
-key$outcome_class[key$outcome %in% neuro_outcomes]<-"psychosocial and cognitive outcomes"
-key$outcome_class[key$outcome %in% immuno_outcomes]<-"immunological outcomes"
+key$outcome_class[key$outcome %in% neuro_outcomes]<-"psychosocial and cognitive"
+key$outcome_class[key$outcome %in% immuno_outcomes]<-"immunological"
 key$outcome_class[key$outcome %in% negcon_outcomes]<-"negative control outcomes"
-key$outcome_class[key$outcome %in% cardio_outcomes]<-"cardiometabolic outcomes"
-key$outcome_class[key$outcome %in% peri_outcomes]<-"perinatal survival outcomes"
+key$outcome_class[key$outcome %in% biomarker_outcomes]<-"serum biomarkers"
+key$outcome_class[key$outcome %in% bp_outcomes]<-"blood pressure"
+key$outcome_class[key$outcome %in% peri_outcomes]<-"perinatal survival"
  
 ## subclass of outcome (level 1)
 key$outcome_subclass1[grep(pattern="survive_one_year",key$outcome)]<-"alive at 1y"
@@ -74,9 +75,9 @@ key$outcome_subclass1[key$outcome %in% eczema_outcomes] <-"eczema"
 key$outcome_subclass1[key$outcome %in% wheeze_outcomes] <-"wheezing"
 key$outcome_subclass1[key$outcome %in% allergy_outcomes] <-"allergy"
 
-key$outcome_subclass1[key$outcome %in% bmi_outcomes] <-"body mass index"
-key$outcome_subclass1[key$outcome %in% overweight_outcomes] <-"body mass index"
-key$outcome_subclass1[key$outcome %in% obese_outcomes] <-"body mass index"
+key$outcome_subclass1[key$outcome %in% bmi_outcomes] <-"BMI"
+key$outcome_subclass1[key$outcome %in% overweight_outcomes] <-"BMI"
+key$outcome_subclass1[key$outcome %in% obese_outcomes] <-"BMI"
 key$outcome_subclass1[key$outcome %in% waist_outcomes] <-"waist circumference"
 key$outcome_subclass1[key$outcome %in% weight_outcomes] <-"weight"
 key$outcome_subclass1[key$outcome %in% height_outcomes] <-"height"
@@ -97,13 +98,14 @@ key$outcome_subclass1[key$outcome %in% lefthand_outcomes] <-"child can draw well
 
 key$outcome_subclass1[key$outcome %in% sbp_outcomes] <-"systolic blood pressure"
 key$outcome_subclass1[key$outcome %in% dbp_outcomes] <-"diastolic blood pressure"
+
 key$outcome_subclass1[key$outcome %in% ldl_outcomes] <-"LDL cholesterol"
 key$outcome_subclass1[key$outcome %in% hdl_outcomes] <-"HDL cholesterol"
 key$outcome_subclass1[key$outcome %in% chol_outcomes] <-"total cholesterol"
-key$outcome_subclass1[key$outcome %in% apoa_outcomes] <-"apolipoprotein A1"
-key$outcome_subclass1[key$outcome %in% apob_outcomes] <-"apolipoprotein B"
-key$outcome_subclass1[key$outcome %in% il6_outcomes] <-"interleukin-6"
-key$outcome_subclass1[key$outcome %in% crp_outcomes] <-"c-reactive protein"
+key$outcome_subclass1[key$outcome %in% apoa_outcomes] <-"apo A1"
+key$outcome_subclass1[key$outcome %in% apob_outcomes] <-"apo B"
+key$outcome_subclass1[key$outcome %in% il6_outcomes] <-"IL6"
+key$outcome_subclass1[key$outcome %in% crp_outcomes] <-"CRP"
 key$outcome_subclass1[key$outcome %in% glucose_outcomes] <-"glucose"
 key$outcome_subclass1[key$outcome %in% insulin_outcomes] <-"insulin"
 key$outcome_subclass1[key$outcome %in% trig_outcomes] <-"triglycerides"
@@ -157,10 +159,10 @@ key$outcome_time[grep(pattern="miscarriage",key$outcome)]<-"pregnancy" #before 2
 key$outcome_time[grep(pattern="fetal_death",key$outcome)]<-"pregnancy" #after 20 weeks
 
 key$outcome_time[grep(key$outcome,pattern="stage0")]<-"first year"
-key$outcome_time[grep(key$outcome,pattern="stage1")]<-"age 1 or 2"
-key$outcome_time[grep(key$outcome,pattern="stage2")]<-"age 3 or 4"
-key$outcome_time[grep(key$outcome,pattern="stage3")]<-"age 5, 6 or 7"
-key$outcome_time[grep(key$outcome,pattern="stage4")]<-"age 8, 9, 10 or 11"
+key$outcome_time[grep(key$outcome,pattern="stage1")]<-"age 1-2"
+key$outcome_time[grep(key$outcome,pattern="stage2")]<-"age 3-4"
+key$outcome_time[grep(key$outcome,pattern="stage3")]<-"age 5-7"
+key$outcome_time[grep(key$outcome,pattern="stage4")]<-"age 8-11"
 key$outcome_time[grep(key$outcome,pattern="allstages|negcon")]<-"any time in childhood"
  
 ## type of outcome variable

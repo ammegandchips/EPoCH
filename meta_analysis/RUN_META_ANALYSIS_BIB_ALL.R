@@ -19,6 +19,14 @@ library(metafor)
 # Set locations of scripts, data and save files
 
 cohorts <- c("ALSPAC","BIB_ALL","MCS")
+
+if(grepl("_FEMALE",model)){
+  cohorts <- c("ALSPAC_FEMALE","BIB_ALL_FEMALE","MCS_FEMALE")
+}
+if(grepl("_MALE",model)){
+  cohorts <- c("ALSPAC_FEMALE","BIB_ALL_FEMALE","MCS_FEMALE")
+}
+
 location_of_key <- paste0("~/EPoCH/data/")
 location_of_phewas_res <- paste0("~/EPoCH/for_metaanalysis/")
 location_of_extra_functions <- "https://github.com/ammegandchips/EPoCH/blob/main/meta_analysis/"

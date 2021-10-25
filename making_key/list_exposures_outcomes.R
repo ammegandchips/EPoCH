@@ -95,6 +95,10 @@ crp_outcomes <-names(dat)[grep(names(dat),pattern="cardio_CRP")]
 il6_outcomes <-names(dat)[grep(names(dat),pattern="cardio_il6")]
 trig_outcomes <-names(dat)[grep(names(dat),pattern="cardio_trig")]
 
+bp_outcomes <- c(sbp_outcomes,dbp_outcomes)
+biomarker_outcomes <-c(trig_outcomes,il6_outcomes,crp_outcomes,apoa_outcomes,apob_outcomes,insulin_outcomes,glucose_outcomes,chol_outcomes,ldl_outcomes,hdl_outcomes)
+cholesterol_outcomes <- c(hdl_outcomes,ldl_outcomes,chol_outcomes)
+  
 mice_outcomes<-names(dat)[grep(names(dat),pattern="negcon_mice")]
 pigeon_outcomes<-names(dat)[grep(names(dat),pattern="negcon_pigeon")]
 lefthand_outcomes<-names(dat)[grep(names(dat),pattern="negcon_lefthand")]
