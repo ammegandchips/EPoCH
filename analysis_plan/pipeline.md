@@ -68,7 +68,8 @@ Options for `cohortORmodel` are:
   *   ALSPAC
   *   BIB
   *   MCS
-  *   Or, when scriptname = RUN_META_ANALYSIS, cohortORmodel is model name (e.g. model1a)
+  *   Or any of the above, plus an underscore followed by "FEMALE" or "MALE", if running the sex-stratified PheWAS (note that a new key is not needed)
+  *   Or, when scriptname = RUN_META_ANALYSIS, cohortORmodel is model name (e.g. model1a) eithier alone (unstratified) or plus an underscore followed by "FEMALE" or "MALE" if running the sex-stratified PheWAS meta-analysis
 
 ## Step 3
 
@@ -109,39 +110,60 @@ All the options for qsub you might want to submit:
 ```
 qsub  -v cohortORmodel="ALSPAC",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="BIB_ALL",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_SA",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_WE",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="MCS",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
 
 qsub  -v cohortORmodel="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="BIB_ALL",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_SA",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_WE",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="MCS",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
 
 qsub  -v cohortORmodel="ALSPAC",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="BIB_ALL",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_SA",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_WE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="MCS",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="ALSPAC_FEMALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="BIB_ALL_FEMALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="MCS_FEMALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="ALSPAC_MALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="BIB_ALL_MALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="MCS_MALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
 
 qsub  -v cohortORmodel="model1a",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model1b",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model1c",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model2a",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model2b",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model2c",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model3a",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model3b",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3c",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model4a",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model4b",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4c",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 
-qsub  -v cohortORmodel="model1a",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model1b",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2a",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2b",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3a",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3b",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4a",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4b",scriptname="RUN_META_ANALYSIS_BIB_STRATIFIED" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model1a_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model1b_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model1c_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model2a_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model2b_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model2c_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3a_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3b_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3c_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4a_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4b_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4c_FEMALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+
+qsub  -v cohortORmodel="model1a_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model1b_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model1c_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model2a_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model2b_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model2c_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3a_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3b_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model3c_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4a_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4b_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4c_MALE",scriptname="RUN_META_ANALYSIS_BIB_ALL" ~/EPoCH/scripts/epoch_master.sh
 
 ```
 To check on the status of a job (for my username gs8094):
