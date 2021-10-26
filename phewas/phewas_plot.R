@@ -7,8 +7,8 @@ make_plot <- function(res,linker,binary,cropforleft=NULL,cropforright=NULL){
   if(class(res)=="list"){
     res <- lapply(res,function(x){
       y<-x[x$exposure_linker==linker,]
-      y <- y[-which(y$outcome_class %in% c("negative control outcomes","perinatal survival outcomes")),]
-      y <- y[-grep(y$outcome_linker,pattern="reactive|interleukin|skills|readiness"),]
+#      y <- y[-which(y$outcome_class %in% c("negative control outcomes","perinatal survival outcomes")),]
+#      y <- y[-grep(y$outcome_linker,pattern="reactive|interleukin|skills|readiness"),]
       if(binary==TRUE){
         y <- y[y$outcome_type=="binary",]
       }else{
