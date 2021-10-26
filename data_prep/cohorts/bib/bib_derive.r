@@ -297,52 +297,52 @@ dat$immuno_wheeze_allstages_binary[raw_dat$guadtChildWheezing==1] <-0
 dat$immuno_wheeze_allstages_binary[raw_dat$guadtChildWheezing==2] <-1
 
 # cardiometabolic
-dat$cardiomet_trig_stage0 <- raw_dat$cbldtrig
-dat$cardiomet_trig_stage3 <- select_oldest_measure("triglycerides_",stage3_mintime,stage3_maxtime)[[1]]
-dat$cardiomet_stage3_bloodtesttimepoint <- select_oldest_measure("triglycerides_",stage3_mintime,stage3_maxtime)[[2]]
-dat$cardiomet_trig_stage4 <- select_oldest_measure("triglycerides_",stage4_mintime,stage4_maxtime)[[1]]
-dat$cardiomet_stage4_bloodtesttimepoint <- select_oldest_measure("triglycerides_",stage4_mintime,stage4_maxtime)[[2]]
-dat$cardiomet_trig_stage0_zscore <- scale(dat$cardiomet_trig_stage0)
-dat$cardiomet_trig_stage3_zscore <- scale(dat$cardiomet_trig_stage3)
-dat$cardiomet_trig_stage4_zscore <- scale(dat$cardiomet_trig_stage4)
+dat$cardio_trig_stage0 <- raw_dat$cbldtrig
+dat$cardio_trig_stage3 <- select_oldest_measure("triglycerides_",stage3_mintime,stage3_maxtime)[[1]]
+dat$cardio_stage3_bloodtesttimepoint <- select_oldest_measure("triglycerides_",stage3_mintime,stage3_maxtime)[[2]]
+dat$cardio_trig_stage4 <- select_oldest_measure("triglycerides_",stage4_mintime,stage4_maxtime)[[1]]
+dat$cardio_stage4_bloodtesttimepoint <- select_oldest_measure("triglycerides_",stage4_mintime,stage4_maxtime)[[2]]
+dat$cardio_trig_stage0_zscore <- scale(dat$cardio_trig_stage0)
+dat$cardio_trig_stage3_zscore <- scale(dat$cardio_trig_stage3)
+dat$cardio_trig_stage4_zscore <- scale(dat$cardio_trig_stage4)
 
-dat$cardiomet_chol_stage0 <- raw_dat$cbldchol
-dat$cardiomet_CRP_stage0 <- raw_dat$cbldcrp
-dat$cardiomet_HDL_stage0 <- raw_dat$cbldhdl
-dat$cardiomet_LDL_stage0 <- raw_dat$cbldldl
-dat$cardiomet_insulin_stage0 <- raw_dat$cbldinsulin
+dat$cardio_chol_stage0 <- raw_dat$cbldchol
+dat$cardio_CRP_stage0 <- raw_dat$cbldcrp
+dat$cardio_HDL_stage0 <- raw_dat$cbldhdl
+dat$cardio_LDL_stage0 <- raw_dat$cbldldl
+dat$cardio_insulin_stage0 <- raw_dat$cbldinsulin
 
-dat$cardiomet_chol_stage0_zscore <- scale(dat$cardiomet_chol_stage0)
-dat$cardiomet_CRP_stage0_zscore <- scale(dat$cardiomet_CRP_stage0)
-dat$cardiomet_HDL_stage0_zscore <- scale(dat$cardiomet_HDL_stage0)
-dat$cardiomet_LDL_stage0_zscore <- scale(dat$cardiomet_LDL_stage0)
-dat$cardiomet_insulin_stage0_zscore <- scale(dat$cardiomet_insulin_stage0)
+dat$cardio_chol_stage0_zscore <- scale(dat$cardio_chol_stage0)
+dat$cardio_CRP_stage0_zscore <- scale(dat$cardio_CRP_stage0)
+dat$cardio_HDL_stage0_zscore <- scale(dat$cardio_HDL_stage0)
+dat$cardio_LDL_stage0_zscore <- scale(dat$cardio_LDL_stage0)
+dat$cardio_insulin_stage0_zscore <- scale(dat$cardio_insulin_stage0)
 
-dat$cardiomet_chol_stage3 <- select_oldest_measure("cholesterol_",stage3_mintime,stage3_maxtime)[[1]]
-dat$cardiomet_chol_stage4 <- select_oldest_measure("cholesterol_",stage4_mintime,stage4_maxtime)[[1]]
-dat$cardiomet_chol_stage3_zscore <- scale(dat$cardiomet_chol_stage3)
-dat$cardiomet_chol_stage4_zscore <- scale(dat$cardiomet_chol_stage4)
+dat$cardio_chol_stage3 <- select_oldest_measure("cholesterol_",stage3_mintime,stage3_maxtime)[[1]]
+dat$cardio_chol_stage4 <- select_oldest_measure("cholesterol_",stage4_mintime,stage4_maxtime)[[1]]
+dat$cardio_chol_stage3_zscore <- scale(dat$cardio_chol_stage3)
+dat$cardio_chol_stage4_zscore <- scale(dat$cardio_chol_stage4)
 
-dat$cardiomet_HDL_stage3 <- select_oldest_measure("hdl_",stage3_mintime,stage3_maxtime)[[1]]
-dat$cardiomet_HDL_stage4 <- select_oldest_measure("hdl_",stage4_mintime,stage4_maxtime)[[1]]
-dat$cardiomet_HDL_stage3_zscore <- scale(dat$cardiomet_HDL_stage3)
-dat$cardiomet_HDL_stage4_zscore <- scale(dat$cardiomet_HDL_stage4)
+dat$cardio_HDL_stage3 <- select_oldest_measure("hdl_",stage3_mintime,stage3_maxtime)[[1]]
+dat$cardio_HDL_stage4 <- select_oldest_measure("hdl_",stage4_mintime,stage4_maxtime)[[1]]
+dat$cardio_HDL_stage3_zscore <- scale(dat$cardio_HDL_stage3)
+dat$cardio_HDL_stage4_zscore <- scale(dat$cardio_HDL_stage4)
 
-dat$cardiomet_LDL_stage3 <- select_oldest_measure("ldl_",stage3_mintime,stage3_maxtime)[[1]]
-dat$cardiomet_LDL_stage4 <- select_oldest_measure("ldl_",stage4_mintime,stage4_maxtime)[[1]]
-dat$cardiomet_LDL_stage3_zscore <- scale(dat$cardiomet_LDL_stage3)
-dat$cardiomet_LDL_stage4_zscore <- scale(dat$cardiomet_LDL_stage4)
+dat$cardio_LDL_stage3 <- select_oldest_measure("ldl_",stage3_mintime,stage3_maxtime)[[1]]
+dat$cardio_LDL_stage4 <- select_oldest_measure("ldl_",stage4_mintime,stage4_maxtime)[[1]]
+dat$cardio_LDL_stage3_zscore <- scale(dat$cardio_LDL_stage3)
+dat$cardio_LDL_stage4_zscore <- scale(dat$cardio_LDL_stage4)
 
-dat$cardiomet_sbp_stage3 <- select_oldest_measure("systolic_",stage3_mintime,stage3_maxtime)[[1]]
-dat$cardiomet_stage3_bptimepoint <- select_oldest_measure("systolic_",stage3_mintime,stage3_maxtime)[[2]]
-dat$cardiomet_sbp_stage4 <- select_oldest_measure("systolic_",stage4_mintime,stage4_maxtime)[[1]]
-dat$cardiomet_stage4_bptimepoint <- select_oldest_measure("systolic_",stage4_mintime,stage4_maxtime)[[2]]
-dat$cardiomet_dbp_stage3 <- select_oldest_measure("diastolic_",stage3_mintime,stage3_maxtime)[[1]]
-dat$cardiomet_dbp_stage4 <- select_oldest_measure("diastolic_",stage4_mintime,stage4_maxtime)[[1]]
-dat$cardiomet_sbp_stage3_zscore <- scale(dat$cardiomet_sbp_stage3)
-dat$cardiomet_sbp_stage4_zscore <- scale(dat$cardiomet_sbp_stage4)
-dat$cardiomet_dbp_stage3_zscore <- scale(dat$cardiomet_dbp_stage3)
-dat$cardiomet_dbp_stage4_zscore <- scale(dat$cardiomet_dbp_stage4)
+dat$cardio_sbp_stage3 <- select_oldest_measure("systolic_",stage3_mintime,stage3_maxtime)[[1]]
+dat$cardio_stage3_bptimepoint <- select_oldest_measure("systolic_",stage3_mintime,stage3_maxtime)[[2]]
+dat$cardio_sbp_stage4 <- select_oldest_measure("systolic_",stage4_mintime,stage4_maxtime)[[1]]
+dat$cardio_stage4_bptimepoint <- select_oldest_measure("systolic_",stage4_mintime,stage4_maxtime)[[2]]
+dat$cardio_dbp_stage3 <- select_oldest_measure("diastolic_",stage3_mintime,stage3_maxtime)[[1]]
+dat$cardio_dbp_stage4 <- select_oldest_measure("diastolic_",stage4_mintime,stage4_maxtime)[[1]]
+dat$cardio_sbp_stage3_zscore <- scale(dat$cardio_sbp_stage3)
+dat$cardio_sbp_stage4_zscore <- scale(dat$cardio_sbp_stage4)
+dat$cardio_dbp_stage3_zscore <- scale(dat$cardio_dbp_stage3)
+dat$cardio_dbp_stage4_zscore <- scale(dat$cardio_dbp_stage4)
 
 # SMOKING #
 #Any time up to birth: ever vs never smoker: binary variable 
