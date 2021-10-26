@@ -550,7 +550,7 @@ raw_dat$caffeine_mother_coffee_instant_thirdtrim_continuous<-raw_dat$caffeine_mo
 # total coffee
 dat$caffeine_mother_coffee_thirdtrim_continuous<-NA
 dat$caffeine_mother_coffee_thirdtrim_continuous<- rowSums(raw_dat[,c("caffeine_mother_coffee_filter_thirdtrim_continuous","caffeine_mother_coffee_instant_thirdtrim_continuous")],na.rm=TRUE)
-dat$dat$caffeine_mother_coffee_thirdtrim_continuous[apply(raw_dat[,c("caffeine_mother_coffee_instant_thirdtrim_continuous","caffeine_mother_coffee_filter_thirdtrim_continuous")],1,function(x)all(is.na(x)))]<-NA
+dat$caffeine_mother_coffee_thirdtrim_continuous[apply(raw_dat[,c("caffeine_mother_coffee_instant_thirdtrim_continuous","caffeine_mother_coffee_filter_thirdtrim_continuous")],1,function(x)all(is.na(x)))]<-NA
 # Cups of caffeinated tea per day, mg/pd
 dat$caffeine_mother_tea_thirdtrim_continuous<-raw_dat$cdr0tecfpd
 # cups of tea multiplied by 27 (mg caffeine in 1 cup tea)
@@ -588,7 +588,6 @@ source("~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/coh
 genetic_data <- gen_genetic_data()
 dat <- left_join(dat,genetic_data[[1]][,grep("childpc|BiBPersonID|prs",colnames(genetic_data[[1]]))],by=c("epoch_child_id"="BiBPersonID"))
 dat <- left_join(dat,genetic_data[[2]][,grep("mumpc|BiBPersonID|prs",colnames(genetic_data[[2]]))],by=c("BiBMotherID"="BiBPersonID"))
-
 
 # save dat
 

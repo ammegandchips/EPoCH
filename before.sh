@@ -1,11 +1,11 @@
 mkdir -p ~/EPoCH/data/
 
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds ~/EPoCH/data/
-cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_all_pheno.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_pheno.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rds ~/EPoCH/data/
 
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/alspac_key.rds ~/EPoCH/data/
-cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_all_key.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_key.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_key.rds ~/EPoCH/data/
 
 mkdir -p ~/EPoCH/scripts/
@@ -26,13 +26,13 @@ mkdir -p ~/EPoCH/for_metaanalysis/
 rm -r ~/EPoCH/for_metaanalysis/*
 
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/ALSPAC_model* ~/EPoCH/for_metaanalysis/
-cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_ALL_model* ~/EPoCH/for_metaanalysis/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/MCS_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/ALSPAC_FEMALE_model* ~/EPoCH/for_metaanalysis/
-cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_ALL_FEMALE_model* ~/EPoCH/for_metaanalysis/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_FEMALE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/MCS_FEMALE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/ALSPAC_MALE_model* ~/EPoCH/for_metaanalysis/
-cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_ALL_MALE_model* ~/EPoCH/for_metaanalysis/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_MALE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/MCS_MALE_model* ~/EPoCH/for_metaanalysis/
 
 

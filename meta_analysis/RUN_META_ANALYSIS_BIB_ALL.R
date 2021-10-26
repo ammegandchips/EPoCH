@@ -18,13 +18,13 @@ library(metafor)
 
 # Set locations of scripts, data and save files
 
-cohorts <- c("ALSPAC","BIB_ALL","MCS")
+cohorts <- c("ALSPAC","BIB","MCS")
 
 if(grepl("_FEMALE",model)){
-  cohorts <- c("ALSPAC_FEMALE","BIB_ALL_FEMALE","MCS_FEMALE")
+  cohorts <- c("ALSPAC_FEMALE","BIB_FEMALE","MCS_FEMALE")
 }
 if(grepl("_MALE",model)){
-  cohorts <- c("ALSPAC_FEMALE","BIB_ALL_FEMALE","MCS_FEMALE")
+  cohorts <- c("ALSPAC_FEMALE","BIB_FEMALE","MCS_FEMALE")
 }
 
 location_of_key <- paste0("~/EPoCH/data/")
@@ -121,8 +121,8 @@ all_results <- all_results[order(all_results$est),]
 
 print("saving results...")
 
-saveRDS(all_results,file=paste0(save_directory,"metaphewas_biball_",model,"_extracted.RDS"))
-saveRDS(meta_res,file=paste0(save_directory,"metaphewas_biball_",model,"_raw.RDS"))
+saveRDS(all_results,file=paste0(save_directory,"metaphewas_",model,"_extracted.RDS"))
+saveRDS(meta_res,file=paste0(save_directory,"metaphewas_",model,"_raw.RDS"))
 
 
 print("done!")
