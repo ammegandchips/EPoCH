@@ -108,21 +108,21 @@ chmod +x ~/EPoCH/scripts/after.sh
 All the options for qsub you might want to submit:
 ```
 qsub  -v cohortORmodel="ALSPAC",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_ALL",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="BIB",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="MCS",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
 
 qsub  -v cohortORmodel="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_ALL",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="BIB",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="MCS",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
 
 qsub  -v cohortORmodel="ALSPAC",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_ALL",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="BIB",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="MCS",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="ALSPAC_FEMALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_ALL_FEMALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="BIB_FEMALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="MCS_FEMALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="ALSPAC_MALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_ALL_MALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="BIB_MALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="MCS_MALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
 
 qsub  -v cohortORmodel="model1a",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
