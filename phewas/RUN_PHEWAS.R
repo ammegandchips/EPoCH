@@ -73,7 +73,7 @@ if(grepl("_MALE",cohort)){
         dat <- dat[dat$covs_sex%in%c("male"),]
 }
 
-print(paste0("There are now",nrow(dat)," observations and ",ncol(dat)," variables in the ",cohort," dataset"))
+print(paste0("There are now ",nrow(dat)," observations and ",ncol(dat)," variables in the ",cohort," dataset"))
 
 # run phewas
 
