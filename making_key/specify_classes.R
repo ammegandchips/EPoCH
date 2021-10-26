@@ -146,6 +146,7 @@ key$outcome_subclass2[key$outcome %in% cognitive_spatialawareness_outcomes] <-"s
 
 key$outcome_subclass2[key$outcome %in% dog_allergy_outcomes] <-"dog allergy"
 key$outcome_subclass2[key$outcome %in% cat_allergy_outcomes] <-"cat allergy"
+key$outcome_subclass2[key$outcome %in% pet_allergy_outcomes] <-"pet allergy"
 key$outcome_subclass2[key$outcome %in% food_allergy_outcomes] <-"food allergy"
 key$outcome_subclass2[key$outcome %in% dust_allergy_outcomes] <-"dustmite allergy"
 key$outcome_subclass2[key$outcome %in% pollen_allergy_outcomes] <-"pollen allergy"
