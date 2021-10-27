@@ -76,11 +76,14 @@ source(paste0(location_of_extra_functions,"define_child_age.R?raw=TRUE"))
 
 ## add sex and age of child
 
-key$covariates_model1a <- NA
-key$covariates_model1a <- paste(key$child_age_covariates,"covs_sex",sep=",")
+key$covariates_model1a <- "covs_sex"
+key$covariates_model1a[which(key$outcome%in%c(overweight_outcomes,obese_outcomes))] <-NA # if outcome is already age and sex adjusted (SDS), set sex to NA
+key$covariates_model1a[grep(key$outcome,pattern="_sds")] <-NA # if outcome is already age and sex adjusted (SDS), set sex to NA
 
-# if outcome is already age and sex adjusted, set covariates to NA
-key$covariates_model1a[which(key$outcome%in%c(bmi_outcomes,overweight_outcomes,obese_outcomes))] <-NA
+key$child_age_covariates[which(key$outcome%in%c(overweight_outcomes,obese_outcomes))] <-NA # if outcome is already age and sex adjusted (SDS), set age to NA
+key$child_age_covariates[grep(key$outcome,pattern="_sds")] <-NA # if outcome is already age and sex adjusted (SDS), set age to NA
+
+key$covariates_model1a <- paste(key$covariates_model1a,key$child_age_covariates,sep=",")
 
 ## if exposure is a PRS, add the genetic PCs
 key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","snps")&key$person_exposed=="child")]<-
