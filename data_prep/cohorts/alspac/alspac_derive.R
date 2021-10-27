@@ -86,9 +86,9 @@ dat$covs_age_child_stage3_kq<-dat$kq998a
 dat$covs_age_child_stage3_kq[dat$kq998a<0]<-NA
 dat$covs_age_child_stage3_kr<-dat$kr991a
 dat$covs_age_child_stage3_kr[dat$kr991a<0]<-NA
-dat$covs_age_child_stage2_cif49<-dat$cf018
-dat$covs_age_child_stage2_cif49[dat$cf018<0]<-NA
-dat$covs_age_child_stage2_cif49<-dat$covs_age_child_stage2_cif49/12 #weeks to months
+  #dat$covs_age_child_stage2_cif49<-dat$cf018
+  #dat$covs_age_child_stage2_cif49[dat$cf018<0]<-NA
+  #dat$covs_age_child_stage2_cif49<-dat$covs_age_child_stage2_cif49/12 #weeks to months
 dat$covs_age_child_stage4_f8<-dat$f8003c
 dat$covs_age_child_stage4_f8[dat$f8003c<0]<-NA
 dat$covs_age_child_stage4_kq<-dat$ku991a
