@@ -115,6 +115,7 @@ key$outcome_subclass2<-key$outcome_subclass1
 
 key$outcome_subclass2[key$outcome %in% overweight_outcomes] <-"overweight or obese"
 key$outcome_subclass2[key$outcome %in% obese_outcomes] <-"obese"
+key$outcome_subclass2[grep(key$outcome,pattern="sds")] <-"age and sex adjusted BMI"
 key$outcome_subclass2[grep(key$outcome,pattern="sga")] <-"small for gestational age"
 key$outcome_subclass2[grep(key$outcome,pattern="lga")] <-"large for gestational age"
 key$outcome_subclass2[grep(key$outcome,pattern="birthweight_low")] <-"birthweight <2500g"

@@ -368,6 +368,10 @@ dat$anthro_bmi_stage2 <- dat$anthro_weight_stage2 / ((dat$anthro_height_stage2/1
 dat$anthro_bmi_stage3 <- dat$anthro_weight_stage3 / ((dat$anthro_height_stage3/100)^2)
 dat$anthro_bmi_stage4 <- dat$anthro_weight_stage4 / ((dat$anthro_height_stage4/100)^2)
 
+dat$anthro_bmi_stage2_zscore <- scale(dat$anthro_bmi_stage2)
+dat$anthro_bmi_stage3_zscore <- scale(dat$anthro_bmi_stage3)
+dat$anthro_bmi_stage4_zscore <- scale(dat$anthro_bmi_stage4)
+
 # (first need to derive age at each stage/sweep):
 
 dat$covs_age_child_stage0wt <- raw_dat$adaglwa0 # age when weight measurement taken

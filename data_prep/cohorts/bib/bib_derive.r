@@ -275,6 +275,19 @@ dat$anthro_fmi_stage4_zscore <- scale(dat$anthro_fmi_stage4)
 dat$anthro_fatpc_stage3_zscore <- scale(dat$anthro_fatpc_stage3)
 dat$anthro_fatpc_stage4_zscore <- scale(dat$anthro_fatpc_stage4)
 
+## BMI not adjusted for sex and age
+dat$anthro_bmi_stage0 <- dat$anthro_weight_stage0 / ((dat$anthro_height_stage0/100)^2)
+dat$anthro_bmi_stage1 <- dat$anthro_weight_stage1 / ((dat$anthro_height_stage1/100)^2)
+dat$anthro_bmi_stage2 <- dat$anthro_weight_stage2 / ((dat$anthro_height_stage2/100)^2)
+dat$anthro_bmi_stage3 <- dat$anthro_weight_stage3 / ((dat$anthro_height_stage3/100)^2)
+dat$anthro_bmi_stage4 <- dat$anthro_weight_stage4 / ((dat$anthro_height_stage4/100)^2)
+
+dat$anthro_bmi_stage0_zscore <- scale(dat$anthro_bmi_stage0)
+dat$anthro_bmi_stage1_zscore <- scale(dat$anthro_bmi_stage1)
+dat$anthro_bmi_stage2_zscore <- scale(dat$anthro_bmi_stage2)
+dat$anthro_bmi_stage3_zscore <- scale(dat$anthro_bmi_stage3)
+dat$anthro_bmi_stage4_zscore <- scale(dat$anthro_bmi_stage4)
+
 # Immuno outcomes
 dat$immuno_allergy_food_allstages_binary <- NA
 dat$immuno_allergy_food_allstages_binary[raw_dat$guadtChildGenHealth%in%(1:5)] <-0

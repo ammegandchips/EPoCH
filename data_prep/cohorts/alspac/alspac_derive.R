@@ -490,6 +490,11 @@ dat$anthro_bmi_stage2 <- dat$anthro_weight_stage2 / ((dat$anthro_height_stage2/1
 dat$anthro_bmi_stage3 <- dat$anthro_weight_stage3 / ((dat$anthro_height_stage3/100)^2)
 #Stage 4
 dat$anthro_bmi_stage4 <- dat$anthro_weight_stage4 / ((dat$anthro_height_stage4/100)^2)
+# zscores
+dat$anthro_bmi_stage1_zscore <- scale(dat$anthro_bmi_stage1)
+dat$anthro_bmi_stage2_zscore <- scale(dat$anthro_bmi_stage2)
+dat$anthro_bmi_stage3_zscore <- scale(dat$anthro_bmi_stage3)
+dat$anthro_bmi_stage4_zscore <- scale(dat$anthro_bmi_stage4)
 #WHO categories of overweight and obesity**
 #Stage 1
 library(childsds)
