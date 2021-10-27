@@ -63,11 +63,23 @@ key$child_age_covariates[which((key$outcome=="neuro_cognition_reading_stage3")&(
 
 if(cohort=="BIB"|cohort=="bib"|cohort=="BiB"){
   
-  key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 1-2"))] <-names(dat[grep(names(dat),pattern="covs_stage1_timepoint")])
-  key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 3-4"))] <-names(dat[grep(names(dat),pattern="covs_stage2_timepoint")])
-  key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 5-7"))] <-names(dat[grep(names(dat),pattern="covs_stage3_timepoint")])
-  key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 8-11"))] <-names(dat[grep(names(dat),pattern="covs_stage4_timepoint")])
+  
+  key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="first year"))] <-names(dat[grep(names(dat),pattern="covs_age_stage0_growthtimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 1-2"))] <-names(dat[grep(names(dat),pattern="covs_age_stage1_growthtimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 3-4"))] <-names(dat[grep(names(dat),pattern="covs_age_stage2_growthtimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 5-7"))] <-names(dat[grep(names(dat),pattern="covs_age_stage3_growthtimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(anthro_outcomes))&(key$outcome_time=="age 8-11"))] <-names(dat[grep(names(dat),pattern="covs_age_stage4_growthtimepoint")])
 
+  key$child_age_covariates[which((key$outcome%in%c(biomarker_outcomes))&(key$outcome_time=="age 1-2"))] <-names(dat[grep(names(dat),pattern="covs_age_stage1_bloodtesttimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(biomarker_outcomes))&(key$outcome_time=="age 3-4"))] <-names(dat[grep(names(dat),pattern="covs_age_stage2_bloodtesttimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(biomarker_outcomes))&(key$outcome_time=="age 5-7"))] <-names(dat[grep(names(dat),pattern="covs_age_stage3_bloodtesttimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(biomarker_outcomes))&(key$outcome_time=="age 8-11"))] <-names(dat[grep(names(dat),pattern="covs_age_stage4_bloodtesttimepoint")])
+  
+  key$child_age_covariates[which((key$outcome%in%c(bp_outcomes))&(key$outcome_time=="first year"))] <-names(dat[grep(names(dat),pattern="covs_age_stage0_bptimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(bp_outcomes))&(key$outcome_time=="age 1-2"))] <-names(dat[grep(names(dat),pattern="covs_age_stage1_bptimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(bp_outcomes))&(key$outcome_time=="age 3-4"))] <-names(dat[grep(names(dat),pattern="covs_age_stage2_bptimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(bp_outcomes))&(key$outcome_time=="age 5-7"))] <-names(dat[grep(names(dat),pattern="covs_age_stage3_bptimepoint")])
+  key$child_age_covariates[which((key$outcome%in%c(bp_outcomes))&(key$outcome_time=="age 8-11"))] <-names(dat[grep(names(dat),pattern="covs_age_stage4_bptimepoint")])
 }
 
 

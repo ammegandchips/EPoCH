@@ -192,15 +192,15 @@ select_oldest_measure <- function(prefix,stage_min,stage_max){
 }
 
 dat$anthro_height_stage0 <- select_oldest_measure("cheight_",stagebirth_mintime,stagebirth_maxtime)[[1]]
-dat$covs_stage0_growthtimepoint <- select_oldest_measure("cheight_",stagebirth_mintime,stagebirth_maxtime)[[2]]
+dat$covs_age_stage0_growthtimepoint <- select_oldest_measure("cheight_",stagebirth_mintime,stagebirth_maxtime)[[2]]
 dat$anthro_height_stage1 <- select_oldest_measure("cheight_",stage1_mintime,stage1_maxtime)[[1]]
-dat$covs_stage1_growthtimepoint <- select_oldest_measure("cheight_",stage1_mintime,stage1_maxtime)[[2]]
+dat$covs_age_stage1_growthtimepoint <- select_oldest_measure("cheight_",stage1_mintime,stage1_maxtime)[[2]]
 dat$anthro_height_stage2 <- select_oldest_measure("cheight_",stage2_mintime,stage2_maxtime)[[1]]
-dat$covs_stage2_growthtimepoint <- select_oldest_measure("cheight_",stage2_mintime,stage2_maxtime)[[2]]
+dat$covs_age_stage2_growthtimepoint <- select_oldest_measure("cheight_",stage2_mintime,stage2_maxtime)[[2]]
 dat$anthro_height_stage3 <- select_oldest_measure("cheight_",stage3_mintime,stage3_maxtime)[[1]]
-dat$covs_stage3_growthtimepoint <- select_oldest_measure("cheight_",stage3_mintime,stage3_maxtime)[[2]]
+dat$covs_age_stage3_growthtimepoint <- select_oldest_measure("cheight_",stage3_mintime,stage3_maxtime)[[2]]
 dat$anthro_height_stage4 <- select_oldest_measure("cheight_",stage4_mintime,stage4_maxtime)[[1]]
-dat$covs_stage4_growthtimepoint <- select_oldest_measure("cheight_",stage4_mintime,stage4_maxtime)[[2]]
+dat$covs_age_stage4_growthtimepoint <- select_oldest_measure("cheight_",stage4_mintime,stage4_maxtime)[[2]]
 dat$anthro_waist_stage0 <- select_oldest_measure("cabdo_",stagebirth_mintime,stagebirth_maxtime)[[1]]
 dat$anthro_waist_stage1 <- select_oldest_measure("cabdo_",stage1_mintime,stage1_maxtime)[[1]]
 dat$anthro_waist_stage2 <- select_oldest_measure("cabdo_",stage2_mintime,stage2_maxtime)[[1]]
@@ -299,9 +299,9 @@ dat$immuno_wheeze_allstages_binary[raw_dat$guadtChildWheezing==2] <-1
 # cardiometabolic
 dat$cardio_trig_stage0 <- raw_dat$cbldtrig
 dat$cardio_trig_stage3 <- select_oldest_measure("triglycerides_",stage3_mintime,stage3_maxtime)[[1]]
-dat$cardio_stage3_bloodtesttimepoint <- select_oldest_measure("triglycerides_",stage3_mintime,stage3_maxtime)[[2]]
+dat$covs_age_stage3_bloodtesttimepoint <- select_oldest_measure("triglycerides_",stage3_mintime,stage3_maxtime)[[2]]
 dat$cardio_trig_stage4 <- select_oldest_measure("triglycerides_",stage4_mintime,stage4_maxtime)[[1]]
-dat$cardio_stage4_bloodtesttimepoint <- select_oldest_measure("triglycerides_",stage4_mintime,stage4_maxtime)[[2]]
+dat$covs_age_stage4_bloodtesttimepoint <- select_oldest_measure("triglycerides_",stage4_mintime,stage4_maxtime)[[2]]
 dat$cardio_trig_stage0_zscore <- scale(dat$cardio_trig_stage0)
 dat$cardio_trig_stage3_zscore <- scale(dat$cardio_trig_stage3)
 dat$cardio_trig_stage4_zscore <- scale(dat$cardio_trig_stage4)
@@ -334,9 +334,9 @@ dat$cardio_LDL_stage3_zscore <- scale(dat$cardio_LDL_stage3)
 dat$cardio_LDL_stage4_zscore <- scale(dat$cardio_LDL_stage4)
 
 dat$cardio_sbp_stage3 <- select_oldest_measure("systolic_",stage3_mintime,stage3_maxtime)[[1]]
-dat$cardio_stage3_bptimepoint <- select_oldest_measure("systolic_",stage3_mintime,stage3_maxtime)[[2]]
+dat$covs_age_stage3_bptimepoint <- select_oldest_measure("systolic_",stage3_mintime,stage3_maxtime)[[2]]
 dat$cardio_sbp_stage4 <- select_oldest_measure("systolic_",stage4_mintime,stage4_maxtime)[[1]]
-dat$cardio_stage4_bptimepoint <- select_oldest_measure("systolic_",stage4_mintime,stage4_maxtime)[[2]]
+dat$covs_age_stage4_bptimepoint <- select_oldest_measure("systolic_",stage4_mintime,stage4_maxtime)[[2]]
 dat$cardio_dbp_stage3 <- select_oldest_measure("diastolic_",stage3_mintime,stage3_maxtime)[[1]]
 dat$cardio_dbp_stage4 <- select_oldest_measure("diastolic_",stage4_mintime,stage4_maxtime)[[1]]
 dat$cardio_sbp_stage3_zscore <- scale(dat$cardio_sbp_stage3)
