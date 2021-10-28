@@ -14,7 +14,7 @@ key$child_age_covariates[which((key$outcome%in%c(sdq_outcomes))&(key$outcome_tim
 key$child_age_covariates[which((key$outcome%in%c(sdq_outcomes))&(key$outcome_time=="age 8-11"))] <-names(dat[grep(names(dat),pattern="stage4_kq|covs_stage4_timepoint")])
 
 #all cognitive outcomes taken from CIF or F8 clinics:
-key$child_age_covariates[which(key$outcome%in%c(cognitive_outcomes)&key$outcome_time=="age 3-4")] <-names(dat[grep(names(dat),pattern="stage2_cif49|covs_stage2_timepoint")])
+key$child_age_covariates[which(key$outcome%in%c(cognitive_outcomes)&key$outcome_time=="age 3-4")] <-names(dat[grep(names(dat),pattern="stage2_cif|covs_stage2_timepoint")])
 key$child_age_covariates[which(key$outcome%in%c(cognitive_outcomes)&key$outcome_time=="age 8-11")] <-names(dat[grep(names(dat),pattern="stage4_f8|covs_stage4_timepoint")])
 
 #all mfq (depressive symptoms) outcomes taken from F10 clinic:
