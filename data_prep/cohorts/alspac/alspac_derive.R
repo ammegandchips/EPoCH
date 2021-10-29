@@ -1405,9 +1405,10 @@ dat$caffeine_mother_tea_postnatal_continuous[dat$e153<0]<-NA
 dat$caffeine_mother_tea_postnatal_continuous<-dat$caffeine_mother_tea_postnatal_continuous*27 #tranform cups to mg per day
 #Postnatal coffee caffeine mg per day**
 #COFFEE (cups of caffeinated coffee per day)
-dat$caffeine_mother_coffee_postnatal_continuous<-dat$e155
-dat$caffeine_mother_coffee_postnatal_continuous[dat$e155<0]<-NA
-dat$caffeine_mother_coffee_postnatal_continuous<-dat$caffeine_mother_coffee_postnatal_continuous*57 #tranform cups to mg per day
+dat$e155[dat$e155 < 0] <- NA
+dat$e157[dat$e157 < 0] <- NA
+dat$caffeine_mother_coffee_postnatal_continuous <-  rowSums(dat[, c("e155", "e157")], na.rm = F)
+dat$caffeine_mother_coffee_postnatal_continuous <-  dat$caffeine_mother_coffee_postnatal_continuous * 57
 #**Postnatal cola caffeine mg per day**
 #COLA (cups of caffeinated cola per week)
 dat$caffeine_mother_cola_postnatal_continuous<-dat$e151
