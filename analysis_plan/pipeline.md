@@ -136,7 +136,7 @@ qsub  -v cohortORmodel="model3b",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/
 qsub  -v cohortORmodel="model3c",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model4a",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model4b",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4c",scriptname="RUN_META_ANALYSISL" ~/EPoCH/scripts/epoch_master.sh
+qsub  -v cohortORmodel="model4c",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
 
 qsub  -v cohortORmodel="model1a_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
 qsub  -v cohortORmodel="model1b_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
