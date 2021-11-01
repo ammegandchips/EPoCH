@@ -113,8 +113,8 @@ key$outcome_subclass1[key$outcome %in% trig_outcomes] <-"triglycerides"
 ## subclass of outcome (level 2)
 key$outcome_subclass2<-key$outcome_subclass1
 
-key$outcome_subclass2[key$outcome %in% overweight_outcomes] <-"overweight or obese"
-key$outcome_subclass2[key$outcome %in% obese_outcomes] <-"obese"
+key$outcome_subclass2[key$outcome %in% overweight_outcomes] <-"BMI >25"
+key$outcome_subclass2[key$outcome %in% obese_outcomes] <-"BMI >30"
 key$outcome_subclass2[grep(key$outcome,pattern="sds")] <-"age and sex adjusted BMI"
 key$outcome_subclass2[grep(key$outcome,pattern="sga")] <-"small for gestational age"
 key$outcome_subclass2[grep(key$outcome,pattern="lga")] <-"large for gestational age"
@@ -161,6 +161,7 @@ key$outcome_time[grep(pattern="miscarriage",key$outcome)]<-"pregnancy" #before 2
 key$outcome_time[grep(pattern="fetal_death",key$outcome)]<-"pregnancy" #after 20 weeks
 
 key$outcome_time[grep(key$outcome,pattern="stage0")]<-"first year"
+key$outcome_time[grepl(key$outcome,pattern="stage0")&key$outcome_class=="serum biomarkers"]<-"delivery"
 key$outcome_time[grep(key$outcome,pattern="stage1")]<-"age 1-2"
 key$outcome_time[grep(key$outcome,pattern="stage2")]<-"age 3-4"
 key$outcome_time[grep(key$outcome,pattern="stage3")]<-"age 5-7"
