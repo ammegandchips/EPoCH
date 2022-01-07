@@ -18,7 +18,7 @@ library(metafor)
 
 # Set locations of scripts, data and save files
 
-cohorts <- c("ALSPAC","BIB","MCS")
+cohorts <- c("ALSPAC","BIB","MCS","MOBA")
 
 if(grepl("_FEMALE",model)){
   cohorts <- c("ALSPAC_FEMALE","BIB_FEMALE","MCS_FEMALE")
