@@ -1,9 +1,11 @@
 #!/bin/bash
 
-#PBS -N epoch_master
-#PBS -o epoch_master_out
-#PBS -l select=1:ncpus=1:mem=2000M
-#PBS -l walltime=06:0:00
+#SBATCH --job-name=epoch_master
+#SBATCH --output=epoch_master_out
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH -mem=2000M
+#SBATCH --time=0-06:00:00
 
 echo 'epoch_master'
 hostname
