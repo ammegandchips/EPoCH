@@ -4,6 +4,8 @@
 
 **Download and run `before.sh` interactively (i.e. do not submit as a job)**
 
+(note that bluepebble is a bit unpredictable. I was advised to login to bp1-login03.acrc.bris.ac.uk rather than bp1-login.acrc.bris.ac.uk. This seems to resolve the issues)
+
 This script moves all the phenotype data and key files from the RDSF folder to a folder in your home directory on blue pebble called `EPoCH/data`.
 
 It also downloads all necessary r files to `EPoCH/scripts` and makes a folder called `EPoCH/out` if it doesn’t already exist. And it deletes any old out files and results so you can start afresh.
@@ -49,10 +51,12 @@ wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/epoch_master.sh 
 chmod +x ~/EPoCH/scripts/epoch_master.sh
 ```
 
-The arguments to `epoch_master.sh` are `scriptname` and `cohortORmodel`. The submission script can be used to submit any of the R scripts stored in `~/EPoCH/scripts/` as a job. 
+The arguments to `epoch_master.sh` are `scriptname` (first) and `cohortORmodel` (second). The submission script can be used to submit any of the R scripts stored in `~/EPoCH/scripts/` as a job. 
+
+(note that in Jan 2022, I had to update the scripts from PBSPro to SLURM, so e.g. qsub changed to sbatch etc)
 
 ```
-qsub  -v cohortORmodel="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
+sbatch  ~/EPoCH/scripts/epoch_master.sh ALSPAC MAKE_KEY
 ```
 
 options for `scriptname` are:
@@ -60,7 +64,7 @@ options for `scriptname` are:
   *   SUMMARISE_DATA
   *   MAKE_KEY
   *   RUN_PHEWAS
-  *   RUN_META_ANALYSIS_BIB
+  *   RUN_META_ANALYSIS
 
 Options for `cohortORmodel` are:
 
@@ -97,7 +101,7 @@ wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/epoch_master.sh 
 chmod +x ~/EPoCH/scripts/epoch_master.sh
 
 # submit job, e.g.:
-qsub  -v cohortORmodel="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
+sbatch  ~/EPoCH/scripts/epoch_master.sh ALSPAC MAKE_KEY
 
 # STEP 3 [WAIT UNTIL THE JOB SUBMITTED IN STEP 2 IS COMPLETE]
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/after.sh -P ~/EPoCH/scripts/
@@ -105,69 +109,9 @@ chmod +x ~/EPoCH/scripts/after.sh
 ~/EPoCH/scripts/after.sh
 ```
 
-All the options for qsub you might want to submit:
+To check on the status of a job:
 ```
-qsub  -v cohortORmodel="ALSPAC",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="MCS",scriptname="SUMMARISE_DATA" ~/EPoCH/scripts/epoch_master.sh
-
-qsub  -v cohortORmodel="ALSPAC",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="MCS",scriptname="MAKE_KEY" ~/EPoCH/scripts/epoch_master.sh
-
-qsub  -v cohortORmodel="ALSPAC",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="MCS",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="ALSPAC_FEMALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_FEMALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="MCS_FEMALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="ALSPAC_MALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="BIB_MALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="MCS_MALE",scriptname="RUN_PHEWAS" ~/EPoCH/scripts/epoch_master.sh
-
-qsub  -v cohortORmodel="model1a",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model1b",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model1c",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2a",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2b",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2c",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3a",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3b",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3c",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4a",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4b",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4c",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-
-qsub  -v cohortORmodel="model1a_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model1b_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model1c_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2a_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2b_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2c_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3a_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3b_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3c_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4a_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4b_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4c_FEMALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-
-qsub  -v cohortORmodel="model1a_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model1b_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model1c_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2a_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2b_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model2c_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3a_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3b_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model3c_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4a_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4b_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-qsub  -v cohortORmodel="model4c_MALE",scriptname="RUN_META_ANALYSIS" ~/EPoCH/scripts/epoch_master.sh
-
-```
-To check on the status of a job (for my username gs8094):
-```
-qstat -u "gs8094"
+sinfo -s
 ```
 Or to check the output from the script, e.g.:
 ```
