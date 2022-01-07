@@ -7,6 +7,7 @@ cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rd
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/alspac_key.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_key.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_key.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/moba/moba_key.rds ~/EPoCH/data/
 
 mkdir -p ~/EPoCH/scripts/
 
