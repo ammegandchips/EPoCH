@@ -43,6 +43,10 @@ cohort_phewas <- lapply(1:length(cohorts),function(x){
 #  if(cohorts[x]=="BIB_ALL"){
 #  res <- res[-grep("bmi_stage0_zscore|bmi_stage1_zscore|bmi_stage2_zscore|bmi_stage3_zscore|bmi_stage4_zscore",res$outcome),] # can remove this once we have sorted the issue with BIB  
 #  }
+    if(cohorts[x]=="MOBA"){
+    res <- res[-grep("cbcl|autism|aggression",res$outcome),] # can remove this once we have sorted the issue with MOBA 
+    res <- res[-grep("phys",res$exposure),] # can remove this once we have sorted the issue with MOBA 
+     }
   res$cohort <- cohorts[x]
   key <- readRDS(paste0(location_of_key,tolower(cohorts[x]),"_key.rds"))
   res <- merge(res,key,by=c("exposure","outcome"),all.y=F)
@@ -69,6 +73,7 @@ all_cohort_phewas_wide <- pivot_wider(all_cohort_phewas_long,
                                       id_cols = c("exposure_linker","outcome_linker","exposure_class","exposure_subclass","exposure_time","exposure_type","exposure_source","person_exposed","outcome_class","outcome_subclass1","outcome_subclass2","outcome_time","outcome_type","exposure_dose"),
                                       names_from = "cohort",
                                       values_from = c("est","se","p","n")
+                                      
 )
 
 # add some extra information (total n, number of participating cohorts, which cohorts they are, and a combination of regression term and outcome for merging)
