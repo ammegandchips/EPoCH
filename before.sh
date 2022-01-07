@@ -23,6 +23,7 @@ rm -r ~/EPoCH/results/*
 mkdir -p ~/EPoCH/for_metaanalysis/
 rm -r ~/EPoCH/for_metaanalysis/*
 
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/moba/results/MOBA_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/ALSPAC_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/MCS_model* ~/EPoCH/for_metaanalysis/

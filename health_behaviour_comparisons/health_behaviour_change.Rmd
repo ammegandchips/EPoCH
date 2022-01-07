@@ -1,0 +1,730 @@
+---
+title: "Health Behaviour change in pregnancy"
+author: "Kayleigh Easey and Gemma Sharp"
+date: "5/19/2021"
+output: 
+  rmdformats::material
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+rm(list=ls())
+
+```
+# Introduction {.tabset}
+
+
+Investigating how health behaviours change during pregnancy.
+
+* How these differ between maternal and paternal behaviours
+  - Reflects differences in health advice given to each
+
+* Correlations between mum and dads behaviour
+  - Across different health behaviours
+  - Shows how interelated different behaviours are
+  - Are correlations higher if live with partner (assortative mating and shared environment)
+
+* Patterns stratified by if partner also stops behaviour
+
+* Association between SEP and health behaviours
+  - See how socially patterened these behaviours are
+  
+* Do behaviours return to baseline postnatally
+  - If slightly lower, this is a good time to intervene to improve health
+  - Also shows where support may be needed to help mothers maintain healthier behaviours after birth
+  
+* How this differs between cohorts
+  - Highlighting different confounding structures in different populations
+  - Implications for multi-cohort studies of maternal/paternal effects on child health
+
+
+Using variables derived previously within EPoCH
+
+## Prepare dataset
+
+Load packages
+```{r eval=TRUE, include=TRUE}
+library("tidyverse")
+```
+
+# ALSPAC {.tabset}
+
+## Load data
+
+This is taken from the ALSPAC dataset created for EPoCH
+```{r eval=TRUE, include=TRUE}
+dat <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds")
+
+```
+
+
+## Select variables
+```{r eval=TRUE, include=TRUE}
+vars<-
+  c(
+    
+    "physact_mother_secondtrim_ordinal",
+    "physact_mother_thirdtrim_ordinal",
+    "physact_father_secondtrim_ordinal",
+     # "physact_mother_postnatal_ordinal", (not included as not directly comparable)
+    
+    "caffeine_mother_total_firsttrim_ordinal",
+   "caffeine_mother_total_secondtrim_ordinal",
+    "caffeine_mother_total_thirdtrim_ordinal",
+    "caffeine_mother_total_postnatal_ordinal",
+    "caffeine_father_total_secondtrim_ordinal",
+    
+    "smoking_mother_preconception_ordinal",
+    "smoking_mother_firsttrim_ordinal",
+    "smoking_mother_secondtrim_ordinal",
+    "smoking_mother_thirdtrim_ordinal",
+    "smoking_mother_postnatal_ordinal",
+    
+    "smoking_father_startpregnancy_ordinal",
+    "smoking_father_secondtrim_ordinal",
+    "smoking_father_thirdtrim_ordinal",
+    "smoking_father_postnatal_ordinal",
+    
+    "alcohol_mother_preconception_ordinal",
+    "alcohol_mother_firsttrim_ordinal",
+    "alcohol_mother_secondtrim_ordinal",
+    "alcohol_mother_thirdtrim_ordinal",
+    "alcohol_mother_postnatal_ordinal",
+    
+    "alcohol_father_preconception_ordinal",
+    "alcohol_father_secondtrim_ordinal",
+    "alcohol_father_thirdtrim_ordinal",
+    "alcohol_father_postnatal_ordinal",
+    
+    "covs_occup_mother",
+    "covs_occup_father",
+    
+    "covs_edu_mother",
+    "covs_edu_father",
+    
+    "covs_occup_mother_highestlowest_binary",
+    "covs_occup_father_highestlowest_binary",
+    "covs_edu_mother_highestlowest_binary",
+    "covs_edu_father_highestlowest_binary",
+    
+    "covs_parity_mother_binary",
+    "covs_partner_lives_with_mother_prenatal"
+
+  )
+```
+
+## Correlations
+
+ ! To do format plots
+
+*Parents correlation*
+
+**This shows how maternal and paternal health behaviours are correlated with each other and SEP**
+
+```{r eval=TRUE, include=TRUE}
+#install.packages("corrplot")
+
+require(dplyr)
+require(corrplot)
+
+df1<-mutate_all(dat[,vars], function(x) as.numeric(x))
+cors <- cor(df1,use="pairwise.complete")
+corrplot(cors,tl.cex=0.5,method="color",tl.col="black",order="hclust",addrect=5)
+
+```
+
+## Parents change over time
+
+**This shows how parental behaviour changes during and after pregnancy**
+
+```{r eval=TRUE, include=TRUE}
+
+require(reshape2)
+df1<-mutate_all(dat[,c("aln",vars)], function(x) as.numeric(x))
+df1_melt <- melt(df1[,grepl("aln|smoking|physact|caff|alco",names(df1))],id.vars = "aln")
+
+df1_melt$time <- NA
+df1_melt$time[grepl(df1_melt$variable,pattern="preconception")]<-"pre-conception"
+df1_melt$time[grepl(df1_melt$variable,pattern="firsttrim|start")]<-"first trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="secondtrim")]<-"second trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="thirdtrim")]<-"third trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="postnatal")]<-"postnatal"
+df1_melt$time <- factor(df1_melt$time,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+
+df1_melt$behaviour <- NA
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="caff")]<-"caffeine"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="alcohol")]<-"alcohol"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="smoking")]<-"smoking"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="physac")]<-"physical activity"
+df1_melt$behaviour <- factor(df1_melt$behaviour,ordered=T, levels=c("smoking","alcohol","caffeine","physical activity"))
+
+df1_melt$parent <- NA
+df1_melt$parent[grepl(df1_melt$variable,pattern="mother")]<-"mother"
+df1_melt$parent[grepl(df1_melt$variable,pattern="father")]<-"partner"
+
+x <- droplevels(df1_melt[order(df1_melt$aln,df1_melt$time,df1_melt$parent,df1_melt$behaviour),])
+x<-x[is.na(x$value)==F,]
+x <- x[duplicated(x[,c("parent","behaviour","aln")])==F,]
+
+names(x)[3]<-"initial_dose"
+names(x)[2]<-"initial_var"
+
+dfx <- merge(x[,c("aln","parent","behaviour","initial_dose","initial_var")],df1_melt,by=c("aln","parent","behaviour"),all=T)
+
+dfy <- 
+  dfx %>%
+  group_by(factor(initial_dose),factor(behaviour),factor(time),factor(parent)) %>%
+  dplyr::summarise(mean=mean(value,na.rm=T),sd=sd(value,na.rm=T),n=n())
+
+
+ggthemr::ggthemr("light",layout = "minimal",type = "outer")
+require(ggplot2)
+ggplot(dfy,aes(x=`factor(time)`,y=mean,group=`factor(initial_dose)`))+
+  geom_point(aes(colour=`factor(initial_dose)`,size=n))+
+  geom_path(aes(colour=`factor(initial_dose)`))+
+  #  geom_smooth(aes(colour=`factor(initial_dose)`),method="loess" )+
+  facet_grid(`factor(behaviour)`~`factor(parent)`)+
+  theme(axis.text.x=element_text(angle=45,hjust=1),panel.spacing.y = unit(1,"lines"))+
+  xlab("")+ylab("mean level of behaviour")
+```
+
+
+## Parents correlation stratified by cohabiting
+
+**Correlation of maternal and paternal behaviour stratified by if live together or not**
+
+```{r eval=TRUE, include=TRUE}
+
+
+require(reshape2)
+cors_lt <- cor(df1[df1$covs_partner_lives_with_mother_prenatal==1,vars[-((length(vars)-5):length(vars))]],use="pairwise.complete")
+cors_nlt <- cor(df1[df1$covs_partner_lives_with_mother_prenatal==0,vars[-((length(vars)-5):length(vars))]],use="pairwise.complete")
+cors_melt_lt <- melt(cors_lt)
+cors_melt_lt$live_together <-"parents live together"
+cors_melt_nlt <- melt(cors_nlt)
+cors_melt_nlt$live_together <-"parents live apart"
+
+cors_melt <- bind_rows(cors_melt_lt,cors_melt_nlt)
+
+ggplot(cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl("smoking|alcohol|physact|caffeine",cors_melt$Var2),],aes(x=Var1,y=Var2,fill=value,label=round(value,2)))+
+  geom_tile()+
+  #  geom_text(colour="white")+
+  theme(axis.text.x = element_text(angle = 45,hjust=1))+
+  scale_fill_gradient(low="white",high="darkblue")+
+  facet_grid(.~live_together)
+
+```
+
+## Parents reduction at same time if cohabiting
+
+**Comparisons of maternal and paternal health behaviours, showing if reduced at the same time, stratified by if they lived together or apart**
+```{r eval=TRUE, include=TRUE}
+
+df7 <- cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl("smoking|alcohol|physact|caffeine",cors_melt$Var2),]
+
+df7$time1 <- NA
+df7$time1[grepl(df7$Var1,pattern="preconception")]<-"pre-conception"
+df7$time1[grepl(df7$Var1,pattern="firsttrim|start")]<-"first trimester"
+df7$time1[grepl(df7$Var1,pattern="secondtrim")]<-"second trimester"
+df7$time1[grepl(df7$Var1,pattern="thirdtrim")]<-"third trimester"
+df7$time1[grepl(df7$Var1,pattern="postnatal")]<-"postnatal"
+
+df7$time2 <- NA
+df7$time2[grepl(df7$Var2,pattern="preconception")]<-"pre-conception"
+df7$time2[grepl(df7$Var2,pattern="firsttrim|start")]<-"first trimester"
+df7$time2[grepl(df7$Var2,pattern="secondtrim")]<-"second trimester"
+df7$time2[grepl(df7$Var2,pattern="thirdtrim")]<-"third trimester"
+df7$time2[grepl(df7$Var2,pattern="postnatal")]<-"postnatal"
+df7$sametime <- ifelse(df7$time1==df7$time2,"yes","no")
+
+df7$behaviour1 <- unlist(lapply(strsplit(as.character(df7$Var1),split="_"),"[[",1))
+df7$behaviour2 <- unlist(lapply(strsplit(as.character(df7$Var2),split="_"),"[[",1))
+df7$samebehaviour <- ifelse(df7$behaviour1==df7$behaviour2,"yes","no")
+
+df7$parent1 <- ifelse(grepl("mother",df7$Var1),"mother","partner")
+df7$parent2 <- ifelse(grepl("mother",df7$Var2),"mother","partner")
+df7$sameparent <- ifelse(df7$parent1==df7$parent2,"yes","no")
+
+df8 <- df7[df7$sameparent=="no"&df7$samebehaviour=="yes"&df7$sametime=="yes",]
+df8$time1 <- factor(df8$time1,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+
+ggplot(df8,aes(x=1,y=value,fill=live_together))+
+  geom_col(position = "dodge")+
+  facet_grid(behaviour1~time1)
+
+
+```
+
+
+## Parents reduction if other parent reduces behaviour also
+**Comparisons of maternal and paternal health behaviours, showing if reduced at the same time, stratified by if other parent reduced behaviour**
+
+```{r eval=TRUE, include=TRUE}
+  
+  #New variables to include:
+dat$smoking_father_change<-NA
+dat$smoking_father_change[dat$smoking_father_startpregnancy_binary==0 & (dat$smoking_father_secondtrim_binary==1|dat$smoking_father_thirdtrim_binary==1)]<-1 #increased after start preg 
+dat$smoking_father_change[dat$smoking_father_startpregnancy_binary==1 & (dat$smoking_father_secondtrim_binary==0|dat$smoking_father_thirdtrim_binary==0)]<-0 #decreased after start preg
+
+#mums decrease smoking after start preg
+dat$smoking_mother_change<-NA
+dat$smoking_mother_change[dat$smoking_mother_firsttrim_binary==0 & (dat$smoking_mother_secondtrim_binary==1|dat$smoking_mother_thirdtrim_binary==1)]<-"Increased" #increased after start preg 
+dat$smoking_mother_change[dat$smoking_mother_firsttrim_binary==1 & (dat$smoking_mother_secondtrim_binary==0|dat$smoking_mother_thirdtrim_binary==0)]<-"Decreased" #decreased after start preg
+
+
+
+
+ggplot(dat, aes(x = smoking_mother_change,y = smoking_father_change,fill=smoking_father_change==1), position = "dodge")+
+  ylim(0,125)+
+labs(fill="Partner increased behaviour")+
+labs(title = "ALSPAC")+
+  xlab("Mum increased smoking during pregnancy")
+
+
+
+## Works (back up if change above):
+ggplot(data = dat) + 
+  geom_bar(mapping = aes(x = smoking_mother_change, fill=smoking_father_change==1), position = "dodge")+
+  ylim(0,125)+
+labs(fill="Partner increased behaviour")+
+labs(title = "ALSPAC")+
+  xlab("Mum increased smoking during pregnancy")
+###
+
+?
+  dat$time1<-df7$time1
+
+df1<-mutate_all(dat[,c("aln",vars)], function(x) as.numeric(x))
+df1_melt <- melt(df1[,grepl("aln|smoking|physact|caff|alco",names(df1))],id.vars = "aln")
+
+```
+
+###########################################################################
+
+# BiB {.tabset}
+
+## Load data
+
+This is taken from the BiB dataset created for EPoCH
+```{r eval=TRUE, include=TRUE}
+
+rm(list=ls()) #clear previous cohorts data
+
+dat <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_pheno.rds")
+```
+
+
+## Select variables
+```{r eval=TRUE, include=TRUE}
+
+vars<-
+  c(
+    
+   # "physact_mother_secondtrim_ordinal",
+    #"physact_mother_thirdtrim_ordinal",
+    #"physact_father_secondtrim_ordinal",
+    #  "physact_mother_postnatal_ordinal", (not included as not directly comparable)
+    
+    # "caffeine_mother_total_firsttrim_ordinal",
+   # "caffeine_mother_total_secondtrim_ordinal",
+    "caffeine_mother_total_thirdtrim_ordinal",
+  #  "caffeine_mother_total_postnatal_ordinal",
+   # "caffeine_father_total_secondtrim_ordinal",
+    
+    "smoking_mother_preconception_ordinal",
+    "smoking_mother_firsttrim_ordinal",
+    "smoking_mother_secondtrim_ordinal",
+    "smoking_mother_thirdtrim_ordinal",
+   # "smoking_mother_postnatal_ordinal",
+    
+  #  "smoking_father_startpregnancy_ordinal",
+   # "smoking_father_secondtrim_ordinal",
+    "smoking_father_thirdtrim_ordinal",
+  #  "smoking_father_postnatal_ordinal",
+    
+    "alcohol_mother_preconception_ordinal",
+    "alcohol_mother_firsttrim_ordinal",
+    "alcohol_mother_secondtrim_ordinal",
+    "alcohol_mother_thirdtrim_ordinal",
+   # "alcohol_mother_postnatal_ordinal",
+    
+  #  "alcohol_father_preconception_ordinal",
+   # "alcohol_father_secondtrim_ordinal",
+    "alcohol_father_thirdtrim_ordinal",
+  #  "alcohol_father_postnatal_ordinal",
+    
+  #  "covs_occup_mother",
+    "covs_occup_father",
+    
+    "covs_edu_mother",
+    "covs_edu_father",
+    
+   # "covs_occup_mother_highestlowest_binary",
+    "covs_occup_father_highestlowest_binary",
+    "covs_edu_mother_highestlowest_binary",
+    "covs_edu_father_highestlowest_binary",
+    
+    "covs_parity_mother_binary",
+    "covs_partner_lives_with_mother_prenatal"
+  )
+
+```
+
+## Correlations
+
+ ! To do format plots
+
+*Parents correlation*
+
+**This shows how maternal and paternal health behaviours are correlated with each other and SEP**
+
+```{r eval=TRUE, include=TRUE}
+#install.packages("corrplot")
+
+require(dplyr)
+require(corrplot)
+df1<-mutate_all(dat[,vars], function(x) as.numeric(x))
+cors <- cor(df1,use="pairwise.complete")
+corrplot(cors,tl.cex=0.5,method="color",tl.col="black",order="hclust",addrect=5)
+
+```
+
+## Parents change over time
+
+**This shows how parental behaviour changes during and after pregnancy**
+
+```{r eval=TRUE, include=TRUE}
+
+#chaneged aln to PregnancyID for BiB (this should be right and not MotherID)
+require(reshape2)
+df1<-mutate_all(dat[,c("BiBMotherID",vars)], function(x) as.numeric(x))
+df1_melt <- melt(df1[,grepl("BiBMotherID|smoking|caff|alco",names(df1))],id.vars = "BiBMotherID")
+
+df1_melt$time <- NA
+df1_melt$time[grepl(df1_melt$variable,pattern="preconception")]<-"pre-conception"
+df1_melt$time[grepl(df1_melt$variable,pattern="firsttrim|start")]<-"first trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="secondtrim")]<-"second trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="thirdtrim")]<-"third trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="postnatal")]<-"postnatal"
+df1_melt$time <- factor(df1_melt$time,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+
+df1_melt$behaviour <- NA
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="caff")]<-"caffeine"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="alcohol")]<-"alcohol"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="smoking")]<-"smoking"
+#df1_melt$behaviour[grepl(df1_melt$variable,pattern="physac")]<-"physical activity"
+df1_melt$behaviour <- factor(df1_melt$behaviour,ordered=T, levels=c("smoking","alcohol","caffeine"))
+
+df1_melt$parent <- NA
+df1_melt$parent[grepl(df1_melt$variable,pattern="mother")]<-"mother"
+df1_melt$parent[grepl(df1_melt$variable,pattern="father")]<-"partner"
+
+x <- droplevels(df1_melt[order(df1_melt$BiBMotherID,df1_melt$time,df1_melt$parent,df1_melt$behaviour),])
+x<-x[is.na(x$value)==F,]
+x <- x[duplicated(x[,c("parent","behaviour","BiBMotherID")])==F,]
+
+names(x)[3]<-"initial_dose"
+names(x)[2]<-"initial_var"
+
+dfx <- merge(x[,c("BiBMotherID","parent","behaviour","initial_dose","initial_var")],df1_melt,by=c("BiBMotherID","parent","behaviour"),all=T)
+
+dfy <- 
+  dfx %>%
+  group_by(factor(initial_dose),factor(behaviour),factor(time),factor(parent)) %>%
+  dplyr::summarise(mean=mean(value,na.rm=T),sd=sd(value,na.rm=T),n=n())
+
+#devtools::install_github('Mikata-Project/ggthemr')
+
+ggthemr::ggthemr("light",layout = "minimal",type = "outer")
+require(ggplot2)
+ggplot(dfy,aes(x=`factor(time)`,y=mean,group=`factor(initial_dose)`))+
+  geom_point(aes(colour=`factor(initial_dose)`,size=n))+
+  geom_path(aes(colour=`factor(initial_dose)`))+
+  #  geom_smooth(aes(colour=`factor(initial_dose)`),method="loess" )+
+  facet_grid(`factor(behaviour)`~`factor(parent)`)+
+  theme(axis.text.x=element_text(angle=45,hjust=1),panel.spacing.y = unit(1,"lines"))+
+  xlab("")+ylab("mean level of behaviour")
+```
+
+
+## Parents correlation stratified by cohabiting
+
+**Correlation of maternal and paternal behaviour stratified by if live together or not**
+
+```{r eval=TRUE, include=TRUE}
+
+require(reshape2)
+cors_lt <- cor(df1[df1$covs_partner_lives_with_mother_prenatal==1,vars[-((length(vars)-5):length(vars))]],use="pairwise.complete")
+cors_nlt <- cor(df1[df1$covs_partner_lives_with_mother_prenatal==0,vars[-((length(vars)-5):length(vars))]],use="pairwise.complete")
+cors_melt_lt <- melt(cors_lt)
+cors_melt_lt$live_together <-"parents live together"
+cors_melt_nlt <- melt(cors_nlt)
+cors_melt_nlt$live_together <-"parents live apart"
+
+cors_melt <- bind_rows(cors_melt_lt,cors_melt_nlt)
+
+ggplot(cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl("smoking|alcohol|physact|caffeine",cors_melt$Var2),],aes(x=Var1,y=Var2,fill=value,label=round(value,2)))+
+  geom_tile()+
+  #  geom_text(colour="white")+
+  theme(axis.text.x = element_text(angle = 45,hjust=1))+
+  scale_fill_gradient(low="white",high="darkblue")+
+  facet_grid(.~live_together)
+
+
+```
+
+## Parents reduction at same time if cohabiting
+
+**Comparisons of maternal and paternal health behaviours, showing if reduced at the same time, stratified by if they lived together or apart**
+```{r eval=TRUE, include=TRUE}
+
+df7 <- cors_melt[grepl("smoking|alcohol|caffeine",cors_melt$Var1)&grepl("smoking|alcohol|caffeine",cors_melt$Var2),]
+
+df7$time1 <- NA
+df7$time1[grepl(df7$Var1,pattern="preconception")]<-"pre-conception"
+df7$time1[grepl(df7$Var1,pattern="firsttrim|start")]<-"first trimester"
+df7$time1[grepl(df7$Var1,pattern="secondtrim")]<-"second trimester"
+df7$time1[grepl(df7$Var1,pattern="thirdtrim")]<-"third trimester"
+df7$time1[grepl(df7$Var1,pattern="postnatal")]<-"postnatal"
+
+df7$time2 <- NA
+df7$time2[grepl(df7$Var2,pattern="preconception")]<-"pre-conception"
+df7$time2[grepl(df7$Var2,pattern="firsttrim|start")]<-"first trimester"
+df7$time2[grepl(df7$Var2,pattern="secondtrim")]<-"second trimester"
+df7$time2[grepl(df7$Var2,pattern="thirdtrim")]<-"third trimester"
+df7$time2[grepl(df7$Var2,pattern="postnatal")]<-"postnatal"
+df7$sametime <- ifelse(df7$time1==df7$time2,"yes","no")
+
+df7$behaviour1 <- unlist(lapply(strsplit(as.character(df7$Var1),split="_"),"[[",1))
+df7$behaviour2 <- unlist(lapply(strsplit(as.character(df7$Var2),split="_"),"[[",1))
+df7$samebehaviour <- ifelse(df7$behaviour1==df7$behaviour2,"yes","no")
+
+df7$parent1 <- ifelse(grepl("mother",df7$Var1),"mother","partner")
+df7$parent2 <- ifelse(grepl("mother",df7$Var2),"mother","partner")
+df7$sameparent <- ifelse(df7$parent1==df7$parent2,"yes","no")
+
+df8 <- df7[df7$sameparent=="no"&df7$samebehaviour=="yes"&df7$sametime=="yes",]
+df8$time1 <- factor(df8$time1,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+
+ggplot(df8,aes(x=1,y=value,fill=live_together))+
+  geom_col(position = "dodge")+
+  facet_grid(behaviour1~time1)
+
+
+```
+
+##############################################################
+
+# MCS {.tabset}
+rm(list=ls())
+
+## Load data
+This is taken from the MCS dataset created for EPoCH
+```{r eval=TRUE, include=TRUE}
+dat<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rds")
+
+```
+
+
+## Select variables
+```{r eval=TRUE, include=TRUE}
+vars<-
+  c(
+    
+   # "physact_mother_secondtrim_ordinal",
+    #"physact_mother_thirdtrim_ordinal",
+    #"physact_father_secondtrim_ordinal",
+    #  "physact_mother_postnatal_ordinal", (not included as not directly comparable)
+    
+   # "caffeine_mother_total_firsttrim_ordinal",
+  #  "caffeine_mother_total_secondtrim_ordinal",
+   # "caffeine_mother_total_thirdtrim_ordinal",
+  #  "caffeine_mother_total_postnatal_ordinal",
+  #  "caffeine_father_total_secondtrim_ordinal",
+    
+    "smoking_mother_preconception_ordinal",
+    "smoking_mother_firsttrim_ordinal",
+    "smoking_mother_secondtrim_ordinal",
+    "smoking_mother_thirdtrim_ordinal",
+    "smoking_mother_postnatal_ordinal",
+    
+   # "smoking_father_startpregnancy_ordinal",
+        "smoking_father_firsttrim_ordinal",
+    "smoking_father_secondtrim_ordinal",
+    "smoking_father_thirdtrim_ordinal",
+    "smoking_father_postnatal_ordinal",
+    
+    #"alcohol_mother_preconception_ordinal",
+    #"alcohol_mother_firsttrim_ordinal",
+   # "alcohol_mother_secondtrim_ordinal",
+  #  "alcohol_mother_thirdtrim_ordinal",
+    "alcohol_mother_postnatal_ordinal",
+   #  We also have an ever pregnancy just for mums "alcohol_mother_ever_pregnancy_ordinal",
+
+   # "alcohol_father_preconception_ordinal",
+  #  "alcohol_father_secondtrim_ordinal",
+   # "alcohol_father_thirdtrim_ordinal",
+    #"alcohol_father_postnatal_ordinal",
+  #  "alcohol_father_postnatal_ordinal"
+  
+    "covs_occup_mother",
+    "covs_occup_father",
+    
+    "covs_edu_mother",
+    "covs_edu_father",
+    
+    "covs_occup_mother_highestlowest_binary",
+    "covs_occup_father_highestlowest_binary",
+    "covs_edu_mother_highestlowest_binary",
+    "covs_edu_father_highestlowest_binary",
+    
+   # "covs_parity_mother_binary",
+    "covs_partner_lives_with_mother_prenatal"
+  )
+```
+
+## Correlations
+
+ ! To do format plots
+
+*Parents correlation*
+
+**This shows how maternal and paternal health behaviours are correlated with each other and SEP**
+
+```{r eval=TRUE, include=TRUE}
+#install.packages("corrplot")
+
+require(dplyr)
+require(corrplot)
+
+df1<-mutate_all(dat[,vars], function(x) as.numeric(x))
+cors <- cor(df1,use="pairwise.complete")
+corrplot(cors,tl.cex=0.5,method="color",tl.col="black",order="hclust",addrect=5)
+
+
+
+```
+
+## Parents change over time
+
+**This shows how parental behaviour changes during and after pregnancy**
+
+```{r eval=TRUE, include=TRUE}
+
+require(reshape2)
+df1<-mutate_all(dat[,c("mcsid",vars)], function(x) as.numeric(x))
+df1_melt <- melt(df1[,grepl("mcsid|smoking|physact|caff|alco",names(df1))],id.vars = "mcsid")
+
+df1_melt$time <- NA
+df1_melt$time[grepl(df1_melt$variable,pattern="preconception")]<-"pre-conception"
+df1_melt$time[grepl(df1_melt$variable,pattern="firsttrim|start")]<-"first trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="secondtrim")]<-"second trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="thirdtrim")]<-"third trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="postnatal")]<-"postnatal"
+df1_melt$time <- factor(df1_melt$time,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+
+df1_melt$behaviour <- NA
+#df1_melt$behaviour[grepl(df1_melt$variable,pattern="caff")]<-"caffeine"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="alcohol")]<-"alcohol"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="smoking")]<-"smoking"
+#df1_melt$behaviour[grepl(df1_melt$variable,pattern="physac")]<-"physical activity"
+df1_melt$behaviour <- factor(df1_melt$behaviour,ordered=T, levels=c("smoking","alcohol","caffeine","physical activity"))
+
+df1_melt$parent <- NA
+df1_melt$parent[grepl(df1_melt$variable,pattern="mother")]<-"mother"
+df1_melt$parent[grepl(df1_melt$variable,pattern="father")]<-"partner"
+
+x <- droplevels(df1_melt[order(df1_melt$mcsid,df1_melt$time,df1_melt$parent,df1_melt$behaviour),])
+x<-x[is.na(x$value)==F,]
+x <- x[duplicated(x[,c("parent","behaviour","mcsid")])==F,]
+
+names(x)[3]<-"initial_dose"
+names(x)[2]<-"initial_var"
+
+dfx <- merge(x[,c("mcsid","parent","behaviour","initial_dose","initial_var")],df1_melt,by=c("mcsid","parent","behaviour"),all=T)
+
+dfy <- 
+  dfx %>%
+  group_by(factor(initial_dose),factor(behaviour),factor(time),factor(parent)) %>%
+  dplyr::summarise(mean=mean(value,na.rm=T),sd=sd(value,na.rm=T),n=n())
+
+
+ggthemr::ggthemr("light",layout = "minimal",type = "outer")
+require(ggplot2)
+ggplot(dfy,aes(x=`factor(time)`,y=mean,group=`factor(initial_dose)`))+
+  geom_point(aes(colour=`factor(initial_dose)`,size=n))+
+  geom_path(aes(colour=`factor(initial_dose)`))+
+  #  geom_smooth(aes(colour=`factor(initial_dose)`),method="loess" )+
+  facet_grid(`factor(behaviour)`~`factor(parent)`)+
+  theme(axis.text.x=element_text(angle=45,hjust=1),panel.spacing.y = unit(1,"lines"))+
+  xlab("")+ylab("mean level of behaviour")
+```
+
+
+## Parents correlation stratified by cohabiting
+
+**Correlation of maternal and paternal behaviour stratified by if live together or not**
+
+```{r eval=TRUE, include=TRUE}
+
+require(reshape2)
+cors_lt <- cor(df1[df1$covs_partner_lives_with_mother_prenatal==1,vars[-((length(vars)-5):length(vars))]],use="pairwise.complete")
+cors_nlt <- cor(df1[df1$covs_partner_lives_with_mother_prenatal==0,vars[-((length(vars)-5):length(vars))]],use="pairwise.complete")
+cors_melt_lt <- melt(cors_lt)
+cors_melt_lt$live_together <-"parents live together"
+cors_melt_nlt <- melt(cors_nlt)
+cors_melt_nlt$live_together <-"parents live apart"
+
+cors_melt <- bind_rows(cors_melt_lt,cors_melt_nlt)
+
+ggplot(cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl("smoking|alcohol|physact|caffeine",cors_melt$Var2),],aes(x=Var1,y=Var2,fill=value,label=round(value,2)))+
+  geom_tile()+
+  #  geom_text(colour="white")+
+  theme(axis.text.x = element_text(angle = 45,hjust=1))+
+  scale_fill_gradient(low="white",high="darkblue")+
+  facet_grid(.~live_together)
+
+
+```
+
+## Parents reduction at same time if cohabiting
+
+**Comparisons of maternal and paternal health behaviours, showing if reduced at the same time, stratified by if they lived together or apart**
+```{r eval=TRUE, include=TRUE}
+
+df7 <- cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl("smoking|alcohol|physact|caffeine",cors_melt$Var2),]
+
+df7$time1 <- NA
+df7$time1[grepl(df7$Var1,pattern="preconception")]<-"pre-conception"
+df7$time1[grepl(df7$Var1,pattern="firsttrim|start")]<-"first trimester"
+df7$time1[grepl(df7$Var1,pattern="secondtrim")]<-"second trimester"
+df7$time1[grepl(df7$Var1,pattern="thirdtrim")]<-"third trimester"
+df7$time1[grepl(df7$Var1,pattern="postnatal")]<-"postnatal"
+
+df7$time2 <- NA
+df7$time2[grepl(df7$Var2,pattern="preconception")]<-"pre-conception"
+df7$time2[grepl(df7$Var2,pattern="firsttrim|start")]<-"first trimester"
+df7$time2[grepl(df7$Var2,pattern="secondtrim")]<-"second trimester"
+df7$time2[grepl(df7$Var2,pattern="thirdtrim")]<-"third trimester"
+df7$time2[grepl(df7$Var2,pattern="postnatal")]<-"postnatal"
+df7$sametime <- ifelse(df7$time1==df7$time2,"yes","no")
+
+df7$behaviour1 <- unlist(lapply(strsplit(as.character(df7$Var1),split="_"),"[[",1))
+df7$behaviour2 <- unlist(lapply(strsplit(as.character(df7$Var2),split="_"),"[[",1))
+df7$samebehaviour <- ifelse(df7$behaviour1==df7$behaviour2,"yes","no")
+
+df7$parent1 <- ifelse(grepl("mother",df7$Var1),"mother","partner")
+df7$parent2 <- ifelse(grepl("mother",df7$Var2),"mother","partner")
+df7$sameparent <- ifelse(df7$parent1==df7$parent2,"yes","no")
+
+df8 <- df7[df7$sameparent=="no"&df7$samebehaviour=="yes"&df7$sametime=="yes",]
+df8$time1 <- factor(df8$time1,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+
+ggplot(df8,aes(x=1,y=value,fill=live_together))+
+  geom_col(position = "dodge")+
+  facet_grid(behaviour1~time1)
+
+
+```
+
+
