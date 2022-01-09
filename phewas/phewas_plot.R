@@ -2,6 +2,7 @@
 require(ggplot2)
 require(dplyr)
 require(gridExtra)
+require(stringr)
 
 make_plot <- function(res,linker,binary,cropforleft=NULL,cropforright=NULL,xtitle){
   if(class(res)=="list"){
@@ -42,20 +43,23 @@ make_plot <- function(res,linker,binary,cropforleft=NULL,cropforright=NULL,xtitl
   
   phewas_plot <- ggplot(res)+
     geom_vline(xintercept = intercept_n,colour="grey36")+
-    geom_point(aes(x=est_ALSPAC,y=1,fill="palevioletred"),alpha=0.5,shape=22,size=3,colour="palevioletred")+
-    geom_point(aes(x=est_BIB,y=1,fill="seagreen"),alpha=0.5,shape=22,size=3,colour="seagreen")+
-    geom_point(aes(x=est_MCS,y=1,fill="cornflowerblue"),alpha=0.5,shape=22,size=3,colour="cornflowerblue")+
-    geom_point(aes(x=est,y=1,colour=p<0.05),shape=18,alpha=0.9,size=3)+
-    geom_errorbarh(aes(y=1,xmin=lci,xmax=uci,height=0,colour=p<0.05))+
+    geom_point(aes(x=est_ALSPAC,y=1,fill="#ef5675"),alpha=0.5,shape=22,size=3,colour="grey90")+
+    geom_point(aes(x=est_BIB,y=1,fill="#7a5195"),alpha=0.5,shape=22,size=3,colour="grey90")+
+    geom_point(aes(x=est_MCS,y=1,fill="#003f5c"),alpha=0.5,shape=22,size=3,colour="grey90")+
+    geom_point(aes(x=est_MOBA,y=1,fill="#ffa600"),alpha=0.5,shape=22,size=3,colour="grey90")+
+#    geom_point(aes(x=est,y=1,colour=p<0.05),shape=18,alpha=0.9,size=3)+
+#    geom_errorbarh(aes(y=1,xmin=lci,xmax=uci,height=0,colour=p<0.05))+
+    geom_point(aes(x=est,y=1),shape=18,alpha=0.9,size=3,colour="grey36")+
+    geom_errorbarh(aes(y=1,xmin=lci,xmax=uci,height=0),colour="grey36")+
     scale_fill_identity(name = "Cohort estimates:",
-                         breaks = c("cornflowerblue", "seagreen", "palevioletred"),
-                         labels = c("MCS", "BiB","ALSPAC"),
+                         breaks = c("#ffa600","#003f5c", "#7a5195", "#ef5675"),
+                         labels = c("MOBA","MCS", "BiB","ALSPAC"),
                          guide = "legend")+
-    scale_colour_manual(name="Meta-analysis estimate:",
-                        breaks = c("TRUE","FALSE"),
-                        labels= c("P<0.05","P<0.05"),
-                        values= c("firebrick1","black"),
-                        guide="legend")+
+#    scale_colour_manual(name="Meta-analysis estimate:",
+#                        breaks = c("TRUE","FALSE"),
+#                        labels= c("P<0.05","P<0.05"),
+#                        values= c("firebrick1","black"),
+#                        guide="legend")+
     facet_grid(outcome_class+outcome_text~model,scales = "free",space = "free_y",switch = "y") +
     xlab(xtitle)+ylab("") +
     theme_minimal()+
