@@ -50,7 +50,7 @@ make_plot <- function(res,linker,binary,cropforleft=NULL,cropforright=NULL,xtitl
 #    geom_point(aes(x=est,y=1,colour=p<0.05),shape=18,alpha=0.9,size=3)+
 #    geom_errorbarh(aes(y=1,xmin=lci,xmax=uci,height=0,colour=p<0.05))+
     geom_point(aes(x=est,y=1),shape=18,alpha=0.9,size=3,colour="grey36")+
-    geom_errorbarh(aes(y=1,xmin=lci,xmax=uci,height=0),colour="grey36")+
+    geom_errorbarh(aes(y=1,xmin=lci,xmax=uci),height=0,colour="grey36")+
     scale_fill_identity(name = "Cohort estimates:",
                          breaks = c("#ffa600","#003f5c", "#7a5195", "#ef5675"),
                          labels = c("MOBA","MCS", "BiB","ALSPAC"),

@@ -837,6 +837,7 @@ Child's cardiometabolic health outcomes are not available
 
 ## Derive clean variables
 
+
 Pregnancy complications
 
 ```{r eval=FALSE, include=TRUE}
@@ -960,9 +961,9 @@ dat$covs_married_mother_binary[raw_dat$hhd0martst%in%c("Separated (still legally
 Parents' health
 ```{r eval=FALSE, include=TRUE}
 #Mother's asthma (lots of missingness)
-dat$covs_asthma_mother <- NA
-dat$covs_asthma_mother[raw_dat$prnprexconasthma=="Yes"]<-1
-dat$covs_asthma_mother[raw_dat$prnprexconasthma=="No"]<-0
+dat$covs_asthma_mother_binary <- NA
+dat$covs_asthma_mother_binary[raw_dat$prnprexconasthma=="Yes"]<-1
+dat$covs_asthma_mother_binary[raw_dat$prnprexconasthma=="No"]<-0
 
 #Mother's mental illness (lots of missingness)
 dat$covs_mentalhealthdisorder_mother <- NA

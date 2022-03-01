@@ -14,26 +14,75 @@ dat$est_SDM[dat$outcome_type=="binary"|dat$outcome_type=="ordinal"]<-dat$est[dat
 dat$se_SDM <- dat$se
 dat$se_SDM[dat$outcome_type=="binary"|dat$outcome_type=="ordinal"]<-dat$se[dat$outcome_type=="binary"|dat$outcome_type=="ordinal"]*0.5513
 
-ggthemr(palette="solarized",layout = "minimal", type="outer")
+#ggthemr(palette="solarized",layout = "minimal", type="outer")
 
-df <- dat[dat$regression_term=="smoking_father_firsttrim_ordinalHeavy",]
+# VOLCANO
+
+df <- dat[dat$exposure_linker=="smoking-basic-ever in pregnancy-mother-binary-self-reported or measured NA"|
+            dat$exposure_linker=="smoking-basic-ever in pregnancy-father-binary-self-reported or measured NA",]
 
 pthreshold_rank <- rank(-log10(df$p))[which.min(abs(df$p-0.05))]-1
 adj_pthreshold <- 0.05/nrow(df)
 adj_pthreshold_rank <- rank(-log10(df$p))[which.min(abs(df$p-adj_pthreshold))]-1
 
+#ggthemr_reset()
+
 p <- ggplot(df,
-            aes(Estimate=est,P=p,Outcome=outcome_term,Cohorts=cohorts,N=total_n,
-                x=est_SDM,y=rank(-log10(p)),
-           #     x=rank(est_scaled),y=rank(-log10(p)),
-                xmin=est_SDM-(1.96*se_SDM),
-                xmax=est_SDM+(1.96*se_SDM)
+            aes(Estimate=est,P=p,Outcome=outcome_linker,Cohorts=cohorts,N=total_n,
+                x=est_SDM,y=rank(-log10(p))
                 ))+
-  geom_pointrange(aes(colour=outcome_class))+
+ geom_point(aes(colour=outcome_class))+
   geom_vline(xintercept = 0,linetype="dashed",colour="grey40")+
-  geom_hline(yintercept = pthreshold_rank,linetype="dashed",colour="grey40")+
-  geom_hline(yintercept = adj_pthreshold_rank,linetype="dashed",colour="grey40")+
-  coord_cartesian(xlim=c(-1,1))
+  geom_ribbon(aes(ymin=pthreshold_rank,ymax=adj_pthreshold_rank),alpha=0.2,fill="red")+
+  geom_ribbon(aes(ymin=adj_pthreshold_rank,ymax=max(p)),alpha=0.2,fill="blue")+
+  facet_grid(.~person_exposed)+
+#  geom_hline(yintercept = pthreshold_rank,linetype="dashed",colour="grey40")+
+#  geom_hline(yintercept = adj_pthreshold_rank,linetype="dashed",colour="grey40")+
+  coord_cartesian(xlim=c(-0.75,0.75))
 
 ggplotly(p,tooltip=c("P","Estimate","Outcome","Cohorts","N"))
+
+
+
+# MANHATTAN
+
+
+create_manhattan_dfs <- function(exposureclass){
+df <- dat[dat$exposure_class==exposureclass&dat$person_exposed!="child",]
+df$exposure_dose_ordered <- factor(df$exposure_dose,ordered=T,levels=c("light","moderate","heavy"))
+df <- df[order(df$exposure_subclass,df$exposure_time,df$exposure_dose_ordered),]
+df$exposure_subclass_time_dose <- paste(df$exposure_subclass,df$exposure_time,df$exposure_dose)
+df$exposure_subclass_time_dose<-factor(df$exposure_subclass_time_dose,ordered=T,levels=unique(df$exposure_subclass_time_dose))
+df
+}
+
+smoking <- create_manhattan_dfs("smoking")
+alc <- create_manhattan_dfs("alcohol consumption")
+caf <- create_manhattan_dfs("caffeine consumption")
+sep <- create_manhattan_dfs("socioeconomic position")
+
+
+
+create_manhattan_plot <- function(df){
+adj_pthreshold <- 0.05/nrow(df)
+p <- ggplot(df,
+            aes(Estimate=est,P=p,Outcome=outcome_linker,Cohorts=cohorts,N=total_n,
+                x=exposure_subclass_time_dose,y=-log10(p)
+            ))+
+  geom_jitter(aes(colour=outcome_class),alpha=0.5)+
+  facet_grid(person_exposed~.)+
+  xlab("")+
+  theme_classic()+
+  scale_colour_brewer(palette = "Dark2")+
+  theme(axis.text.x = element_text(angle = 90,hjust=1))+
+  geom_hline(yintercept = -log10(adj_pthreshold),linetype="dashed",colour="grey40")
+p
+}
+
+smoking_p <- create_manhattan_plot(smoking)
+alc_p <- create_manhattan_plot(alc)
+caf_p <- create_manhattan_plot(caf)
+sep_p <- create_manhattan_plot(sep)
+
+
 

@@ -1,0 +1,179 @@
+---
+title: "MR"
+author: "Kayleigh Easey"
+date: "2/4/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# PRELIMINARY STEPS 
+```{r setup, include=FALSE}
+
+## Set up environment
+rm(list = ls())
+install.packages("AER")
+library(AER)
+
+#setwd("") 
+```
+
+## ALSPAC
+
+# Part 1 - LOAD AND EXPLORE DATA 
+```{r setup, include=FALSE}
+
+
+## Load data
+dat<-read_rds("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds") 
+
+## 1. Explore phenotypic and covariates data
+dim(dat)
+head(dat)
+summary(dat)
+
+# Check that there is no missing data
+sum(is.na(dat))
+
+## 2. Check the distributions of the exposure and outcome of interest
+hist(pheno_covars$bmi)
+hist(pheno_covars$crp)
+
+## 3. Log-transform the data
+table(pheno_covars$crp == 0) # Check that no values are zero for CRP. Logging zero values is to be avoided! 
+pheno_covars$lcrp <- log(pheno_covars$crp)
+hist(pheno_covars$lcrp)
+
+## 4. Explore the genetic data 
+dim(crpsnps)
+dim(bmisnps)
+head(bmisnps)
+head(crpsnps)
+
+# For ease of the analyses, merge the phenotypic/covariate and genotypic data together
+dat <- merge(crpsnps, bmisnps, by = "IID")
+dat <- merge(dat, pheno_covars, by.x = "IID", by.y = "iid")
+head(dat)
+dim(dat)
+```
+
+
+# PART 2 - Is CRP associated with BMI using conventional OLS regression? #
+```{r setup, include=FALSE}
+
+## 1. Are log-CRP and BMI associated?
+summary(lm(bmi ~ lcrp, dat))
+plot(bmi ~ lcrp, dat)
+
+## 2. Check whether log-CRP and BMI are associated with the covariables age and sex
+summary(lm(lcrp ~ age, dat))
+summary(lm(lcrp ~ sex, dat))
+summary(lm(bmi ~ age, dat))
+summary(lm(bmi ~ sex, dat))
+
+## 3. Are log-CRP and BMI associated after adjusting for age and sex?
+summary(lm(bmi ~ lcrp + age + sex, dat))
+
+```
+
+# PART 3 - Does CRP have a causal effect on BMI? #
+```{r setup, include=FALSE}
+# Could the association between log-CRP and BMI be explained by a causal effect of CRP on BMI?
+# Now we will use Mendelian randomization to explore that.
+# In your dataset, you have data on participants' genotypes for a SNP nearby the gene encoding CRP (variable: CRP)
+# We will use this genetic variant as an instrument for log-CRP in a method known as 2-stage least squares ("2SLS") regression 
+
+## 1. Is the CRP genetic variant strongly associated with log-CRP? 
+# How much variance in log-CRP can be atributed to the CRP variant? 
+summary(lm(lcrp ~ CRP, dat))
+
+## 2. Is the CRP genetic variant associated with potential confounders (age and sex) or principal components of ancestry? 
+# Why is this important?
+summary(lm(as.formula(paste("CRP ~ age + sex +", paste0("PC", 1:10 ,collapse="+"))), dat))
+
+## 3. Perform two-stage least squares (2SLS) regression 
+#  Is there any evidence that circulating CRP affects BMI?
+tsls1 <- ivreg(as.formula(paste("bmi ~ lcrp | CRP")), data=dat)
+summary(tsls1, diagnostics = T) 
+
+## 4. Do the MR results corroborate with the results from the OLS regression?
+
+## 5. Plot the results
+png("./crp_bmi.png")
+  plot(bmi ~ lcrp, dat)
+  abline(lm(bmi ~ lcrp, dat), col="red")
+  abline(tsls1, col="blue")
+dev.off()
+
+```
+
+# PART 4 - Does BMI have a causal effect on CRP?
+```{r setup, include=FALSE}
+
+
+# Could the association between log-CRP and BMI be explained by a causal effect of BMI on CRP?
+# Now we will use Mendelian randomization to explore that.
+# In your dataset, you have data on participants' genotypes for several SNPs associated with BMI 
+# Note: these SNPs are in linkage equilibrium
+
+## 1. Are the genetic variants strongly associated with BMI? 
+summary(lm(bmi ~ FTO, dat))
+summary(lm(bmi ~ MC4R, dat))
+summary(lm(bmi ~ FAIM2, dat))
+summary(lm(bmi ~ SEC16B, dat))
+
+## 2. Are any of the covariables associated with these genetic variants? What about the PCs?
+summary(lm(as.formula(paste("FTO ~ age + sex +", paste0("PC", 1:10 ,collapse="+"))), dat))
+summary(lm(as.formula(paste("MC4R ~ age + sex +", paste0("PC", 1:10 ,collapse="+"))), dat))
+summary(lm(as.formula(paste("FAIM2 ~ age + sex +", paste0("PC", 1:10 ,collapse="+"))), dat))
+summary(lm(as.formula(paste("SEC16B ~ age + sex +", paste0("PC", 1:10 ,collapse="+"))), dat))
+
+## 3. Let's generate genetic scores for BMI
+# First, reverse the coding of those genetic variants that are inversely associated with BMI (as you saw in item 1.)
+dat$FTO<-2-dat$FTO
+dat$FAIM2<-2-dat$FAIM2
+summary(lm(bmi ~ FTO, dat))
+summary(lm(bmi ~ MC4R, dat))
+summary(lm(bmi ~ FAIM2, dat))
+summary(lm(bmi ~ SEC16B, dat))
+
+# Create an unweighted genetic score for BMI including the four variants
+dat$unw_score <- dat$FAIM2 + dat$SEC16B + dat$FTO + dat$MC4R
+
+# Create a weighted genetic score for BMI including the four variants
+# Note: Beta-coefficients for BMI were obtained from Speliotes et al. 2010 Nature genetics; 42: 937-948
+# Note: Beta-coefficient showing effect per BMI-increasing allele: FTO = 0.39; MC4R = 0.23; SEC16B = 0.22; FAIM2 = 0.12 
+dat$w_score <- ((dat$FAIM2*0.12 + dat$SEC16B*0.22 + dat$FTO*0.39 + dat$MC4R*0.23)/(0.12+0.22+0.39+0.23))*4
+
+# What could be the advantage of combining multiple genetic variants into a genetic risk score?
+
+## 4. Look at the associations between the genetic scores and BMI
+summary(lm(bmi ~ unw_score, dat))
+summary(lm(bmi ~ w_score, dat))
+
+## 5. Perform two-stage least squares (2SLS) regression 
+#  Is there any evidence that BMI affects circulating CRP?
+# 2SLS regression with separate genetic variants
+tsls2 <- ivreg(as.formula(paste("lcrp ~ bmi | FTO + MC4R + FAIM2 + SEC16B")), data=dat)
+summary(tsls2, diagnostics = T) 
+
+# 2SLS regression with genetic variants combined into an unweighted score
+tsls3 <- ivreg(as.formula(paste("lcrp ~ bmi | unw_score")), data=dat)
+summary(tsls3, diagnostics = T) 
+
+# 2SLS regression with genetic variants combined into a weighted score
+tsls4 <- ivreg(as.formula(paste("lcrp ~ bmi | w_score")), data=dat)
+summary(tsls4, diagnostics = T) 
+
+## 6. How would you interpret these results?
+
+## 7. Plot the results
+png("./bmi_crp.png")
+  plot(lcrp ~ bmi, dat)
+  abline(lm(lcrp ~ bmi, dat), col="red")
+  abline(tsls4, col="blue")
+dev.off()
+
+```

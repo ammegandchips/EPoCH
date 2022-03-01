@@ -53,6 +53,7 @@ library("tidyverse")
 
 This is taken from the ALSPAC dataset created for EPoCH
 ```{r eval=TRUE, include=TRUE}
+rm(list=ls())
 dat <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds")
 
 ```
@@ -127,9 +128,13 @@ vars<-
 require(dplyr)
 require(corrplot)
 
+#file_path= "C:/Users/ke14426/EPoCH/Analysis/test.png"
+
+
 df1<-mutate_all(dat[,vars], function(x) as.numeric(x))
 cors <- cor(df1,use="pairwise.complete")
-corrplot(cors,tl.cex=0.5,method="color",tl.col="black",order="hclust",addrect=5)
+corrplot(cors,tl.cex=0.5,method="color",tl.col="black",order="hclust",addrect=5,title="ALSPAC", mar=c(0,0,2,0))
+
 
 ```
 
@@ -144,23 +149,23 @@ df1<-mutate_all(dat[,c("aln",vars)], function(x) as.numeric(x))
 df1_melt <- melt(df1[,grepl("aln|smoking|physact|caff|alco",names(df1))],id.vars = "aln")
 
 df1_melt$time <- NA
-df1_melt$time[grepl(df1_melt$variable,pattern="preconception")]<-"pre-conception"
-df1_melt$time[grepl(df1_melt$variable,pattern="firsttrim|start")]<-"first trimester"
-df1_melt$time[grepl(df1_melt$variable,pattern="secondtrim")]<-"second trimester"
-df1_melt$time[grepl(df1_melt$variable,pattern="thirdtrim")]<-"third trimester"
-df1_melt$time[grepl(df1_melt$variable,pattern="postnatal")]<-"postnatal"
-df1_melt$time <- factor(df1_melt$time,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+df1_melt$time[grepl(df1_melt$variable,pattern="preconception")]<-"Pre-conception"
+df1_melt$time[grepl(df1_melt$variable,pattern="firsttrim|start")]<-"First trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="secondtrim")]<-"Second trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="thirdtrim")]<-"Third trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="postnatal")]<-"Postnatal"
+df1_melt$time <- factor(df1_melt$time,ordered=T, levels=c("Pre-conception","First trimester","Second trimester","Third trimester","Postnatal"))
 
 df1_melt$behaviour <- NA
-df1_melt$behaviour[grepl(df1_melt$variable,pattern="caff")]<-"caffeine"
-df1_melt$behaviour[grepl(df1_melt$variable,pattern="alcohol")]<-"alcohol"
-df1_melt$behaviour[grepl(df1_melt$variable,pattern="smoking")]<-"smoking"
-df1_melt$behaviour[grepl(df1_melt$variable,pattern="physac")]<-"physical activity"
-df1_melt$behaviour <- factor(df1_melt$behaviour,ordered=T, levels=c("smoking","alcohol","caffeine","physical activity"))
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="caff")]<-"Caffeine"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="alcohol")]<-"Alcohol"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="smoking")]<-"Smoking"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="physac")]<-"Phys act"
+df1_melt$behaviour <- factor(df1_melt$behaviour,ordered=T, levels=c("Smoking","Alcohol","Caffeine","Phys act"))
 
 df1_melt$parent <- NA
-df1_melt$parent[grepl(df1_melt$variable,pattern="mother")]<-"mother"
-df1_melt$parent[grepl(df1_melt$variable,pattern="father")]<-"partner"
+df1_melt$parent[grepl(df1_melt$variable,pattern="mother")]<-"Mother"
+df1_melt$parent[grepl(df1_melt$variable,pattern="father")]<-"Partner"
 
 x <- droplevels(df1_melt[order(df1_melt$aln,df1_melt$time,df1_melt$parent,df1_melt$behaviour),])
 x<-x[is.na(x$value)==F,]
@@ -182,10 +187,15 @@ require(ggplot2)
 ggplot(dfy,aes(x=`factor(time)`,y=mean,group=`factor(initial_dose)`))+
   geom_point(aes(colour=`factor(initial_dose)`,size=n))+
   geom_path(aes(colour=`factor(initial_dose)`))+
-  #  geom_smooth(aes(colour=`factor(initial_dose)`),method="loess" )+
+ theme_set(theme_classic())+
+  #theme_bw()+
+  ggtitle("ALSPAC")+
+   theme(plot.title = element_text(hjust = 0.5))+
   facet_grid(`factor(behaviour)`~`factor(parent)`)+
   theme(axis.text.x=element_text(angle=45,hjust=1),panel.spacing.y = unit(1,"lines"))+
   xlab("")+ylab("mean level of behaviour")
+
+
 ```
 
 
@@ -195,19 +205,20 @@ ggplot(dfy,aes(x=`factor(time)`,y=mean,group=`factor(initial_dose)`))+
 
 ```{r eval=TRUE, include=TRUE}
 
-
+# Havent cleaned fully for aes as not including in paper
 require(reshape2)
 cors_lt <- cor(df1[df1$covs_partner_lives_with_mother_prenatal==1,vars[-((length(vars)-5):length(vars))]],use="pairwise.complete")
 cors_nlt <- cor(df1[df1$covs_partner_lives_with_mother_prenatal==0,vars[-((length(vars)-5):length(vars))]],use="pairwise.complete")
 cors_melt_lt <- melt(cors_lt)
-cors_melt_lt$live_together <-"parents live together"
+cors_melt_lt$live_together <-"Parents live together"
 cors_melt_nlt <- melt(cors_nlt)
-cors_melt_nlt$live_together <-"parents live apart"
+cors_melt_nlt$live_together <-"Parents live apart"
 
 cors_melt <- bind_rows(cors_melt_lt,cors_melt_nlt)
 
 ggplot(cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl("smoking|alcohol|physact|caffeine",cors_melt$Var2),],aes(x=Var1,y=Var2,fill=value,label=round(value,2)))+
   geom_tile()+
+  
   #  geom_text(colour="white")+
   theme(axis.text.x = element_text(angle = 45,hjust=1))+
   scale_fill_gradient(low="white",high="darkblue")+
@@ -223,18 +234,18 @@ ggplot(cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl(
 df7 <- cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl("smoking|alcohol|physact|caffeine",cors_melt$Var2),]
 
 df7$time1 <- NA
-df7$time1[grepl(df7$Var1,pattern="preconception")]<-"pre-conception"
-df7$time1[grepl(df7$Var1,pattern="firsttrim|start")]<-"first trimester"
-df7$time1[grepl(df7$Var1,pattern="secondtrim")]<-"second trimester"
-df7$time1[grepl(df7$Var1,pattern="thirdtrim")]<-"third trimester"
-df7$time1[grepl(df7$Var1,pattern="postnatal")]<-"postnatal"
+df7$time1[grepl(df7$Var1,pattern="preconception")]<-"Pre-concept"
+df7$time1[grepl(df7$Var1,pattern="firsttrim|start")]<-"First trim"
+df7$time1[grepl(df7$Var1,pattern="secondtrim")]<-"Second trim"
+df7$time1[grepl(df7$Var1,pattern="thirdtrim")]<-"Third trim"
+df7$time1[grepl(df7$Var1,pattern="postnatal")]<-"Postnatal"
 
 df7$time2 <- NA
-df7$time2[grepl(df7$Var2,pattern="preconception")]<-"pre-conception"
-df7$time2[grepl(df7$Var2,pattern="firsttrim|start")]<-"first trimester"
-df7$time2[grepl(df7$Var2,pattern="secondtrim")]<-"second trimester"
-df7$time2[grepl(df7$Var2,pattern="thirdtrim")]<-"third trimester"
-df7$time2[grepl(df7$Var2,pattern="postnatal")]<-"postnatal"
+df7$time2[grepl(df7$Var2,pattern="preconception")]<-"Pre-concept"
+df7$time2[grepl(df7$Var2,pattern="firsttrim|start")]<-"First trim"
+df7$time2[grepl(df7$Var2,pattern="secondtrim")]<-"Second trim"
+df7$time2[grepl(df7$Var2,pattern="thirdtrim")]<-"Third trim"
+df7$time2[grepl(df7$Var2,pattern="postnatal")]<-"Postnatal"
 df7$sametime <- ifelse(df7$time1==df7$time2,"yes","no")
 
 df7$behaviour1 <- unlist(lapply(strsplit(as.character(df7$Var1),split="_"),"[[",1))
@@ -246,58 +257,19 @@ df7$parent2 <- ifelse(grepl("mother",df7$Var2),"mother","partner")
 df7$sameparent <- ifelse(df7$parent1==df7$parent2,"yes","no")
 
 df8 <- df7[df7$sameparent=="no"&df7$samebehaviour=="yes"&df7$sametime=="yes",]
-df8$time1 <- factor(df8$time1,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+df8$time1 <- factor(df8$time1,ordered=T, levels=c("Pre-concept","First trim","Second trim","Third trim","Postnatal"))
 
 ggplot(df8,aes(x=1,y=value,fill=live_together))+
   geom_col(position = "dodge")+
+    ggtitle("ALSPAC")+
+  theme(plot.title = element_text(hjust = 0.5))+
+    labs(fill="Cohabitation status")+
   facet_grid(behaviour1~time1)
 
 
 ```
 
 
-## Parents reduction if other parent reduces behaviour also
-**Comparisons of maternal and paternal health behaviours, showing if reduced at the same time, stratified by if other parent reduced behaviour**
-
-```{r eval=TRUE, include=TRUE}
-  
-  #New variables to include:
-dat$smoking_father_change<-NA
-dat$smoking_father_change[dat$smoking_father_startpregnancy_binary==0 & (dat$smoking_father_secondtrim_binary==1|dat$smoking_father_thirdtrim_binary==1)]<-1 #increased after start preg 
-dat$smoking_father_change[dat$smoking_father_startpregnancy_binary==1 & (dat$smoking_father_secondtrim_binary==0|dat$smoking_father_thirdtrim_binary==0)]<-0 #decreased after start preg
-
-#mums decrease smoking after start preg
-dat$smoking_mother_change<-NA
-dat$smoking_mother_change[dat$smoking_mother_firsttrim_binary==0 & (dat$smoking_mother_secondtrim_binary==1|dat$smoking_mother_thirdtrim_binary==1)]<-"Increased" #increased after start preg 
-dat$smoking_mother_change[dat$smoking_mother_firsttrim_binary==1 & (dat$smoking_mother_secondtrim_binary==0|dat$smoking_mother_thirdtrim_binary==0)]<-"Decreased" #decreased after start preg
-
-
-
-
-ggplot(dat, aes(x = smoking_mother_change,y = smoking_father_change,fill=smoking_father_change==1), position = "dodge")+
-  ylim(0,125)+
-labs(fill="Partner increased behaviour")+
-labs(title = "ALSPAC")+
-  xlab("Mum increased smoking during pregnancy")
-
-
-
-## Works (back up if change above):
-ggplot(data = dat) + 
-  geom_bar(mapping = aes(x = smoking_mother_change, fill=smoking_father_change==1), position = "dodge")+
-  ylim(0,125)+
-labs(fill="Partner increased behaviour")+
-labs(title = "ALSPAC")+
-  xlab("Mum increased smoking during pregnancy")
-###
-
-?
-  dat$time1<-df7$time1
-
-df1<-mutate_all(dat[,c("aln",vars)], function(x) as.numeric(x))
-df1_melt <- melt(df1[,grepl("aln|smoking|physact|caff|alco",names(df1))],id.vars = "aln")
-
-```
 
 ###########################################################################
 
@@ -385,7 +357,7 @@ require(dplyr)
 require(corrplot)
 df1<-mutate_all(dat[,vars], function(x) as.numeric(x))
 cors <- cor(df1,use="pairwise.complete")
-corrplot(cors,tl.cex=0.5,method="color",tl.col="black",order="hclust",addrect=5)
+corrplot(cors,tl.cex=0.5,method="color",tl.col="black",order="hclust",addrect=5,title="BiB", mar=c(0,0,2,0))
 
 ```
 
@@ -400,20 +372,21 @@ require(reshape2)
 df1<-mutate_all(dat[,c("BiBMotherID",vars)], function(x) as.numeric(x))
 df1_melt <- melt(df1[,grepl("BiBMotherID|smoking|caff|alco",names(df1))],id.vars = "BiBMotherID")
 
+
 df1_melt$time <- NA
-df1_melt$time[grepl(df1_melt$variable,pattern="preconception")]<-"pre-conception"
-df1_melt$time[grepl(df1_melt$variable,pattern="firsttrim|start")]<-"first trimester"
-df1_melt$time[grepl(df1_melt$variable,pattern="secondtrim")]<-"second trimester"
-df1_melt$time[grepl(df1_melt$variable,pattern="thirdtrim")]<-"third trimester"
-df1_melt$time[grepl(df1_melt$variable,pattern="postnatal")]<-"postnatal"
-df1_melt$time <- factor(df1_melt$time,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+df1_melt$time[grepl(df1_melt$variable,pattern="preconception")]<-"Pre-conception"
+df1_melt$time[grepl(df1_melt$variable,pattern="firsttrim|start")]<-"First trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="secondtrim")]<-"Second trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="thirdtrim")]<-"Third trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="postnatal")]<-"Postnatal"
+df1_melt$time <- factor(df1_melt$time,ordered=T, levels=c("Pre-conception","First trimester","Second trimester","Third trimester","Postnatal"))
 
 df1_melt$behaviour <- NA
-df1_melt$behaviour[grepl(df1_melt$variable,pattern="caff")]<-"caffeine"
-df1_melt$behaviour[grepl(df1_melt$variable,pattern="alcohol")]<-"alcohol"
-df1_melt$behaviour[grepl(df1_melt$variable,pattern="smoking")]<-"smoking"
-#df1_melt$behaviour[grepl(df1_melt$variable,pattern="physac")]<-"physical activity"
-df1_melt$behaviour <- factor(df1_melt$behaviour,ordered=T, levels=c("smoking","alcohol","caffeine"))
+#df1_melt$behaviour[grepl(df1_melt$variable,pattern="caff")]<-"Caffeine"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="alcohol")]<-"Alcohol"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="smoking")]<-"Smoking"
+#df1_melt$behaviour[grepl(df1_melt$variable,pattern="physac")]<-"PA"
+df1_melt$behaviour <- factor(df1_melt$behaviour,ordered=T, levels=c("Smoking","Alcohol","Caffeine","PA"))
 
 df1_melt$parent <- NA
 df1_melt$parent[grepl(df1_melt$variable,pattern="mother")]<-"mother"
@@ -440,6 +413,8 @@ require(ggplot2)
 ggplot(dfy,aes(x=`factor(time)`,y=mean,group=`factor(initial_dose)`))+
   geom_point(aes(colour=`factor(initial_dose)`,size=n))+
   geom_path(aes(colour=`factor(initial_dose)`))+
+  ggtitle("BiB")+
+  theme(plot.title = element_text(hjust = 0.5))+
   #  geom_smooth(aes(colour=`factor(initial_dose)`),method="loess" )+
   facet_grid(`factor(behaviour)`~`factor(parent)`)+
   theme(axis.text.x=element_text(angle=45,hjust=1),panel.spacing.y = unit(1,"lines"))+
@@ -468,6 +443,8 @@ ggplot(cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl(
   #  geom_text(colour="white")+
   theme(axis.text.x = element_text(angle = 45,hjust=1))+
   scale_fill_gradient(low="white",high="darkblue")+
+    ggtitle("MCS")+
+  theme(plot.title = element_text(hjust = 0.5))+
   facet_grid(.~live_together)
 
 
@@ -481,18 +458,18 @@ ggplot(cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl(
 df7 <- cors_melt[grepl("smoking|alcohol|caffeine",cors_melt$Var1)&grepl("smoking|alcohol|caffeine",cors_melt$Var2),]
 
 df7$time1 <- NA
-df7$time1[grepl(df7$Var1,pattern="preconception")]<-"pre-conception"
-df7$time1[grepl(df7$Var1,pattern="firsttrim|start")]<-"first trimester"
-df7$time1[grepl(df7$Var1,pattern="secondtrim")]<-"second trimester"
-df7$time1[grepl(df7$Var1,pattern="thirdtrim")]<-"third trimester"
-df7$time1[grepl(df7$Var1,pattern="postnatal")]<-"postnatal"
+df7$time1[grepl(df7$Var1,pattern="preconception")]<-"Pre-conception"
+df7$time1[grepl(df7$Var1,pattern="firsttrim|start")]<-"First trimester"
+df7$time1[grepl(df7$Var1,pattern="secondtrim")]<-"Second trimester"
+df7$time1[grepl(df7$Var1,pattern="thirdtrim")]<-"Third trimester"
+df7$time1[grepl(df7$Var1,pattern="postnatal")]<-"Postnatal"
 
 df7$time2 <- NA
-df7$time2[grepl(df7$Var2,pattern="preconception")]<-"pre-conception"
-df7$time2[grepl(df7$Var2,pattern="firsttrim|start")]<-"first trimester"
-df7$time2[grepl(df7$Var2,pattern="secondtrim")]<-"second trimester"
-df7$time2[grepl(df7$Var2,pattern="thirdtrim")]<-"third trimester"
-df7$time2[grepl(df7$Var2,pattern="postnatal")]<-"postnatal"
+df7$time2[grepl(df7$Var2,pattern="preconception")]<-"Pre-conception"
+df7$time2[grepl(df7$Var2,pattern="firsttrim|start")]<-"First trimester"
+df7$time2[grepl(df7$Var2,pattern="secondtrim")]<-"Second trimester"
+df7$time2[grepl(df7$Var2,pattern="thirdtrim")]<-"Third trimester"
+df7$time2[grepl(df7$Var2,pattern="postnatal")]<-"Postnatal"
 df7$sametime <- ifelse(df7$time1==df7$time2,"yes","no")
 
 df7$behaviour1 <- unlist(lapply(strsplit(as.character(df7$Var1),split="_"),"[[",1))
@@ -504,23 +481,25 @@ df7$parent2 <- ifelse(grepl("mother",df7$Var2),"mother","partner")
 df7$sameparent <- ifelse(df7$parent1==df7$parent2,"yes","no")
 
 df8 <- df7[df7$sameparent=="no"&df7$samebehaviour=="yes"&df7$sametime=="yes",]
-df8$time1 <- factor(df8$time1,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+df8$time1 <- factor(df8$time1,ordered=T, levels=c("Pre-conception","First trimester","Second trimester","Third trimester","Postnatal"))
 
 ggplot(df8,aes(x=1,y=value,fill=live_together))+
   geom_col(position = "dodge")+
+  labs(fill="Cohabitation status")+
+    ggtitle("BiB")+
+  theme(plot.title = element_text(hjust = 0.5))+
   facet_grid(behaviour1~time1)
-
 
 ```
 
 ##############################################################
 
 # MCS {.tabset}
-rm(list=ls())
 
 ## Load data
 This is taken from the MCS dataset created for EPoCH
 ```{r eval=TRUE, include=TRUE}
+rm(list=ls())
 dat<-readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rds")
 
 ```
@@ -599,7 +578,7 @@ require(corrplot)
 
 df1<-mutate_all(dat[,vars], function(x) as.numeric(x))
 cors <- cor(df1,use="pairwise.complete")
-corrplot(cors,tl.cex=0.5,method="color",tl.col="black",order="hclust",addrect=5)
+corrplot(cors,tl.cex=0.5,method="color",tl.col="black",order="hclust",addrect=5,title="MCS", mar=c(0,0,2,0))
 
 
 
@@ -616,23 +595,23 @@ df1<-mutate_all(dat[,c("mcsid",vars)], function(x) as.numeric(x))
 df1_melt <- melt(df1[,grepl("mcsid|smoking|physact|caff|alco",names(df1))],id.vars = "mcsid")
 
 df1_melt$time <- NA
-df1_melt$time[grepl(df1_melt$variable,pattern="preconception")]<-"pre-conception"
-df1_melt$time[grepl(df1_melt$variable,pattern="firsttrim|start")]<-"first trimester"
-df1_melt$time[grepl(df1_melt$variable,pattern="secondtrim")]<-"second trimester"
-df1_melt$time[grepl(df1_melt$variable,pattern="thirdtrim")]<-"third trimester"
-df1_melt$time[grepl(df1_melt$variable,pattern="postnatal")]<-"postnatal"
-df1_melt$time <- factor(df1_melt$time,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+df1_melt$time[grepl(df1_melt$variable,pattern="preconception")]<-"Pre-conception"
+df1_melt$time[grepl(df1_melt$variable,pattern="firsttrim|start")]<-"First trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="secondtrim")]<-"Second trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="thirdtrim")]<-"Third trimester"
+df1_melt$time[grepl(df1_melt$variable,pattern="postnatal")]<-"Postnatal"
+df1_melt$time <- factor(df1_melt$time,ordered=T, levels=c("Pre-conception","First trimester","Second trimester","Third trimester","Postnatal"))
 
 df1_melt$behaviour <- NA
 #df1_melt$behaviour[grepl(df1_melt$variable,pattern="caff")]<-"caffeine"
-df1_melt$behaviour[grepl(df1_melt$variable,pattern="alcohol")]<-"alcohol"
-df1_melt$behaviour[grepl(df1_melt$variable,pattern="smoking")]<-"smoking"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="alcohol")]<-"Alcohol"
+df1_melt$behaviour[grepl(df1_melt$variable,pattern="smoking")]<-"Smoking"
 #df1_melt$behaviour[grepl(df1_melt$variable,pattern="physac")]<-"physical activity"
-df1_melt$behaviour <- factor(df1_melt$behaviour,ordered=T, levels=c("smoking","alcohol","caffeine","physical activity"))
+df1_melt$behaviour <- factor(df1_melt$behaviour,ordered=T, levels=c("Smoking","Alcohol","Caffeine","Physical activity"))
 
 df1_melt$parent <- NA
-df1_melt$parent[grepl(df1_melt$variable,pattern="mother")]<-"mother"
-df1_melt$parent[grepl(df1_melt$variable,pattern="father")]<-"partner"
+df1_melt$parent[grepl(df1_melt$variable,pattern="mother")]<-"Mother"
+df1_melt$parent[grepl(df1_melt$variable,pattern="father")]<-"Partner"
 
 x <- droplevels(df1_melt[order(df1_melt$mcsid,df1_melt$time,df1_melt$parent,df1_melt$behaviour),])
 x<-x[is.na(x$value)==F,]
@@ -655,6 +634,8 @@ ggplot(dfy,aes(x=`factor(time)`,y=mean,group=`factor(initial_dose)`))+
   geom_point(aes(colour=`factor(initial_dose)`,size=n))+
   geom_path(aes(colour=`factor(initial_dose)`))+
   #  geom_smooth(aes(colour=`factor(initial_dose)`),method="loess" )+
+   ggtitle("MCS")+
+  theme(plot.title = element_text(hjust = 0.5))+
   facet_grid(`factor(behaviour)`~`factor(parent)`)+
   theme(axis.text.x=element_text(angle=45,hjust=1),panel.spacing.y = unit(1,"lines"))+
   xlab("")+ylab("mean level of behaviour")
@@ -682,6 +663,8 @@ ggplot(cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl(
   #  geom_text(colour="white")+
   theme(axis.text.x = element_text(angle = 45,hjust=1))+
   scale_fill_gradient(low="white",high="darkblue")+
+    ggtitle("MCS")+
+  theme(plot.title = element_text(hjust = 0.5))+
   facet_grid(.~live_together)
 
 
@@ -695,18 +678,18 @@ ggplot(cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl(
 df7 <- cors_melt[grepl("smoking|alcohol|physact|caffeine",cors_melt$Var1)&grepl("smoking|alcohol|physact|caffeine",cors_melt$Var2),]
 
 df7$time1 <- NA
-df7$time1[grepl(df7$Var1,pattern="preconception")]<-"pre-conception"
-df7$time1[grepl(df7$Var1,pattern="firsttrim|start")]<-"first trimester"
-df7$time1[grepl(df7$Var1,pattern="secondtrim")]<-"second trimester"
-df7$time1[grepl(df7$Var1,pattern="thirdtrim")]<-"third trimester"
-df7$time1[grepl(df7$Var1,pattern="postnatal")]<-"postnatal"
+df7$time1[grepl(df7$Var1,pattern="preconception")]<-"Pre-conception"
+df7$time1[grepl(df7$Var1,pattern="firsttrim|start")]<-"First trimester"
+df7$time1[grepl(df7$Var1,pattern="secondtrim")]<-"Second trimester"
+df7$time1[grepl(df7$Var1,pattern="thirdtrim")]<-"Third trimester"
+df7$time1[grepl(df7$Var1,pattern="postnatal")]<-"Postnatal"
 
 df7$time2 <- NA
-df7$time2[grepl(df7$Var2,pattern="preconception")]<-"pre-conception"
-df7$time2[grepl(df7$Var2,pattern="firsttrim|start")]<-"first trimester"
-df7$time2[grepl(df7$Var2,pattern="secondtrim")]<-"second trimester"
-df7$time2[grepl(df7$Var2,pattern="thirdtrim")]<-"third trimester"
-df7$time2[grepl(df7$Var2,pattern="postnatal")]<-"postnatal"
+df7$time2[grepl(df7$Var2,pattern="preconception")]<-"Pre-conception"
+df7$time2[grepl(df7$Var2,pattern="firsttrim|start")]<-"First trimester"
+df7$time2[grepl(df7$Var2,pattern="secondtrim")]<-"Second trimester"
+df7$time2[grepl(df7$Var2,pattern="thirdtrim")]<-"Third trimester"
+df7$time2[grepl(df7$Var2,pattern="postnatal")]<-"Postnatal"
 df7$sametime <- ifelse(df7$time1==df7$time2,"yes","no")
 
 df7$behaviour1 <- unlist(lapply(strsplit(as.character(df7$Var1),split="_"),"[[",1))
@@ -718,13 +701,15 @@ df7$parent2 <- ifelse(grepl("mother",df7$Var2),"mother","partner")
 df7$sameparent <- ifelse(df7$parent1==df7$parent2,"yes","no")
 
 df8 <- df7[df7$sameparent=="no"&df7$samebehaviour=="yes"&df7$sametime=="yes",]
-df8$time1 <- factor(df8$time1,ordered=T, levels=c("pre-conception","first trimester","second trimester","third trimester","postnatal"))
+df8$time1 <- factor(df8$time1,ordered=T, levels=c("Pre-conception","First trimester","Second trimester","Third trimester","Postnatal"))
 
 ggplot(df8,aes(x=1,y=value,fill=live_together))+
   geom_col(position = "dodge")+
+    ggtitle("MCS")+
+    labs(fill="Cohabitation status")+
+  theme(plot.title = element_text(hjust = 0.5))+
   facet_grid(behaviour1~time1)
 
 
 ```
-
 
