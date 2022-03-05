@@ -1,3 +1,5 @@
+## NEED TO SORT OUT THE AUTISM VARIABLES STILL
+
 # Specify classes and other information for each exposure/outcome 
 
 ## exposure class
@@ -44,11 +46,11 @@ key$exposure_time[grep(key$exposure,pattern="_pa_")]<-"physical activity"
 ## person exposed
 key$person_exposed <- "child"
 key$person_exposed[grep(key$exposure,pattern="mother")]<-"mother"
-key$person_exposed[grep(key$exposure,pattern="father")]<-"father"
+key$person_exposed[grep(key$exposure,pattern="father")]<-"partner"
  
 ## source of information on paternal data
 key$exposure_source <- "self-reported or measured"
-key$exposure_source[grep(key$exposure,pattern="mreport")]<-"paternal data reported by the child's mother"
+key$exposure_source[grep(key$exposure,pattern="mreport")]<-"partner data reported by the child's mother"
  
 ## type of exposure variable
 key$exposure_type <- "numerical"
@@ -87,7 +89,7 @@ key$outcome_subclass1[key$outcome %in% headcirc_outcomes] <-"head circumference"
 key$outcome_subclass1[key$outcome %in% fatmass_outcomes] <-"fat mass"
 
 key$outcome_subclass1[key$outcome %in% depression_outcomes] <-"depressive symptoms"
-key$outcome_subclass1[key$outcome %in% sdq_outcomes] <-"strengths and difficulties"
+key$outcome_subclass1[key$outcome %in% c(sdq_outcomes,aggression_outcomes)] <-"behaviours"
 key$outcome_subclass1[key$outcome %in% cognitive_outcomes] <-"cognitive ability"
 key$outcome_subclass1[key$outcome %in% social_outcomes] <-"autistic traits"
 key$outcome_subclass1[key$outcome %in% cognitive_schoolreadiness_outcomes] <-"school readiness"
@@ -133,8 +135,8 @@ key$outcome_subclass2[key$outcome %in% conduct_outcomes] <-"conduct problems"
 key$outcome_subclass2[key$outcome %in% peer_outcomes] <-"peer relationship problems"
 key$outcome_subclass2[key$outcome %in% prosocial_outcomes] <-"prosocial behaviour"
 key$outcome_subclass2[key$outcome %in% totalsdq_outcomes] <-"total difficulties"
-key$outcome_subclass2[key$outcome %in% internalising_outcomes] <-"internalising problems"
-key$outcome_subclass2[key$outcome %in% externalising_outcomes] <-"externalising problems"
+key$outcome_subclass2[key$outcome %in% internalising_outcomes] <-"internalising traits"
+key$outcome_subclass2[key$outcome %in% externalising_outcomes] <-"externalising traits"
 
 key$outcome_subclass2[key$outcome %in% cognitive_performance_outcomes] <-"performance intelligence"
 key$outcome_subclass2[key$outcome %in% cognitive_verbal_outcomes] <-"verbal intelligence"

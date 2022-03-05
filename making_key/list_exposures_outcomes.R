@@ -1,4 +1,4 @@
-# Remove prs sensitivity analysis names if neccessary
+# Remove prs sensitivity analysis names if necessary
 if(cohort=="ALSPAC"){
 dat <- dat[,-grep("sens_exc",colnames(dat))]
 }
@@ -7,7 +7,7 @@ dat <- dat[,-grep("sens_exc",colnames(dat))]
 
 sep_exposures <- names(dat)[grep(names(dat),pattern="highestlowest")]
 smoking_exposures <- names(dat)[grep(names(dat),pattern="smoking_m|smoking_f|_smoking_")]
-prs_smoking_exposures <- names(dat)[grep(names(dat),pattern="mother_smoking|child_smoking")]
+prs_smoking_exposures <- names(dat)[grep(names(dat),pattern="mother_smoking|child_smoking|father_smoking")]
 alcohol_exposures <- names(dat)[grep(names(dat),pattern="alcohol_m|alcohol_f|score_child_alcohol|score_mother_alcohol")]
 prs_alcohol_exposures <- names(dat)[grep(names(dat),pattern="mother_alcohol|child_alcohol")]
 binge_alcohol_exposures <-alcohol_exposures[grep(alcohol_exposures,pattern="binge")]
@@ -67,10 +67,11 @@ totalsdq_outcomes <-names(dat)[grep(names(dat),pattern="neuro_totalsdq")]
 internalising_outcomes <-names(dat)[grep(names(dat),pattern="neuro_internalising")]
 externalising_outcomes <-names(dat)[grep(names(dat),pattern="neuro_externalising")]
 sdq_outcomes <- c(hyperactivity_outcomes,emotional_outcomes,conduct_outcomes,peer_outcomes,prosocial_outcomes,totalsdq_outcomes,internalising_outcomes,externalising_outcomes)
-social_outcomes <-names(dat)[grep(names(dat),pattern="neuro_scdc|csbq")]
+autism_outcomes <-names(dat)[grep(names(dat),pattern="neuro_scdc|csbq|autism")]
 scdc_outcomes <-names(dat)[grep(names(dat),pattern="neuro_scdc")] 
 csbqindependence_outcomes <-names(dat)[grep(names(dat),pattern="csbqindep")] 
 csbqemotional_outcomes <-names(dat)[grep(names(dat),pattern="csbqemo")] 
+aggression_outcomes <-names(dat)[grep(names(dat),pattern="aggression")] 
 
 cognitive_outcomes <-names(dat)[grep(names(dat),pattern="neuro_cognition")]
 cognitive_performance_outcomes <-names(dat)[grep(names(dat),pattern="neuro_cognition_performance|spatialawareness|problemsolving")]
