@@ -27,7 +27,7 @@ adj_pthreshold_rank <- rank(-log10(df$p))[which.min(abs(df$p-adj_pthreshold))]-1
 
 #ggthemr_reset()
 
-p <- ggplot(df,
+Plot <- ggplot(df,
             aes(Estimate=est,P=p,Outcome=outcome_linker,Cohorts=cohorts,N=total_n,
                 x=est_SDM,y=rank(-log10(p))
                 ))+
@@ -40,7 +40,7 @@ p <- ggplot(df,
 #  geom_hline(yintercept = adj_pthreshold_rank,linetype="dashed",colour="grey40")+
   coord_cartesian(xlim=c(-0.75,0.75))
 
-ggplotly(p,tooltip=c("P","Estimate","Outcome","Cohorts","N"))
+ggplotly(Plot,tooltip=c("P","Estimate","Outcome","Cohorts","N"))
 
 
 
