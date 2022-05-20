@@ -14,8 +14,10 @@ tabPanel(title="Plot by outcome",value="tab3",
              textOutput('Text3'),
              plotlyOutput("outcomeManhattanPlot", width = "1500px", height = "800px")
            ),
-           tabPanel("Volcano")
-         )
+           tabPanel("Volcano",
+                    plotlyOutput("outcomeVolcanoPlot", width = "1000px", height = "500px")
+           )
+)
 )
 )
 )
