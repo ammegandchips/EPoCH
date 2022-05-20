@@ -14,7 +14,9 @@ tabPanel(title="Plot by exposure",value="tab2",
              textOutput('Text2'),
              plotlyOutput("exposureManhattanPlot", width = "1500px", height = "800px")
                ),
-             tabPanel("Volcano")
+             tabPanel("Volcano",
+                      plotlyOutput("exposureVolcanoPlot", width = "1000px", height = "500px")
+                      )
            )
          )
 )
