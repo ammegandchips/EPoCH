@@ -1,0 +1,13 @@
+name: EpoCH
+title: EpoCH
+username:
+account: gs8094
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6272495
+bundleId: 5927010
+url: https://gs8094.shinyapps.io/EPoCH/
+when: 1653053997.89373
+lastSyncTime: 1653053997.89373
+asMultiple: FALSE
+asStatic: FALSE
