@@ -1,4 +1,4 @@
-tabPanel(title="Exposure Manhattans",value="tab2",
+tabPanel(title="Plot by exposure",value="tab2",
          # Side bar
          sidebarLayout(
            sidebarPanel(
@@ -9,8 +9,13 @@ tabPanel(title="Exposure Manhattans",value="tab2",
            ),
            # Main panel
            mainPanel(
+             tabsetPanel(
+               tabPanel("Manhattan",
              textOutput('Text2'),
              plotlyOutput("exposureManhattanPlot", width = "1500px", height = "800px")
+               ),
+             tabPanel("Volcano")
            )
          )
+)
 )

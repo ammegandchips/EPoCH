@@ -1,4 +1,4 @@
-tabPanel(title="Outcome Manhattans",value="tab3",
+tabPanel(title="Plot by outcome",value="tab3",
          # Side bar
          sidebarLayout(
            sidebarPanel(
@@ -9,8 +9,13 @@ tabPanel(title="Outcome Manhattans",value="tab3",
            ),
            # Main panel
            mainPanel(
+             tabsetPanel(
+               tabPanel("Manhattan",
              textOutput('Text3'),
              plotlyOutput("outcomeManhattanPlot", width = "1500px", height = "800px")
-           )
+           ),
+           tabPanel("Volcano")
          )
+)
+)
 )
