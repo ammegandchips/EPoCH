@@ -3,6 +3,7 @@ library(tidyverse)
 library(plotly)
 library(shinycssloaders)
 library(shinyjs)
+library(shinyTree)
 
 #Generate a dataframe matching the model names to their IDs (essentially "Model 1a" to "model1a" etc)
 df_models <- data.frame(name=paste0("Model ",as.vector(outer(1:4, letters[1:3], paste0))),
