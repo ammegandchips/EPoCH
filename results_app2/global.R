@@ -148,3 +148,28 @@ create_outcome_volcano_plot <- function(df){
     geom_hline(yintercept = adj_pthreshold_rank,linetype="dashed",colour="red")
   ggplotly(Plot,tooltip=c("P","Estimate","Outcome","Exposure","Cohorts","N"))
 }
+
+#######################
+# Coef plot functions #
+#######################
+
+# output$expCoefPlot <- renderPlotly({
+#   exposures <- bind_rows(res_mod1(),
+#                          res_mod2(),
+#                          res_mod3(),
+#                          res_mod4())
+#   exposures <- exposures[,c(1,2,4,3,5,6,7,8)]
+#   exposure_linkers <- apply(exposures[,1:6],1,paste0,collapse="-")
+#   exposure_linkers <- sapply(1:4,function(i) paste(unlist(exposure_linkers)[i],unlist(exposures[i,7])))
+#   df1 <- key[which(key$exposure_linker==exposure_linkers[1]&key$model==exposures$model[1]),]
+#   df2 <- key[which(key$exposure_linker==exposure_linkers[2]&key$model==exposures$model[2]),]
+#   df3 <- key[which(key$exposure_linker==exposure_linkers[3]&key$model==exposures$model[3]),]
+#   df4 <- key[which(key$exposure_linker==exposure_linkers[4]&key$model==exposures$model[4]),]
+#   df <- list(df1,df2,df3,df4)
+#   names(df) <-c("var1","var2","var3","var4")
+#   df <- bind_rows(df,.id="Variable")
+#   df <- df[which(df$outcome_class==input$out_class_expcoef),]
+#   ggplotly(ggplot(df,aes(x=est,y=outcome_linker))+geom_point()+facet_grid(.~Variable))
+#   
+# })
+# 
