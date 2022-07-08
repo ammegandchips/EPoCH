@@ -22,8 +22,6 @@ loaded_data <- eventReactive(input$load_results,{
                      choices = loaded_data$out_classes)
   updateRadioButtons(session, "n_comparisons",
                      choices = 1:4)
-  updateRadioButtons(session, "out_class_expcoef",
-                     choices = loaded_data$out_classes)
   # The message about loading the data will be removed
   removeModal()
   # And loaded_data will be returned for use elsewhere in the app

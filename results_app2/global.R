@@ -153,23 +153,84 @@ create_outcome_volcano_plot <- function(df){
 # Coef plot functions #
 #######################
 
-# output$expCoefPlot <- renderPlotly({
-#   exposures <- bind_rows(res_mod1(),
-#                          res_mod2(),
-#                          res_mod3(),
-#                          res_mod4())
-#   exposures <- exposures[,c(1,2,4,3,5,6,7,8)]
-#   exposure_linkers <- apply(exposures[,1:6],1,paste0,collapse="-")
-#   exposure_linkers <- sapply(1:4,function(i) paste(unlist(exposure_linkers)[i],unlist(exposures[i,7])))
-#   df1 <- key[which(key$exposure_linker==exposure_linkers[1]&key$model==exposures$model[1]),]
-#   df2 <- key[which(key$exposure_linker==exposure_linkers[2]&key$model==exposures$model[2]),]
-#   df3 <- key[which(key$exposure_linker==exposure_linkers[3]&key$model==exposures$model[3]),]
-#   df4 <- key[which(key$exposure_linker==exposure_linkers[4]&key$model==exposures$model[4]),]
-#   df <- list(df1,df2,df3,df4)
-#   names(df) <-c("var1","var2","var3","var4")
-#   df <- bind_rows(df,.id="Variable")
-#   df <- df[which(df$outcome_class==input$out_class_expcoef),]
-#   ggplotly(ggplot(df,aes(x=est,y=outcome_linker))+geom_point()+facet_grid(.~Variable))
-#   
-# })
-# 
+
+create_coef_plot_faceted<- function(dat){
+  
+  dat <- dat[order(dat$comparison,dat$est),]
+  dat$outcome_text <- unlist(lapply(strsplit(dat$outcome_linker,split="-"),function(x) paste(x[3:4],collapse = " - ")))
+  substr(dat$outcome_text,1,1) <- toupper(substr(dat$outcome_text,1,1))
+  dat$outcome_text <- factor(dat$outcome_text,ordered=T,levels=unique(dat$outcome_text))
+  
+  dat$lcl <- dat$est-(1.96 * dat$se)
+  dat$ucl <- dat$est+(1.96 * dat$se)
+  
+  intercept_n <- 0
+  
+  if("binary" %in% dat$outcome_type){
+    dat[,grep(colnames(dat),pattern="est|ucl|lcl")] <- exp(dat[,grep(colnames(dat),pattern="est|ucl|lcl")])
+    intercept_n <- 1
+  }
+  
+  coef_plot <- ggplot(dat,aes(x=est,y=outcome_text,xmin=lcl,xmax=ucl))+
+    geom_vline(xintercept = intercept_n,colour="grey36")+
+    geom_pointrange()+
+    facet_grid(outcome_text~comparison,scales="free",space="free_y")+
+    
+    xlab("Std Dev. Difference")+ylab("")+
+    theme_minimal()+
+    theme(strip.text.y= element_text(colour=NA,size=0),
+          strip.text.x = element_text(colour = "white",size=10),
+          panel.spacing = unit(0.1, "lines"),
+          panel.grid=element_blank(),
+          panel.background = element_rect(fill="grey90",colour="white"),
+          strip.background = element_rect(fill="grey36",colour = "white"))
+  
+  
+  if("binary" %in% dat$outcome_type){
+    coef_plot <- coef_plot + xlab("Odds Ratio")
+  }
+  
+  ggplotly(coef_plot)
+}
+
+
+ 
+
+create_coef_plot_same_axis<- function(dat){
+  
+  dat <- dat[order(dat$comparison,dat$est),]
+  dat$outcome_text <- unlist(lapply(strsplit(dat$outcome_linker,split="-"),function(x) paste(x[3:4],collapse = " - ")))
+  substr(dat$outcome_text,1,1) <- toupper(substr(dat$outcome_text,1,1))
+  dat$outcome_text <- factor(dat$outcome_text,ordered=T,levels=unique(dat$outcome_text))
+  
+  dat$lcl <- dat$est-(1.96 * dat$se)
+  dat$ucl <- dat$est+(1.96 * dat$se)
+  
+  intercept_n <- 0
+  
+  if("binary" %in% dat$outcome_type){
+    dat[,grep(colnames(dat),pattern="est|ucl|lcl")] <- exp(dat[,grep(colnames(dat),pattern="est|ucl|lcl")])
+    intercept_n <- 1
+  }
+  
+  coef_plot <- ggplot(dat,aes(x=est,y=outcome_text,xmin=lcl,xmax=ucl))+
+    geom_vline(xintercept = intercept_n,colour="grey36")+
+    geom_pointrange(aes(shape=comparison,colour=comparison),position = position_dodge(1))+
+    facet_grid(outcome_text~.,scales="free",space="free_y")+
+  
+  xlab("Std Dev. Difference")+ylab("")+
+    theme_minimal()+
+    theme(strip.text.y= element_blank(),
+          strip.text.x = element_text(colour = "white",size=10),
+          panel.spacing = unit(0.1, "lines"),
+          panel.grid=element_blank(),
+          panel.background = element_rect(fill="grey90",colour="white"),
+          strip.background = element_rect(fill="grey36",colour = "white"))
+  
+  
+  if("binary" %in% dat$outcome_type){
+    coef_plot <- coef_plot + xlab("Odds Ratio")
+  }
+  
+  ggplotly(coef_plot)
+}

@@ -2,6 +2,44 @@
 # Outcome radio buttons are defined under tab1_server_home.R #
 ##############################################################
 
+##################
+# Outcome trees  #
+##################
+
+outcome_hierarchy <- c("outcome_class", "outcome_type")
+output$outcome_tree <- renderTree({
+  df <- loaded_data()$all_res[,outcome_hierarchy]
+  outcome_tree <- dfToTree(df, outcome_hierarchy)
+  #shiny tree must have a selected element to return the tree in input
+  attr(outcome_tree[[1]],"stselected") <- TRUE
+  outcome_tree
+})
+
+outcome_selected_slice<- reactive({
+  if (input$load_results==1){
+      lapply(get_selected(input$outcome_tree,format="slices"),function(node){treeToDf(node,outcome_hierarchy)})
+    } else{
+      "None"
+    }
+})
+
+output$outcome_message <- renderText({
+  print(outcome_selected_slice()[[1]])
+  ifelse(ncol(outcome_selected_slice()[[1]])<2,
+         "Select more sub-classes for outcome (follow the branch all the way to the end)",
+         "")
+})
+
+all_selected_outcomes <- reactive({
+  outcome_type <- outcome_selected_slice()[[1]][1]
+  outcome_class <- outcome_selected_slice()[[1]][2]
+  c(outcome_type,outcome_class)
+})
+
+output$all_selected_outcomes_text <-renderText({
+  paste(all_selected_outcomes())
+})
+
 ###########################
 # Generate exposure trees #
 ###########################
@@ -185,11 +223,10 @@ observeEvent(input$tab4GoB,{
         print(tmp_list)
         #if at least one of the trees is incomplete, an error message is generated
           if(TRUE %in% tmp_list){
-          showModal(modalDialog("You need to select more nodes of the tree(s)"))
+          showModal(modalDialog("You need to select more nodes of the exposure tree(s)"))
           reset("tab4GoB")
-  ## but if that's all ok, they get a message saying that the visualisations are being generated...
+  ## but if that's all ok, the plots are generated...
   }else{
-    showModal(modalDialog("Visualisations are shown on the next tab"))
     ## then the visualisations appear...
     output$CoefficientPlot <- renderPlotly({
       df <- all_selected_exposures()
@@ -217,17 +254,20 @@ observeEvent(input$tab4GoB,{
       names(dat) <- paste("Comparison",1:length(exposure_linkers))
       dat<-bind_rows(dat,.id="comparison")
       print(dim(dat))
-      dat <- dat[dat$outcome_class==input$out_class_expcoef,]
+      outcome_class_type <- all_selected_outcomes()
+      dat <- dat[which(dat$outcome_class==outcome_class_type[2] & dat$outcome_type==outcome_class_type[1]),]
       print(dim(dat))
       print(head(dat))
       print(table(dat$comparison))
-      dat$lcl <- dat$est-(1.96 * dat$se)
-      dat$ucl <- dat$est+(1.96 * dat$se)
-      coef_plot <- ggplot(dat,aes(x=est,y=outcome_linker,xmin=lcl,xmax=ucl))+
-        geom_pointrange()+
-        facet_grid(.~comparison)
-      ggplotly(coef_plot)
+      if(input$sameordifferentaxis=="Different"){
+      create_coef_plot_faceted(dat)
+      }else{
+      if(input$sameordifferentaxis=="Same"){
+        create_coef_plot_same_axis(dat)
+      }
+      }
       })
+    reset("tab4GoB")
   }
       }
     }
