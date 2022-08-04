@@ -60,7 +60,7 @@ key$outcome_time <- NA
 key$outcome_type <- NA
 source_url(paste0(location_of_extra_functions,"specify_classes.R?raw=TRUE"))
 
-# define model 1a covariates (age and sex of child, + ethnicity of parent + genetic principal components if exposure is PRS)
+# define model 1a covariates (age and sex of child, + ethnicity of parent + genetic principal components if exposure is PRS - and batch variables etc if cohort==Moba)
 
 print("defining model 1a covariates...")
 
@@ -85,7 +85,7 @@ key$child_age_covariates[grep(key$outcome,pattern="_sds")] <-NA # if outcome is 
 
 key$covariates_model1a <- paste(key$covariates_model1a,key$child_age_covariates,sep=",")
 
-## if exposure is a PRS, add the genetic PCs
+## if exposure is a PRS, add the genetic PCs for model 1
 key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","snps")&key$person_exposed=="child")]<-
   paste0(key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","snps")&key$person_exposed=="child")],
          ",",paste0(names(dat)[grep(names(dat),pattern="childpc")],collapse=","))
@@ -93,6 +93,10 @@ key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","
 key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","snps")&key$person_exposed=="mother")]<-
   paste0(key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","snps")&key$person_exposed=="mother")],
          ",",paste0(names(dat)[grep(names(dat),pattern="mumpc")],collapse=","))
+
+key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","snps")&key$person_exposed=="father")]<-
+  paste0(key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score","snps")&key$person_exposed=="father")],
+         ",",paste0(names(dat)[grep(names(dat),pattern="dadpc")],collapse=","))
 
 ## if exposure is NOT a PRS, add ethnicity of exposed parent
 
@@ -113,7 +117,7 @@ print("defining model 2a covariates...")
 ## plus, where necessary, exposed parent's health/disease
   ### where the exposure is smoking and the outcome is asthma/wheeze, additional adjustment for exposed parent's asthma (to control for genetic inheritance of asthma)
   ### where the outcome is psychosocial, additional adjustment for exposed parent's mental health
-## where the exposure is a PRS, model 1a and 1b will suffice
+## where the exposure is a PRS, models 1 and 4 will suffice
 
 key$basic_covariates <- NA
 key$other_parents_covariates <- NA
@@ -135,6 +139,7 @@ key$covariates_model2a[key$exposure_subclass=="polygenic risk score"]<-NA
 
 # define model 3a covariates (2a + exposure in previous timepoints where necessary)
 ## e.g. if the exposure is third trimester smoking, adjust for 1st and 2nd trimester smoking
+## where the exposure is a PRS, models 1 and 4 will suffice
 
 print("defining model 3a covariates...")
 
@@ -151,15 +156,18 @@ key$covariates_model3a <- apply(key[,c("covariates_model2a","previous_exposure_t
 key$covariates_model3a[key$exposure_subclass=="polygenic risk score"]<-NA
 
 # define model 4a covariates (2a + possible mediators: gest age, birthweight, child passive smoke before 2, child caffeine before 2, child alcohol before 2)
+## if exposure is PRS, take covariates for 1a and additionally adjust for child's PRS
 print("defining model 4a covariates...")
 
 key$potential_mediators<-NA
 source_url(paste0(location_of_extra_functions,"define_potential_mediators.R?raw=TRUE"))
 
 key$covariates_model4a <- NA
+
+key$covariates_model4a[key$exposure_subclass=="polygenic risk score"]<-key$covariates_model1a[key$exposure_subclass=="polygenic risk score"]
+
 key$covariates_model4a <- apply(key[,c("covariates_model2a","potential_mediators")],1,function(x) paste(na.omit(x),collapse=","))
 
-key$covariates_model4a[key$exposure_subclass=="polygenic risk score"]<-NA
 
 # define model 1b/2b/3b/4b covariates (1a/2a/3a/4a + other parent's exposure + other parent's covariates)
 

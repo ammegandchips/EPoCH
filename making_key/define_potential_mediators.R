@@ -1,4 +1,4 @@
-# define potential mediators (gestage, birthweight, passive smoke before 2, caffeine before 2, alcohol before 2)
+# define potential mediators (gestage, birthweight, passive smoke before 2, caffeine before 2, alcohol before 2, child's PRS where exposure == PRS)
 
 # gestational age for everything apart from sga and lga (which are already adjusted for ga)
 key$potential_mediators_ga<-NA
@@ -23,6 +23,11 @@ key$potential_mediators_ca[-which((key$exposure_class%in%c("alcohol consumption"
 #alcohol consumption before 2 for outcomes beyond birth (i.e. anything apart from birth body size outcomes and cord measures)
 key$potential_mediators_al<-NA
 key$potential_mediators_al[-which((key$exposure_class%in%c("caffeine consumption","smoking","physical activity"))|(key$outcome_time=="at birth"&key$outcome%in%c(anthro_outcomes,cardio_outcomes)))]<-"covs_alcohol_child_before2_binary"
+
+#child's prs
+key$potential_mediators_prs<-NA
+key$potential_mediators_prs[which(key$exposure_subclass%in%c("polygenic risk score"))]<-paste0()
+
 
 key$potential_mediators <- apply(key[,c("potential_mediators_ga","potential_mediators_bw","potential_mediators_ps","potential_mediators_ca","potential_mediators_al")],1,function(x) paste(na.omit(x),collapse=","))
 key$potential_mediators[key$potential_mediators==""]<-NA

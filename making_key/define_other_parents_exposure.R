@@ -6,8 +6,8 @@ select_other_parents_exposure <- function(expclass, exptime, expparent, exptype,
     res<-NA
   }else{
     if(expsubclass=="polygenic risk score"){
-      adjustment_person <- ifelse(expparent=="mother","child","mother")
-      res <- unique(key$exposure[key$person_exposed==adjustment_person&key$exposure_class==expclass&key$exposure_time==exptime])
+      adjustment_person <- ifelse(expparent=="mother",c("child","father"),c("child","mother"))
+      res <- unique(key$exposure[key$person_exposed%in%adjustment_person&key$exposure_class==expclass&key$exposure_time==exptime])
     }else{
       
       adjustment_parent <- ifelse(expparent=="mother","father","mother")
