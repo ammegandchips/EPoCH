@@ -1697,12 +1697,16 @@ dat$physact_mother_postnatal_ordinal[dat$g762>=6]<-"Heavy" #6-7 days per week
 dat$physact_mother_postnatal_ordinal<-factor(dat$physact_mother_postnatal_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
 
 ##### DIETARY EXPOSURES
-source("/Users/gs8094/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/cohorts/alspac/gen_med_diet_data.R")
+#source("/Users/gs8094/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/cohorts/alspac/gen_med_diet_data.R")
+source("~/Library/CloudStorage/OneDrive-SharedLibraries-UniversityofBristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/cohorts/alspac/gen_med_diet_data.R")
+require(reshape)
 med_diet_data <- gen_med_diet_data()
 dat <- left_join(dat,med_diet_data,by=c("aln","qlet"),all.x=T)
 
 ##### GENETIC DATA
-source("/Users/gs8094/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/cohorts/alspac/gen_genetic_data.R")
+#source("/Users/gs8094/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/cohorts/alspac/gen_genetic_data.R")
+source("~/Library/CloudStorage/OneDrive-SharedLibraries-UniversityofBristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/cohorts/alspac/gen_genetic_data.R")
+
 genetic_data <- gen_genetic_data()
 dat <- left_join(dat,genetic_data,by=c("aln","qlet"),all.x=T)
 
