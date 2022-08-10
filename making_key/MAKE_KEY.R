@@ -85,7 +85,7 @@ key$child_age_covariates[grep(key$outcome,pattern="_sds")] <-NA # if outcome is 
 
 key$covariates_model1a <- paste(key$covariates_model1a,key$child_age_covariates,sep=",")
 
-## if exposure is a PRS, add the genetic PCs for the exposed parent as model1a covariates
+## if exposure is a PRS, add the age and genetic PCs for the exposed parent as model1a covariates
 
 key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score")&key$person_exposed=="mother")]<-
   paste0(key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score")&key$person_exposed=="mother")],
@@ -182,7 +182,7 @@ source_url(paste0(location_of_extra_functions,"define_other_parents_exposure.R?r
 x<-apply(key[,c("exposure_class","exposure_time","person_exposed","exposure_type","exposure_source","exposure_subclass")],1,function(x) select_other_parents_exposure(expclass=x[1],exptime=x[2],expparent=x[3],exptype=x[4],expsource=x[5],expsubclass=x[6]))
 key$other_parents_exposure<-unlist(lapply(x,paste,collapse=","))
 rm(x)
-key$other_parents_exposure[key$other_parents_exposure==""]<-NA # some cohorts don't have paternal PRS, so the other parent's exposure is NA
+key$other_parents_exposure[key$other_parents_exposure==""]<-NA # most cohorts don't have paternal PRS, so the other parent's exposure is NA
 
 ## add covariates from 1a/2a/3a/4a + other parent's exposure
          
