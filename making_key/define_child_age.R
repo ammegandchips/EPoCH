@@ -21,7 +21,7 @@ key$child_age_covariates[which(key$outcome%in%c(cognitive_outcomes)&key$outcome_
 key$child_age_covariates[which(key$outcome%in%c(depression_outcomes)&key$outcome_time=="age 8 to 11")] <-names(dat[grep(names(dat),pattern="stage4_f10|covs_stage4_timepoint")])
 
 #all scdc (autistic traits) outcomes taken from KR questionnaire:
-key$child_age_covariates[which(key$outcome%in%c(social_outcomes)&key$outcome_time=="age 5 to 7")] <-names(dat[grep(names(dat),pattern="stage3_kr|covs_stage3_timepoint")])
+key$child_age_covariates[which(key$outcome%in%c(scdc_outcomes)&key$outcome_time=="age 5 to 7")] <-names(dat[grep(names(dat),pattern="stage3_kr|covs_stage3_timepoint")])
 
 #all cardio outcomes taken from CIF, F7 or F9 clinics:
 key$child_age_covariates[which(key$outcome%in%c(cardio_outcomes)&key$outcome_time=="age 1 to 2")] <-names(dat[grep(names(dat),pattern="stage1_cif|covs_stage1_timepoint")])
