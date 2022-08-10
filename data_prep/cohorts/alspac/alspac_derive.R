@@ -11,6 +11,11 @@ dat <- haven::zap_labels(raw_dat)
   
 ##### ADMIN VARIABLES
 
+#Multiple pregnancy
+dat$multiple_pregnancy <- NA
+dat$multiple_pregnancy[dat$mz010a %in% 2] <-1
+dat$multiple_pregnancy[dat$mz010a %in% 1] <-0
+
 #time at which parents completed questionnaires
 dat$time_qA_mother_gestation<-dat$a902
 dat$time_qA_mother_gestation[dat$time_qA_mother_gestation<0] <- NA

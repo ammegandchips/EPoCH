@@ -18,9 +18,9 @@ check.categorical.variables<-function(variables){
   lapply(1:length(variables),table.and.plot.function,list.of.dfs=list_of_variable_dataframes,list.of.variables=variables)
 }
 
-# numerical variables:
+# continuous variables:
 
-check.numerical.variables<-function(variables){
+check.continuous.variables<-function(variables){
   list_of_variable_dataframes <- lapply(variables,function(x)dat[,c(x,"covs_sex")])
   list_of_variable_dataframes <- lapply(list_of_variable_dataframes,setNames,c("variable","covs_sex"))
   table.and.plot.function<-function(list.of.dfs,list.of.variables,i){
@@ -44,11 +44,11 @@ check.numerical.variables<-function(variables){
 
 # wrapper
 
-check.variables <- function(grep.pattern, numerical.or.categorical){
-if(numerical.or.categorical == "numerical"){
+check.variables <- function(grep.pattern, continuous.or.categorical){
+if(continuous.or.categorical == "continuous"){
   variables<-names(dat)[grep(names(dat),pattern=grep.pattern)]
   cat.variables <-variables[grep(variables,pattern="binary|ordinal")]
-  check.numerical.variables(variables[!variables%in%cat.variables])
+  check.continuous.variables(variables[!variables%in%cat.variables])
 }else{
   variables<-names(dat)[grep(names(dat),pattern=grep.pattern)]
   cat.variables <-variables[grep(variables,pattern="binary|ordinal")]
