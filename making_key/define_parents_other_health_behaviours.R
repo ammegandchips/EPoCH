@@ -1,7 +1,7 @@
 # function for selecting exposed parent's other health behaviours
 
 select_other_health_behaviours <- function(expclass, exptime, expparent, exptype, expsource, expsubclass){
-  if(expsubclass=="polygenic risk score"|expclass=="snps"|expclass=="socioeconomic position"|expclass=="diet"){
+  if(expsubclass=="polygenic risk score"|expclass=="socioeconomic position"|expclass=="diet"){
     res<-NA
   }else{
     if(expclass=="physical activity"){
@@ -17,7 +17,7 @@ select_other_health_behaviours <- function(expclass, exptime, expparent, exptype
             adjustment_classes <- c("alcohol consumption", "smoking")
           }}}}
     adjustment_classes
-    if(is.na(adjustment_classes)==FALSE){
+    if(FALSE %in% is.na(adjustment_classes)){
       
       if(exptime%in%c("first trimester","second trimester","third trimester","ever in pregnancy")){
         adjustment_timepoint <- "ever in pregnancy"

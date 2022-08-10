@@ -9,7 +9,6 @@ key$exposure_class[key$exposure %in% smoking_exposures]<-"smoking"
 key$exposure_class[key$exposure %in% alcohol_exposures]<-"alcohol consumption"
 key$exposure_class[key$exposure %in% caffeine_exposures]<-"caffeine consumption"
 key$exposure_class[key$exposure %in% physact_exposures]<-"physical activity"
-key$exposure_class[key$exposure %in% snps_exposures]<-"snps"
 
 ## exposure subclass
 key$exposure_subclass <-"basic"
@@ -23,7 +22,6 @@ key$exposure_subclass[key$exposure %in% cola_exposures]<-"cola"
 key$exposure_subclass[key$exposure %in% binge_alcohol_exposures]<-"binge drinking"
 key$exposure_subclass[key$exposure %in% passive_smoking_exposures]<-"passive smoke exposure"
 key$exposure_subclass[key$exposure %in% prs_exposures]<-"polygenic risk score"
-key$exposure_subclass[key$exposure %in% snps_exposures]<-"snps"
 
 ## timing of exposure
 key$exposure_time[grep(key$exposure,pattern="edu|occup")]<-"at study recruitment"
@@ -39,13 +37,12 @@ key$exposure_time[grep(key$exposure,pattern="initiation")]<-"initiation"
 key$exposure_time[grep(key$exposure,pattern="age_init")]<-"age at initiation"
 key$exposure_time[grep(key$exposure,pattern="cessation")]<-"cessation"
 key$exposure_time[grep(key$exposure,pattern="cigs_pd")]<-"heaviness"
-key$exposure_time[grep(key$exposure,pattern="score_child_caff|score_mother_caff")]<-"caffeine"
-key$exposure_time[grep(key$exposure,pattern="score_child_alcohol|score_mother_alcohol")]<-"alcohol"
+key$exposure_time[grep(key$exposure,pattern="score_father_caff|score_mother_caff")]<-"caffeine"
+key$exposure_time[grep(key$exposure,pattern="score_father_alcohol|score_mother_alcohol")]<-"alcohol"
 key$exposure_time[grep(key$exposure,pattern="_pa_")]<-"physical activity"
 
 ## person exposed
-key$person_exposed <- "child"
-key$person_exposed[grep(key$exposure,pattern="mother")]<-"mother"
+key$person_exposed <- "mother"
 key$person_exposed[grep(key$exposure,pattern="father")]<-"partner"
  
 ## source of information on paternal data
@@ -53,7 +50,7 @@ key$exposure_source <- "self-reported or measured"
 key$exposure_source[grep(key$exposure,pattern="mreport")]<-"partner data reported by the child's mother"
  
 ## type of exposure variable
-key$exposure_type <- "numerical"
+key$exposure_type <- "continuous"
 key$exposure_type[grep(key$exposure,pattern="ordinal")]<-"ordinal"
 key$exposure_type[grep(key$exposure,pattern="binary")]<-"binary"
  
@@ -91,7 +88,7 @@ key$outcome_subclass1[key$outcome %in% fatmass_outcomes] <-"fat mass"
 key$outcome_subclass1[key$outcome %in% depression_outcomes] <-"depressive symptoms"
 key$outcome_subclass1[key$outcome %in% c(sdq_outcomes,aggression_outcomes)] <-"behaviours"
 key$outcome_subclass1[key$outcome %in% cognitive_outcomes] <-"cognitive ability"
-key$outcome_subclass1[key$outcome %in% social_outcomes] <-"autistic traits"
+key$outcome_subclass1[key$outcome %in% autism_outcomes] <-"autistic traits"
 key$outcome_subclass1[key$outcome %in% cognitive_schoolreadiness_outcomes] <-"school readiness"
 
 key$outcome_subclass1[key$outcome %in% mice_outcomes] <-"home invaded by mice"
@@ -164,14 +161,14 @@ key$outcome_time[grep(pattern="fetal_death",key$outcome)]<-"pregnancy" #after 20
 
 key$outcome_time[grep(key$outcome,pattern="stage0")]<-"first year"
 key$outcome_time[grepl(key$outcome,pattern="stage0")&key$outcome_class=="serum biomarkers"]<-"delivery"
-key$outcome_time[grep(key$outcome,pattern="stage1")]<-"age 1-2"
-key$outcome_time[grep(key$outcome,pattern="stage2")]<-"age 3-4"
-key$outcome_time[grep(key$outcome,pattern="stage3")]<-"age 5-7"
-key$outcome_time[grep(key$outcome,pattern="stage4")]<-"age 8-11"
+key$outcome_time[grep(key$outcome,pattern="stage1")]<-"age 1 to 2"
+key$outcome_time[grep(key$outcome,pattern="stage2")]<-"age 3 to 4"
+key$outcome_time[grep(key$outcome,pattern="stage3")]<-"age 5 to 7"
+key$outcome_time[grep(key$outcome,pattern="stage4")]<-"age 8 to 11"
 key$outcome_time[grep(key$outcome,pattern="allstages|negcon")]<-"any time in childhood"
  
 ## type of outcome variable
-key$outcome_type <- "numerical"
+key$outcome_type <- "continuous"
 key$outcome_type[grep(key$outcome,pattern="ordinal")]<-"ordinal"
 key$outcome_type[grep(key$outcome,pattern="binary")]<-"binary"
  
