@@ -30,7 +30,6 @@ if(grepl("_FEMALE|_MALE",cohort)){
 location_of_dat <- paste0("~/EPoCH/data/",tolower(cohortname),"_pheno.rds")
 location_of_key <- paste0("~/EPoCH/data/",tolower(cohortname),"_key.rds")
 location_of_extra_functions <-"https://github.com/ammegandchips/EPoCH/blob/main/phewas/"
-#location_of_extra_functions <- "~/University of Bristol/grp-EPoCH - Documents/WP4_analysis/making_key/"
 save_directory <- paste0("~/EPoCH/results/")
 
 # The following lines should run without changes
@@ -63,7 +62,7 @@ print(paste0("There are ",nrow(dat)," observations and ",ncol(dat)," variables i
 print("selecting sample...")
 #dat <- dat[dat$covs_biological_father=="bio_dad",] ##Not totally sure we need to do this. The rationale was that all mums are genetically related to their children so we wanted all included dads to be genetically related too (else the maternal effect may appear larger than the paternal effect due to non-paternity). Also for prenatal exposures we would expect all direct paternal effects to go via the sperm, so would want biological dads. However, we're also interested in indirect effects (via the mother), in which case paternity wouldn't be important. Also we don't have a perfect measure of paternity (just maternal-report). May be better to do a sensitivity analysis restricting to biological dads (n=13036), but use all dads in the main analysis.
 if("multiple_pregnancy" %in% colnames(dat)){
-dat <- dat[dat$multiple_pregnancy==1,] #select singleton pregnancies
+dat <- dat[dat$multiple_pregnancy!=1,] #select singleton pregnancies
 }
 
 if(grepl("_FEMALE",cohort)){
