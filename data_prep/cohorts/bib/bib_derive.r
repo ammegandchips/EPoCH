@@ -15,6 +15,13 @@ dat<-raw_dat[,c("BiBMotherID","BiBFatherID","BiBPregNumber","epoch_child_id")]
 dat$paternal_participation<-NA
 dat$paternal_participation<-ifelse(dat$BiBFatherID=="",0,1)
 
+# Multiple pregnancy variable
+dat$multiple_pregnancy <- NA
+mother_preg <- paste0(dat$BiBMotherID,dat$BiBPregNumber)
+mother_preg_dup <- mother_preg[duplicated(mother_preg)]
+mother_preg_is_dup <- mother_preg %in% mother_preg_dup
+dat$multiple_pregnancy[mother_preg_is_dup] <- 1
+
 ##### COVARIATES
 #glycosuria, existing diabetes or gestational diabetes vs no glycosuria or diabetes
 dat$covs_glycosuria_binary<-NA
