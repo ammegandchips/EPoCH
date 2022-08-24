@@ -31,3 +31,5 @@ cp ~/EPoCH/results/mcs_checks* /projects/MRC-IEU/research/projects/ieu2/p5/015/w
 mkdir -p /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/meta_analysis_results/
 
 cp ~/EPoCH/results/meta* /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/meta_analysis_results/
+
+rm slurm*
