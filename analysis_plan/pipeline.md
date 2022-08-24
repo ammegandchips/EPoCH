@@ -78,7 +78,7 @@ Options for `cohortORmodel` are:
 
 **Move results back to RDSF**
 
-When the job is complete (check using `qstat -u yourusername`), run `after.sh` interactively to move keys/results from home directory to EPoCH project folder on the RDSF
+When the job is complete (check the out file), run `after.sh` interactively to move keys/results from home directory to EPoCH project folder on the RDSF
 
 ```
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/after.sh -P ~/EPoCH/scripts/
