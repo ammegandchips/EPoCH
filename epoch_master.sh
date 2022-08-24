@@ -23,7 +23,7 @@ outfile="~/EPoCH/out/$cohortORmodel$scriptname.out"
 echo $scriptlocation
 echo $outfile
 
-module add lang/r/4.0.3-bioconductor-gcc
+module add lang/r/4.1.2-bioconductor-gcc
 
 rscriptcommand="Rscript --verbose $scriptlocation $cohortORmodel >> $outfile 2>&1"
 
