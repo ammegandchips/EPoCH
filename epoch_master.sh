@@ -18,7 +18,7 @@ echo $cohortORmodel
 echo $scriptname
 
 scriptlocation="~/EPoCH/scripts/$scriptname.R"
-outfile="~/EPoCH/out/$cohortORmodel_$scriptname.out"
+outfile="~/EPoCH/out/$cohortORmodel$scriptname.out"
 
 echo $scriptlocation
 echo $outfile
