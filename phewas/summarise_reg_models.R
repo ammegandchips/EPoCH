@@ -8,6 +8,7 @@ summarise_reg_models <- function(exposures,outcomes,model_number,df){
     exposure_type <- as.character(x[3])
     outcome_type <- as.character(x[4])
     adjustment_vars <- na.omit(unlist(strsplit(as.character(x[5]),split=",")))
+    adjustment_vars <- str_remove_all(adjustment_vars,"_zscore")
     adjustment_vars <- adjustment_vars[adjustment_vars %in% colnames(df)]
     df_here <- zap_labels(df[,c(exposure,outcome,adjustment_vars)])
     df_here <- na.omit(df_here)
