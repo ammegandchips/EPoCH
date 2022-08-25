@@ -12,6 +12,7 @@
 # Read in arguments
 
 args <- commandArgs(trailingOnly = TRUE)
+cohort <- toString(args[1])
 
 # Set locations of scripts, data and save files
 
