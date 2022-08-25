@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --partition=cpu
+#SBATCH --partition=compute
 #SBATCH --gres=gpu:2
 #SBATCH --job-name=epoch_master
 #SBATCH --nodes=1
