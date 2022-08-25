@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --partition=gpu
+#SBATCH --partition=gpu_short
 #SBATCH --gres=gpu:2
 #SBATCH --job-name=epoch_master
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --time=12:0:0
+#SBATCH --time=6:0:0
 #SBATCH --mem=2000M
 
 echo 'epoch_master'
