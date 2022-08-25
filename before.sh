@@ -15,6 +15,7 @@ mkdir -p ~/EPoCH/scripts/
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/data_prep/check_prepared_data/SUMMARISE_DATA.R -P ~/EPoCH/scripts/
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/making_key/MAKE_KEY.R -P ~/EPoCH/scripts/
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/phewas/RUN_PHEWAS.R -P ~/EPoCH/scripts/
+wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/phewas/RUN_PHEWAS_SUMMARIES_ONLY.R -P ~/EPoCH/scripts/
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/meta_analysis/RUN_META_ANALYSIS.R -P ~/EPoCH/scripts/
 
 mkdir -p ~/EPoCH/out/
