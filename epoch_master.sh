@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --partition=gpu_short
+#SBATCH --partition=mrcieu
 #SBATCH --gres=gpu:2
 #SBATCH --job-name=epoch_master
 #SBATCH --nodes=1
