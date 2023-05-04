@@ -8,9 +8,7 @@ setwd("~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/paternal_data_
 #load data
 
 ##first questionnaires
-bib_all <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_all_pheno.rds")
-bib_sa <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_sa_pheno.rds")
-bib_we <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_we_pheno.rds")
+bib_all <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_pheno.rds")
 alspac <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds")
 mcs <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rds")
 
@@ -18,9 +16,7 @@ library(dplyr)
 library(epitools)
 
 #select only unique pregnancies (i.e. remove all but one children from multiple pregnancies)
-bib_all_unique <- bib_all[!duplicated(bib_all$PregnancyID),]
-bib_sa_unique <- bib_sa[!duplicated(bib_sa$PregnancyID),]
-bib_we_unique <- bib_we[!duplicated(bib_we$PregnancyID),]
+bib_all_unique <- bib_all[which(bib_all$BiBPregNumber==1),]
 alspac_unique <- data.frame(alspac[!duplicated(alspac$aln),])
 mcs_unique <- data.frame(mcs[!duplicated(mcs$mcsid),]) # doesn't actually do anything in this cohort as we've already only selected one child per family
 
@@ -40,8 +36,8 @@ mcs_unique <- data.frame(mcs[!duplicated(mcs$mcsid),]) # doesn't actually do any
 # Summarise paternal participation in each cohort
 
 #df <- data.frame(cohort=c("BiB South Asian","BiB White British","ALSPAC","MCS"),mother=c(sum(is.na(bib_sa_unique$MotherID)==FALSE),sum(is.na(bib_we_unique$MotherID)==FALSE),sum(is.na(alspac_unique$aln)==FALSE),sum(is.na(mcs_unique$mcsid)==FALSE)), father=c(sum(is.na(bib_sa_unique$FatherID)==FALSE,na.rm=T),sum(is.na(bib_we_unique$FatherID)==FALSE,na.rm=T),sum(alspac_unique$paternal_participation,na.rm=T),sum(mcs_unique$paternal_participation,na.rm=T)))
-df <- data.frame(cohort=c("BiB","ALSPAC","MCS"),mother=c(sum(is.na(bib_all_unique$MotherID)==FALSE),sum(is.na(alspac_unique$aln)==FALSE),sum(is.na(mcs_unique$mcsid)==FALSE)), father=c(sum(is.na(bib_all_unique$FatherID)==FALSE,na.rm=T),sum(alspac_unique$paternal_participation,na.rm=T),sum(mcs_unique$paternal_participation,na.rm=T)))
 
+df <- data.frame(cohort=c("BiB","ALSPAC","MCS"),mother=c(sum(is.na(bib_all_unique$BiBMotherID)==FALSE),sum(is.na(alspac_unique$aln)==FALSE),sum(is.na(mcs_unique$mcsid)==FALSE)), father=c(sum(bib_all_unique$paternal_participation,na.rm=T),sum(alspac_unique$paternal_participation,na.rm=T),sum(mcs_unique$paternal_participation,na.rm=T)))
 
 df$percent <- (df$father/df$mother)*100
 
@@ -312,8 +308,6 @@ df
 }
 
 bib_all_unique <- gen_new_vars(bib_all_unique)
-bib_sa_unique <- gen_new_vars(bib_sa_unique)
-bib_we_unique <- gen_new_vars(bib_we_unique)
 alspac_unique <- gen_new_vars(alspac_unique)
 mcs_unique <- gen_new_vars(mcs_unique)
 
@@ -321,8 +315,6 @@ variables <- c("mother_obese","biodad","paternal_age_low","paternal_age_high","m
 
 df_alspac <- bind_rows(lapply(variables,calc_props,df=alspac_unique))
 df_bib <- bind_rows(lapply(variables,calc_props,df=bib_all_unique))
-df_sa_bib <- bind_rows(lapply(variables,calc_props,df=bib_sa_unique))
-df_we_bib <- bind_rows(lapply(variables,calc_props,df=bib_we_unique))
 df_mcs <- bind_rows(lapply(variables,calc_props,df=mcs_unique))
 
 varnames=c("Mother is obese","Partner is biological father","Partner is age <=21","Partner is age >=35","Mother is age <=21","Mother is age >=35","Partner drank alcohol in pregnancy","Partner smoked in pregnancy","Mother smoked in pregnancy","Mother drank alcohol in pregnancy","Partner has a degree","Partner has no qualifications","Mother has a degree","Mother has no qualifications","Mother lived with partner before birth","Mother is married","Baby's birthweight is <2.5kg","Baby's birthweight is >4.5kg","Baby was delivered preterm", "Mother is white","Partner is white")
@@ -673,5 +665,30 @@ correlations_mcs <- lapply(res,"[[",3)$"mcs"
 write.csv(reg_res,"regression_parameters_for_apostolos.csv",row.names=T)
 write.csv(proportions,"proportions_for_apostolos.csv",row.names=T)
 write.csv(correlations_alspac,"correlations_alspac_for_apostolos.csv",row.names=T)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## New Figure requested by Kate
+## Maternal smoking --> BW in complet sample, sample w pp, sample with npp, complete sample adj for psmoking, complete sample adj for psmoking and factors that affect participation (ethnicity, education, co-habitation, being bio parent)
 
 

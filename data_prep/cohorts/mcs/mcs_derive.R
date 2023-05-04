@@ -3,8 +3,16 @@
 ## This code cleans and derives variables from mcs_pheno_raw.rds    ##
 ######################################################################
 
+## CURRENTLY DOESN'T INCLUDE STUDY WEIGHTS, BUT SHOULD DO.
+## SEE: https://stylizeddata.com/how-to-use-survey-weights-in-r/
+## AND: https://cls.ucl.ac.uk/wp-content/uploads/2017/07/User-Guide-to-Analysing-MCS-Data-using-Stata.pdf
+## AND: https://stackoverflow.com/questions/46737602/translating-stata-code-to-r-survey-weights
+## ESSENTIALLY, WE HAVE TO SET UP THE SURVEY DESIGN (DIFFERENT FOR DIFFERENT OUTCOMES BECAUSE DIFFERENT SWEEPS NEED DIFFERENT WEIGHTS) - MAY BE EASIEST TO SET UP DIFFERENT VERSIONS OF MCS DAT DEPENDING ON OUTCOME, E.G. MCS_S1, MCS_S2 ETC
+## THEN RUN THE PHEWAS USING SPECIFIC FUNCTIONS FOR LM AND GLM FROM THE SURVEY PACKAGE - APPLIED TO EACH VERSION OF MCS DEPENDING ON THE OUTCOMES (MCS_1 ETC)
+
 library(knitr)
 library(haven)
+library(survey)
 
 raw_dat <- readRDS("/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno_raw.rds")
 dat<- raw_dat[,c(names(raw_dat)[1:7],"covs_biological_father","paternal_participation")]

@@ -1,0 +1,200 @@
+---
+title: "EPoCH Harmonisation"
+author: "Gemma Sharp"
+date: "2023-01-04"
+output: rmdformats::readthedown
+usebookdown: true
+---
+
+# Parental smoking
+
+Short paragraph on why we are looking at this and how we are defining it.
+
+## Pre-conception {.tabset}
+
+Pre-conception was defined as the period 3 months prior to pregnancy and/or the last menstrual period before pregnancy.
+
+### Mother {.tabset .tabset-pills}
+
+#### ALSPAC
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR PRECONCEPTION MATERNAL SMOKING IN ALSPAC
+
+```
+
+#### BiB
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR PRECONCEPTION MATERNAL SMOKING IN BIB
+
+```
+
+#### MOBA
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR PRECONCEPTION MATERNAL SMOKING IN MOBA
+
+```
+
+#### MCS
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR PRECONCEPTION MATERNAL SMOKING IN MCS
+
+```
+
+### Partner {.tabset .tabset-pills}
+
+#### ALSPAC
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR PRECONCEPTION PARTNER SMOKING IN ALSPAC
+
+```
+
+#### BiB
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR PRECONCEPTION PARTNER SMOKING IN BIB
+
+```
+
+#### MOBA
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR PRECONCEPTION PARTNER SMOKING IN MOBA
+
+```
+
+#### MCS
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR PRECONCEPTION PARTNER SMOKING IN MCS
+
+```
+
+## First trimester {.tabset}
+
+First trimester was defined as the first three months of pregnancy (up to 12 weeks).
+
+### Mother {.tabset .tabset-pills}
+
+#### ALSPAC
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR FIRST TRIMESTER MATERNAL SMOKING IN ALSPAC
+
+```
+
+#### BiB
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR FIRST TRIMESTER MATERNAL SMOKING IN BIB
+
+```
+
+#### MOBA
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR FIRST TRIMESTER MATERNAL SMOKING IN MOBA
+
+```
+
+#### MCS
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR FIRST TRIMESTER MATERNAL SMOKING IN MCS
+
+```
+
+### Partner {.tabset .tabset-pills}
+
+#### ALSPAC
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR FIRST TRIMESTER PARTNER SMOKING IN ALSPAC
+
+```
+
+#### BiB
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR FIRST TRIMESTER PARTNER SMOKING IN BIB
+
+```
+
+#### MOBA
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR FIRST TRIMESTER PARTNER SMOKING IN MOBA
+
+```
+
+#### MCS
+
+Any relevant notes
+
+```{r}
+
+#CODE FOR DERIVING VARIABLES FOR FIRST TRIMESTER PARTNER SMOKING IN MCS
+
+```
+
+
+## Second trimester
+
+## Third trimester
+
+## Any time in pregnancy
+
+## Post-natal
+
+# Parental Alcohol
+
+# Parental Caffeine
