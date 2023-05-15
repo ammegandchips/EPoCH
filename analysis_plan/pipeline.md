@@ -111,9 +111,9 @@ chmod +x ~/EPoCH/scripts/after.sh
 
 To check on the status of a job:
 ```
-sinfo -s
+saact
 ```
 Or to check the output from the script, e.g.:
 ```
-less EPoCH/out/ALSPAC_MAKE_KEY.out
+less EPoCH/out/ALSPACMAKE_KEY.out
 ```
