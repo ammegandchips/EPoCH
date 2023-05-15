@@ -36,12 +36,26 @@ run_analysis<-function(exposures,outcomes,model_number,df){
         res$intercept_est <- NA
         res$intercept_se <- NA
         res$intercept_p <- NA
+        res$outcome_n <-NA
+        res$exposure_n<-NA
       }else{
         res$ci.l <- res$est-(res$se*1.96)
         res$ci.u <- res$est+(res$se*1.96)
         res$intercept_est <- res[1,1]
         res$intercept_se <- res[1,2]
         res$intercept_p <- res[1,4]
+        res$outcome_n <- sum(model.frame(fit)[,as.character(outcome)]==1)
+        if(grepl("binary",exposure)){
+          res$exposure_n <- sum(model.frame(fit)[,as.character(exposure)]==1)
+        }else{
+          if(grepl("ordinal",exposure)){
+            res$exposure_n <- NA
+            res$exposure_n[grep("Light",res$regression_term)] <- sum(model.frame(fit)[,as.character(exposure)]=="Light")
+            res$exposure_n[grep("Moderate",res$regression_term)] <- sum(model.frame(fit)[,as.character(exposure)]=="Moderate")
+            res$exposure_n[grep("Heavy",res$regression_term)] <- sum(model.frame(fit)[,as.character(exposure)]=="Heavy")
+          }else{
+            res$exposure_n <-NA
+        }
       }
       # remove unneeded results
       if(any(c(is.na(adjustment_vars),class(fit)=="try-error")==TRUE)){
@@ -52,7 +66,7 @@ run_analysis<-function(exposures,outcomes,model_number,df){
         }else{
           res<-res[-grep(res$regression_term,pattern=paste0(c("(Intercept)",adjustment_vars),collapse="|")),]
         }
-      }
+      }}
       res
     })
     
@@ -62,7 +76,9 @@ run_analysis<-function(exposures,outcomes,model_number,df){
   
   # run linear regression for all continuous/integer outcomes:
   cont_key <- key[which(key$exposure%in%exposures & key$outcome%in%outcomes & key$outcome_type=="numerical"),c("exposure","outcome",paste0("covariates_",model_number),"person_exposed")]
-  if(nrow(cont_key)==0){cont_res <-NA}else{
+  if(nrow(cont_key)==0){
+    cont_res <-NA
+    }else{
     cont_res <- apply(cont_key,1,function(x){
       exposure <- as.character(x[1])
       outcome <- as.character(x[2])
@@ -86,12 +102,27 @@ run_analysis<-function(exposures,outcomes,model_number,df){
         res$intercept_est <- NA
         res$intercept_se <- NA
         res$intercept_p <- NA
+        res$outcome_n <-NA
+        res$exposure_n <-NA
       }else{
         res$ci.l <- res$est-(res$se*1.96)
         res$ci.u <- res$est+(res$se*1.96)
         res$intercept_est <- res[1,1]
         res$intercept_se <- res[1,2]
         res$intercept_p <- res[1,4]
+        res$outcome_n <-NA
+        if(grepl("binary",exposure)){
+          res$exposure_n <- sum(model.frame(fit)[,as.character(exposure)]==1)
+        }else{
+          if(grepl("ordinal",exposure)){
+            res$exposure_n <-NA
+            res$exposure_n[grep("Light",res$regression_term)]<-sum(model.frame(fit)[,as.character(exposure)]=="Light")
+            res$exposure_n[grep("Moderate",res$regression_term)]<-sum(model.frame(fit)[,as.character(exposure)]=="Moderate")
+            res$exposure_n[grep("Heavy",res$regression_term)]<-sum(model.frame(fit)[,as.character(exposure)]=="Heavy")
+          }else{
+               res$exposure_n <-NA
+             }
+        }
       }
       # remove unneeded results
       if(any(c(is.na(adjustment_vars),class(fit)=="try-error")==TRUE)){
@@ -110,14 +141,15 @@ run_analysis<-function(exposures,outcomes,model_number,df){
     cont_res <- as.data.frame(do.call(rbind,cont_res))
   }
   
+  
   # Combine logistic and linear regression results
-  if(is.na(binary_res)){all_res <- cont_res
+  if(class(binary_res)=="logical"){all_res <- cont_res
   }else{
-    if(is.na(cont_res)){all_res <- binary_res
+    if(class(cont_res)=="logical"){all_res <- binary_res
     }else{
       all_res <- rbind.data.frame(binary_res,cont_res)
     }}
   row.names(all_res)<-NULL
   all_res$model <- model_number
-  all_res[,c("exposure","outcome","regression_term","person_exposed","model","n","est","se","ci.l","ci.u","p","r2","t.z","intercept_est","intercept_se","intercept_p")]
+  all_res[,c("exposure","outcome","regression_term","person_exposed","model","n","exposure_n","outcome_n","est","se","ci.l","ci.u","p","r2","t.z","intercept_est","intercept_se","intercept_p")]
 }

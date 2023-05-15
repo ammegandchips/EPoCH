@@ -1,3 +1,5 @@
+##NEED TO UPDATE WITH MOBA VERSION BEFORE PUBLICATION##
+
 # define potential mediators (gestage, birthweight, passive smoke before 2, caffeine before 2, alcohol before 2, child's PRS where exposure == PRS)
 
 # gestational age for everything apart from sga and lga (which are already adjusted for ga) and where the exposure is a PRS

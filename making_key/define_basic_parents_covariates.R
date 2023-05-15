@@ -1,3 +1,4 @@
+## NEED TO UPDATE WITH MOBA VERSION BEFORE PUBLICATION ##
 # Define basic parents' covariates 
 
 mother_covariates1 <- colnames(dat)[colnames(dat) %in% c("covs_age_mother_conception","covs_edu_mother","covs_occup_mother","covs_parity_mother_binary")]

@@ -12,6 +12,9 @@ key$exposure_class[key$exposure %in% physact_exposures]<-"physical activity"
 
 ## exposure subclass
 key$exposure_subclass <-"basic"
+key$exposure_subclass[key$exposure %in% smoking_exposures] <-"active smoking"
+key$exposure_subclass[key$exposure %in% alcohol_exposures] <-"any drinking"
+key$exposure_subclass[key$exposure %in% caffeine_exposures] <-"any source"
 key$exposure_subclass[key$exposure %in% meddiet_rmed]<-"mediterranean diet rmed"
 key$exposure_subclass[key$exposure %in% meddiet_rmed2]<-"mediterranean diet rmed2"
 key$exposure_subclass[grep("covs_edu_father|covs_edu_mother",key$exposure)]<-"highest education"
@@ -85,11 +88,9 @@ key$outcome_subclass1[key$outcome %in% birthlength_outcomes] <-"birthlength"
 key$outcome_subclass1[key$outcome %in% headcirc_outcomes] <-"head circumference"
 key$outcome_subclass1[key$outcome %in% fatmass_outcomes] <-"fat mass"
 
-key$outcome_subclass1[key$outcome %in% depression_outcomes] <-"depressive symptoms"
-key$outcome_subclass1[key$outcome %in% c(sdq_outcomes,aggression_outcomes,cbcl_outcomes,hyperactivity_outcomes,csbq_outcomes)] <-"behaviour"
-key$outcome_subclass1[key$outcome %in% cognitive_outcomes] <-"cognitive ability"
-key$outcome_subclass1[key$outcome %in% autistic_trait_outcomes] <-"autistic traits"
-key$outcome_subclass1[key$outcome %in% cognitive_schoolreadiness_outcomes] <-"school readiness"
+key$outcome_subclass1[key$outcome %in% c(depression_outcomes, sdq_outcomes,aggression_outcomes,cbcl_outcomes,hyperactivity_outcomes,csbq_outcomes)] <-"behaviour and affect"
+key$outcome_subclass1[key$outcome %in% c(cognitive_outcomes,cognitive_schoolreadiness_outcomes)] <-"cognitive ability and school readiness"
+key$outcome_subclass1[key$outcome %in% c(autistic_trait_outcomes,asq_socialcomm_outcomes)] <-"autistic traits and social communication"
 
 key$outcome_subclass1[key$outcome %in% mice_outcomes] <-"home invaded by mice"
 key$outcome_subclass1[key$outcome %in% pigeon_outcomes] <-"home invaded by pigeons"
@@ -123,6 +124,7 @@ key$outcome_subclass2[grep(key$outcome,pattern="fmi")] <-"fat mass index"
 key$outcome_subclass2[grep(key$outcome,pattern="fatpc")] <-"fat mass percentage"
 
 key$outcome_subclass2[key$outcome %in% scdc_outcomes] <-"social and communications disorders (SCDC) scale"
+key$outcome_subclass2[key$outcome %in% asq_socialcomm_outcomes]<-"ages and stages questionnaire (ASQ): social and communication development"
 key$outcome_subclass2[key$outcome %in% cbcl_outcomes] <-"child behaviour checklist (CBCL) scale"
 key$outcome_subclass2[key$outcome %in% csbqindependence_outcomes] <-"social behaviour: independence"
 key$outcome_subclass2[key$outcome %in% csbqemotional_outcomes] <-"social behaviour: emotional dysregulation"
@@ -146,6 +148,8 @@ key$outcome_subclass2[key$outcome %in% cognitive_namingvocab_outcomes] <-"naming
 key$outcome_subclass2[key$outcome %in% cognitive_reading_outcomes] <-"reading skills"
 key$outcome_subclass2[key$outcome %in% cognitive_problemsolving_outcomes] <-"problem solving"
 key$outcome_subclass2[key$outcome %in% cognitive_spatialawareness_outcomes] <-"spatial awareness"
+key$outcome_subclass2[key$outcome %in% cognitive_schoolreadiness_outcomes] <-"school readiness" 
+
 
 key$outcome_subclass2[key$outcome %in% dog_allergy_outcomes] <-"dog allergy"
 key$outcome_subclass2[key$outcome %in% cat_allergy_outcomes] <-"cat allergy"
