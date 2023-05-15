@@ -75,7 +75,7 @@ run_analysis<-function(exposures,outcomes,model_number,df){
   }
   
   # run linear regression for all continuous/integer outcomes:
-  cont_key <- key[which(key$exposure%in%exposures & key$outcome%in%outcomes & key$outcome_type=="numerical"),c("exposure","outcome",paste0("covariates_",model_number),"person_exposed")]
+  cont_key <- key[which(key$exposure%in%exposures & key$outcome%in%outcomes & key$outcome_type=="continuous"),c("exposure","outcome",paste0("covariates_",model_number),"person_exposed")]
   if(nrow(cont_key)==0){
     cont_res <-NA
     }else{
