@@ -111,7 +111,7 @@ chmod +x ~/EPoCH/scripts/after.sh
 
 To check on the status of a job:
 ```
-saact
+sacct
 ```
 Or to check the output from the script, e.g.:
 ```
