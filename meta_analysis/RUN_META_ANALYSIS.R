@@ -43,10 +43,10 @@ cohort_phewas <- lapply(1:length(cohorts),function(x){
 #  if(cohorts[x]=="BIB_ALL"){
 #  res <- res[-grep("bmi_stage0_zscore|bmi_stage1_zscore|bmi_stage2_zscore|bmi_stage3_zscore|bmi_stage4_zscore",res$outcome),] # can remove this once we have sorted the issue with BIB  
 #  }
-    if(cohorts[x]=="MOBA"){
-    res <- res[-grep("cbcl|autism|aggression",res$outcome),] # can remove this once we have sorted the issue with MOBA 
-    res <- res[-grep("phys",res$exposure),] # can remove this once we have sorted the issue with MOBA 
-     }
+    # if(cohorts[x]=="MOBA"){
+    # res <- res[-grep("cbcl|autism|aggression",res$outcome),] # can remove this once we have sorted the issue with MOBA 
+    # res <- res[-grep("phys",res$exposure),] # can remove this once we have sorted the issue with MOBA 
+    #  }
   res$cohort <- cohorts[x]
   key <- readRDS(paste0(location_of_key,tolower(cohorts[x]),"_key.rds"))
   res <- merge(res,key,by=c("exposure","outcome"),all.y=F)
@@ -58,7 +58,11 @@ cohort_phewas <- lapply(1:length(cohorts),function(x){
   res$exposure <-NULL
   res$regression_term <-NULL
   res<-res[,-grep(colnames(res),pattern="covariate")]
-  res
+  
+  #little bit of QC: remove any association where the total N is less than 20, or the N exposed or with the outcome is less than 5
+  print(paste("Associations removed in QC:",length((res$n<20|res$exposure_n<5|res$outcome_n<5)==T)))
+  res_qc <- res[which(res$n<20|res$exposure_n<5|res$outcome_n<5),]
+  res_qc
 })
 
 # combine results from all cohorts into long and wide format
@@ -72,7 +76,7 @@ print("combining cohort results in wide format...")
 all_cohort_phewas_wide <- pivot_wider(all_cohort_phewas_long,
                                       id_cols = c("exposure_linker","outcome_linker","exposure_class","exposure_subclass","exposure_time","exposure_type","exposure_source","person_exposed","outcome_class","outcome_subclass1","outcome_subclass2","outcome_time","outcome_type","exposure_dose"),
                                       names_from = "cohort",
-                                      values_from = c("est","se","p","n")
+                                      values_from = c("est","se","p","n","exposure_n","outcome_n")
                                       
 )
 
@@ -81,12 +85,13 @@ all_cohort_phewas_wide <- pivot_wider(all_cohort_phewas_long,
 print("adding extra columns...")
 
 all_cohort_phewas_wide$total_n <- rowSums(all_cohort_phewas_wide[,grep(colnames(all_cohort_phewas_wide),pattern="n_A|n_B|n_M")],na.rm = T)
+all_cohort_phewas_wide$total_n_exposure <- rowSums(all_cohort_phewas_wide[,grep(colnames(all_cohort_phewas_wide),pattern="exposure_n_A|exposure_n_B|exposure_n_M")],na.rm = T)
+all_cohort_phewas_wide$total_n_outcome <- rowSums(all_cohort_phewas_wide[,grep(colnames(all_cohort_phewas_wide),pattern="outcome_n_A|outcome_n_B|outcome_n_M")],na.rm = T)
 cohort_missing <- is.na(all_cohort_phewas_wide[,paste0("est_",cohorts)])
 cohorts_participating <- apply(cohort_missing,1,function(x)cohorts[x==F])
 all_cohort_phewas_wide$cohorts_n <- sapply(cohorts_participating,length)
 all_cohort_phewas_wide$cohorts <- unlist(lapply(cohorts_participating,function(x) paste(x,collapse=", ")))
 all_cohort_phewas_wide$linker <- paste(all_cohort_phewas_wide$exposure_linker,all_cohort_phewas_wide$outcome_linker,sep=".")
-
 
 # run the meta analysis
 
