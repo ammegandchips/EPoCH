@@ -7,6 +7,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --time=6:0:0
 #SBATCH --mem=2000M
+#SBATCH --account=SSCM023123
 
 echo 'epoch_master'
 hostname
