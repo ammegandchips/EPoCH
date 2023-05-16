@@ -22,9 +22,11 @@ cohorts <- c("ALSPAC","BIB","MCS","MOBA")
 
 if(grepl("_FEMALE",model)){
   cohorts <- c("ALSPAC_FEMALE","BIB_FEMALE","MCS_FEMALE")
+  model <-unlist(strsplit(model,split="_FEMALE"))
 }
 if(grepl("_MALE",model)){
   cohorts <- c("ALSPAC_FEMALE","BIB_FEMALE","MCS_FEMALE")
+  model <-unlist(strsplit(model,split="_MALE"))
 }
 
 location_of_key <- paste0("~/EPoCH/data/")
