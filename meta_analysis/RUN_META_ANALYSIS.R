@@ -19,6 +19,7 @@ library(metafor)
 # Set locations of scripts, data and save files
 
 cohorts <- c("ALSPAC","BIB","MCS","MOBA")
+key_cohorts <- cohorts
 
 if(grepl("_FEMALE",model)){
   cohorts <- c("ALSPAC_FEMALE","BIB_FEMALE","MCS_FEMALE")
@@ -49,8 +50,8 @@ cohort_phewas <- lapply(1:length(cohorts),function(x){
     # res <- res[-grep("cbcl|autism|aggression",res$outcome),] # can remove this once we have sorted the issue with MOBA 
     # res <- res[-grep("phys",res$exposure),] # can remove this once we have sorted the issue with MOBA 
     #  }
-  res$cohort <- cohorts[x]
-  key <- readRDS(paste0(location_of_key,tolower(cohorts[x]),"_key.rds"))
+  res$cohort <- key_cohorts[x]
+  key <- readRDS(paste0(location_of_key,tolower(key_cohorts[x]),"_key.rds"))
   res <- merge(res,key,by=c("exposure","outcome"),all.y=F)
   res$exposure_dose <-NA
   res$exposure_dose[grep("Heavy",res$regression_term)]<-"heavy"
