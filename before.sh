@@ -30,9 +30,11 @@ cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/moba/results/MOB
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/ALSPAC_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/MCS_model* ~/EPoCH/for_metaanalysis/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/moba/results/MOBA_FEMALE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/ALSPAC_FEMALE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_FEMALE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/MCS_FEMALE_model* ~/EPoCH/for_metaanalysis/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/moba/results/MOBA_MALE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/ALSPAC_MALE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_MALE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/MCS_MALE_model* ~/EPoCH/for_metaanalysis/

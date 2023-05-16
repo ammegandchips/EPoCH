@@ -38,7 +38,7 @@ print("reading in cohort phewas results and merging with key...")
 
 cohort_phewas <- lapply(1:length(cohorts),function(x){
   res <- readRDS(paste0(location_of_phewas_res,cohorts[x],"_",model,"_phewas.rds"))
-  res <- res[,c("exposure","regression_term","outcome","est","se","p","n")]
+  res <- res[,c("exposure","regression_term","outcome","est","se","p","n","exposure_n","outcome_n")]
   res <- res[which(res$regression_term!="error"),] # can remove this once we have sorted the issue with MCS
 #  if(cohorts[x]=="BIB_ALL"){
 #  res <- res[-grep("bmi_stage0_zscore|bmi_stage1_zscore|bmi_stage2_zscore|bmi_stage3_zscore|bmi_stage4_zscore",res$outcome),] # can remove this once we have sorted the issue with BIB  
@@ -58,11 +58,7 @@ cohort_phewas <- lapply(1:length(cohorts),function(x){
   res$exposure <-NULL
   res$regression_term <-NULL
   res<-res[,-grep(colnames(res),pattern="covariate")]
-  
-  #little bit of QC: remove any association where the total N is less than 20, or the N exposed or with the outcome is less than 5
-  print(paste("Associations removed in QC:",length((res$n<20|res$exposure_n<5|res$outcome_n<5)==T)))
-  res_qc <- res[which(res$n<20|res$exposure_n<5|res$outcome_n<5),]
-  res_qc
+  res
 })
 
 # combine results from all cohorts into long and wide format
