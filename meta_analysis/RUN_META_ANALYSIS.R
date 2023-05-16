@@ -20,6 +20,7 @@ library(metafor)
 
 cohorts <- c("ALSPAC","BIB","MCS","MOBA")
 key_cohorts <- cohorts
+model_save <- model
 
 if(grepl("_FEMALE",model)){
   cohorts <- c("ALSPAC_FEMALE","BIB_FEMALE","MCS_FEMALE")
@@ -86,8 +87,8 @@ print("adding extra columns...")
 all_cohort_phewas_wide$total_n <- rowSums(all_cohort_phewas_wide[,grep(colnames(all_cohort_phewas_wide),pattern="n_A|n_B|n_M")],na.rm = T)
 all_cohort_phewas_wide$total_n_exposure <- rowSums(all_cohort_phewas_wide[,grep(colnames(all_cohort_phewas_wide),pattern="exposure_n_A|exposure_n_B|exposure_n_M")],na.rm = T)
 all_cohort_phewas_wide$total_n_outcome <- rowSums(all_cohort_phewas_wide[,grep(colnames(all_cohort_phewas_wide),pattern="outcome_n_A|outcome_n_B|outcome_n_M")],na.rm = T)
-cohort_missing <- is.na(all_cohort_phewas_wide[,paste0("est_",cohorts)])
-cohorts_participating <- apply(cohort_missing,1,function(x)cohorts[x==F])
+cohort_missing <- is.na(all_cohort_phewas_wide[,paste0("est_",key_cohorts)])
+cohorts_participating <- apply(cohort_missing,1,function(x)key_cohorts[x==F])
 all_cohort_phewas_wide$cohorts_n <- sapply(cohorts_participating,length)
 all_cohort_phewas_wide$cohorts <- unlist(lapply(cohorts_participating,function(x) paste(x,collapse=", ")))
 all_cohort_phewas_wide$linker <- paste(all_cohort_phewas_wide$exposure_linker,all_cohort_phewas_wide$outcome_linker,sep=".")
@@ -123,15 +124,15 @@ all_results <- full_join(all_cohort_phewas_wide,meta_res_extracted,by="linker")
 
 # adding some extra information and tidying up results
 
-all_results$model <- model
+all_results$model <- model_save
 all_results <- all_results[order(all_results$est),]
 
 # save results
 
 print("saving results...")
 
-saveRDS(all_results,file=paste0(save_directory,"metaphewas_",model,"_extracted.RDS"))
-saveRDS(meta_res,file=paste0(save_directory,"metaphewas_",model,"_raw.RDS"))
+saveRDS(all_results,file=paste0(save_directory,"metaphewas_",model_save,"_extracted.RDS"))
+saveRDS(meta_res,file=paste0(save_directory,"metaphewas_",model_save,"_raw.RDS"))
 
 
 print("done!")
