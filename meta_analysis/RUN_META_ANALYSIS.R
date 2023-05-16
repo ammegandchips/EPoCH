@@ -23,11 +23,11 @@ key_cohorts <- cohorts
 model_save <- model
 
 if(grepl("_FEMALE",model)){
-  cohorts <- c("ALSPAC_FEMALE","BIB_FEMALE","MCS_FEMALE")
+  cohorts <- c("ALSPAC_FEMALE","BIB_FEMALE","MCS_FEMALE","MOBA_FEMALE")
   model <-unlist(strsplit(model,split="_FEMALE"))
 }
 if(grepl("_MALE",model)){
-  cohorts <- c("ALSPAC_FEMALE","BIB_FEMALE","MCS_FEMALE")
+  cohorts <- c("ALSPAC_MALE","BIB_MALE","MCS_MALE","MOBA_MALE")
   model <-unlist(strsplit(model,split="_MALE"))
 }
 
