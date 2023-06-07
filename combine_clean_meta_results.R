@@ -65,7 +65,14 @@ numeric_cols <-c(c("est","se","p","q","hetp","i2","h2"),
 )
 combined_cleaned[,numeric_cols] <- apply(combined_cleaned[,numeric_cols],2,as.numeric)
 
+
 # save
 saveRDS(combined_cleaned,"University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/all_results.rds")
+
+# remove results related to physical activity or diet (for app)
+combined_cleaned <- combined_cleaned[-which(combined_cleaned$exposure_class %in% c("physical activity","diet")),]
+saveRDS(combined_cleaned,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/all_results_reduced.rds")
+saveRDS(combined_cleaned,"/Users/gs8094/Library/CloudStorage/OneDrive-UniversityofExeter/Projects/EPoCH/EPoCH results app/rds/all_results_reduced.rds")
+
 
 
