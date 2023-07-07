@@ -83,6 +83,9 @@ run_analysis<-function(exposures,outcomes,model_number,df){
       exposure <- as.character(x[1])
       outcome <- as.character(x[2])
       adjustment_vars <- na.omit(unlist(strsplit(as.character(x[3]),split=",")))
+      if(grepl("_FEMALE|_MALE",cohort)){
+        adjustment_vars <-   adjustment_vars[-which(adjustment_vars=="covs_sex")]
+      }
       adjustment_vars <- adjustment_vars[adjustment_vars %in% colnames(df)]
       fit <-try(lm(formula=as.formula(paste( outcome, "~", paste(c(exposure,adjustment_vars),collapse="+") )),data=df),silent=T)
       # extract results
