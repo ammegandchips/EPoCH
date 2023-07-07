@@ -2,7 +2,7 @@
 # Define basic parents' covariates 
 
 mother_covariates1 <- colnames(dat)[colnames(dat) %in% c("covs_age_mother_conception","covs_edu_mother","covs_occup_mother","covs_parity_mother_binary")]
-father_covariates1 <- colnames(dat)[colnames(dat) %in% c("covs_age_father_pregnancy","covs_edu_father","covs_occup_father")]
+father_covariates1 <- colnames(dat)[colnames(dat) %in% c("covs_age_father_pregnancy","covs_edu_father_anyreport","covs_occup_father_anyreport")]
 
 key$basic_covariates[key$person_exposed=="mother"]<-paste0(mother_covariates1,collapse=",")
 key$basic_covariates[key$person_exposed=="partner"]<-paste0(father_covariates1,collapse=",")

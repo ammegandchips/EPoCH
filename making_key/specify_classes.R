@@ -49,8 +49,9 @@ key$person_exposed <- "mother"
 key$person_exposed[grep(key$exposure,pattern="father")]<-"partner"
  
 ## source of information on paternal data
-key$exposure_source <- "self-reported or measured"
-key$exposure_source[grep(key$exposure,pattern="mreport")]<-"partner data reported by the child's mother"
+key$exposure_source <- "self-reported"
+key$exposure_source[grep(key$exposure,pattern="mreport")]<-"reported by study mother"
+key$exposure_source[grep(key$exposure,pattern="anyreport")]<-"reported by self or study mother"
  
 ## type of exposure variable
 key$exposure_type <- "continuous"
@@ -123,9 +124,9 @@ key$outcome_subclass2[grep(key$outcome,pattern="birthweight_high")] <-"birthweig
 key$outcome_subclass2[grep(key$outcome,pattern="fmi")] <-"fat mass index"
 key$outcome_subclass2[grep(key$outcome,pattern="fatpc")] <-"fat mass percentage"
 
-key$outcome_subclass2[key$outcome %in% scdc_outcomes] <-"social and communications disorders (SCDC) scale"
-key$outcome_subclass2[key$outcome %in% asq_socialcomm_outcomes]<-"ages and stages questionnaire (ASQ): social and communication development"
-key$outcome_subclass2[key$outcome %in% cbcl_outcomes] <-"child behaviour checklist (CBCL) scale"
+key$outcome_subclass2[key$outcome %in% scdc_outcomes] <-"social and communication disorder (SCDC)" #social and communications disorders (SCDC) scale
+key$outcome_subclass2[key$outcome %in% asq_socialcomm_outcomes]<-"social and communication development (ASQ)" #ages and stages questionnaire (ASQ)
+key$outcome_subclass2[key$outcome %in% cbcl_outcomes] <-"total behavioural score (CBCL)"
 key$outcome_subclass2[key$outcome %in% csbqindependence_outcomes] <-"social behaviour: independence"
 key$outcome_subclass2[key$outcome %in% csbqemotional_outcomes] <-"social behaviour: emotional dysregulation"
 key$outcome_subclass2[key$outcome %in% autism_outcomes] <-"autism"

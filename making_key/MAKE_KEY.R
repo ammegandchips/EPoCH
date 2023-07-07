@@ -60,6 +60,9 @@ key$outcome_time <- NA
 key$outcome_type <- NA
 source_url(paste0(location_of_extra_functions,"specify_classes.R?raw=TRUE"))
 
+#remove exposure data on partners if it was reported specifically by mreport or self-report, leaving only anyreport
+key <- key[-which(key$person_exposed == "partner" & key$exposure_source %in% c("reported by study mother","self-reported")),]
+
 # define model 1a covariates (age and sex of child, + ethnicity of parent + genetic principal components if exposure is PRS - and batch variables etc if cohort==Moba)
 
 print("defining model 1a covariates...")
@@ -89,11 +92,11 @@ key$covariates_model1a <- paste(key$covariates_model1a,key$child_age_covariates,
 
 key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score")&key$person_exposed=="mother")]<-
   paste0(key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score")&key$person_exposed=="mother")],
-         ",",paste0(names(dat)[grep(names(dat),pattern="mumpc")],collapse=","))
+         ",",paste0(names(dat)[grep(names(dat),pattern="mumpc|genotyping_batch_num_MUM")],collapse=","))
 
 key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score")&key$person_exposed=="partner")]<-
   paste0(key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score")&key$person_exposed=="partner")],
-         ",",paste0(names(dat)[grep(names(dat),pattern="dadpc")],collapse=","))
+         ",",paste0(names(dat)[grep(names(dat),pattern="dadpc|genotyping_batch_num_DAD")],collapse=","))
 
 ## if exposure is NOT a PRS, add ethnicity of exposed parent
 

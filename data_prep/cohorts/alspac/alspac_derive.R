@@ -126,15 +126,16 @@ dat$covs_edu_father[dat$c666a%in%c(2,3)]<-1 #O-level or vocational
 dat$covs_edu_father[dat$c666a==4]<-2 #A-level
 dat$covs_edu_father[dat$c666a==5]<-3 #Degree
 dat$covs_edu_father_highestlowest_binary <- NA
-dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==0] <- 0
+dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father%in%c(0,1,2)] <- 0
 dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==3] <- 1
+dat$covs_edu_father_highestlowest_binary_anyreport <- dat$covs_edu_father_highestlowest_binary
 dat$covs_edu_mother <- NA
 dat$covs_edu_mother[dat$c645a==1]<-0 #CSE/none
 dat$covs_edu_mother[dat$c645a%in%c(2,3)]<-1 #O-level or vocational
 dat$covs_edu_mother[dat$c645a==4]<-2 #A-level
 dat$covs_edu_mother[dat$c645a==5]<-3 #Degree
 dat$covs_edu_mother_highestlowest_binary <- NA
-dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==0] <- 0
+dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother%in%c(0,1,2)] <- 0
 dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==3] <- 1
 dat$covs_occup_mother <- NA
 dat$covs_occup_mother[dat$c755%in%c(1,2)]<-3 #professional or managerial/technica
@@ -142,7 +143,7 @@ dat$covs_occup_mother[dat$c755==3]<-2 #skilled non-manual
 dat$covs_occup_mother[dat$c755==4]<-1 #skilled manual
 dat$covs_occup_mother[dat$c755%in%c(5,6)]<-0 #semi-skilled or unskilled
 dat$covs_occup_mother_highestlowest_binary <- NA
-dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==0] <- 0
+dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother%in%c(0,1,2)] <- 0
 dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==3] <- 1
 dat$covs_occup_father <- NA
 dat$covs_occup_father[dat$c765%in%c(1,2)]<-3 #professional or managerial/technica
@@ -150,8 +151,9 @@ dat$covs_occup_father[dat$c765==3]<-2 #skilled non-manual
 dat$covs_occup_father[dat$c765==4]<-1 #skilled manual
 dat$covs_occup_father[dat$c765%in%c(5,6)]<-0 #semi-skilled or unskilled
 dat$covs_occup_father_highestlowest_binary <- NA
-dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==0] <- 0
+dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father%in%c(0,1,2)] <- 0
 dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==3] <- 1
+dat$covs_occup_father_highestlowest_binary_anyreport <- dat$covs_occup_father_highestlowest_binary
 dat$covs_parity_mother_binary <-NA
 dat$covs_parity_mother_binary[dat$b032==0]<-0
 dat$covs_parity_mother_binary[dat$b032>0]<-1
@@ -1212,6 +1214,7 @@ dat$smoking_mother_postnatal_binary[dat$smoking_mother_postnatal_ordinal%in% c("
 dat$smoking_father_ever_life_binary <- NA
 dat$smoking_father_ever_life_binary[dat$pb071==1]<-1
 dat$smoking_father_ever_life_binary[dat$pb071==2]<-0
+dat$smoking_father_ever_life_binary_anyreport <- dat$smoking_father_ever_life_binary
 #Early-onset: Smoking before or including age 11 vs no smoking before age 11
   #concordance between maternal report and paternal report is ok, but there are some discrepancies and the paternal reported data is more complete, so stick with this.
   #self-report
@@ -1224,6 +1227,9 @@ dat$smoking_father_ever_life_binary[dat$pb071==2]<-0
   dat$smoking_father_before11_binary_mreport[dat$b691<=11 & dat$b691>0] <- 1
   dat$smoking_father_before11_binary_mreport[dat$b691>11] <- 0
   dat$smoking_father_before11_binary_mreport[dat$smoking_father_ever_life_binary==0] <-0 #never smoker
+  #any-report
+  dat$smoking_father_before11_binary_anyreport <-dat$smoking_father_before11_binary 
+  dat$smoking_father_before11_binary_anyreport[is.na(dat$smoking_father_before11_binary)] <- dat$smoking_father_before11_binary_mreport[is.na(dat$smoking_father_before11_binary)]
 #Pre-conception/first trimester: Any vs no smoking in the three months prior to pregnancy or first trimester
   #There were a few options here: pb077 asked if they smoked regularly in the last 9 months, but depending on when they filled out the questionnaire this could have been post-conception. pb075 and pb076 asks years and months since giving up smoking, but when I tried to derive the variable the n was very low. b683 is maternal report of partner current smoking, but not attached to a date. pb078 is times smoked per day at start of pregnancy, which is likely to be the same as preconception, so I think go with that.
   #It wasn't possible to distinguish between pre-conception and first trimester
@@ -1233,6 +1239,9 @@ dat$smoking_father_startpregnancy_binary[dat$pb078 %in% 1:30]<-1
 dat$smoking_father_startpregnancy_binary_mreport <-NA
 dat$smoking_father_startpregnancy_binary_mreport[dat$b683==1]<-0
 dat$smoking_father_startpregnancy_binary_mreport[dat$b683>1]<-1
+dat$smoking_father_startpregnancy_binary_anyreport <-dat$smoking_father_startpregnancy_binary 
+dat$smoking_father_startpregnancy_binary_anyreport[is.na(dat$smoking_father_startpregnancy_binary)] <- dat$smoking_father_startpregnancy_binary_mreport[is.na(dat$smoking_father_startpregnancy_binary)]
+
 #Pre-conception/first trimester: Number of cigarettes per day (ordered categorical)
 dat$smoking_father_startpregnancy_ordinal <- NA
 dat$smoking_father_startpregnancy_ordinal[dat$pb078==0]<-"None"
@@ -1248,6 +1257,11 @@ dat$smoking_father_startpregnancy_ordinal_mreport[dat$b685 == 5]<-"Light"
 dat$smoking_father_startpregnancy_ordinal_mreport[dat$b685 == 10 | dat$b685 == 15]<-"Moderate"
 dat$smoking_father_startpregnancy_ordinal_mreport[dat$b685 >= 20]<-"Heavy"
 dat$smoking_father_startpregnancy_ordinal_mreport<-factor(dat$smoking_father_startpregnancy_ordinal_mreport,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+dat$smoking_father_startpregnancy_ordinal_anyreport <-dat$smoking_father_startpregnancy_ordinal
+dat$smoking_father_startpregnancy_ordinal_anyreport[is.na(dat$smoking_father_startpregnancy_ordinal)] <- dat$smoking_father_startpregnancy_ordinal_mreport[is.na(dat$smoking_father_startpregnancy_ordinal)]
+dat$smoking_father_startpregnancy_ordinal_anyreport<-factor(dat$smoking_father_startpregnancy_ordinal_anyreport,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+
+
 #Pregnancy: Number of cigarettes per day in the second trimester (ordered categorical)
   #pb079 asks how much smoking per day in past 2 weeks, and was mostly answered during the second trimester
 dat$smoking_father_secondtrim_ordinal <-NA
@@ -1257,10 +1271,12 @@ dat$smoking_father_secondtrim_ordinal[dat$pb079==5 & dat$time_qPB_partner_gestat
 dat$smoking_father_secondtrim_ordinal[dat$pb079%in% 10:15 & dat$time_qPB_partner_gestation %in% 13:26] <-"Moderate"
 dat$smoking_father_secondtrim_ordinal[dat$pb079>=20 & dat$time_qPB_partner_gestation %in% 13:26] <-"Heavy"
 dat$smoking_father_secondtrim_ordinal<-factor(dat$smoking_father_secondtrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+dat$smoking_father_secondtrim_ordinal_anyreport <- dat$smoking_father_secondtrim_ordinal
 #Pregnancy: Any smoking vs no smoking in the second trimester
 dat$smoking_father_secondtrim_binary <- NA
 dat$smoking_father_secondtrim_binary[dat$smoking_father_secondtrim_ordinal=="None"]<-0
 dat$smoking_father_secondtrim_binary[dat$smoking_father_secondtrim_ordinal %in% c("Light","Moderate","Heavy")]<-1
+dat$smoking_father_secondtrim_binary_anyreport <- dat$smoking_father_secondtrim_binary
 #Pregnancy: Number of cigarettes per day in the third trimester (ordered categorical)
   #pc260 asks how many times per day did you smoke in the last 2 months of pregnancy
 dat$smoking_father_thirdtrim_ordinal <- NA
@@ -1270,10 +1286,12 @@ dat$smoking_father_thirdtrim_ordinal[dat$pc260 == 5]<-"Light"
 dat$smoking_father_thirdtrim_ordinal[dat$pc260 == 10 | dat$pc260 == 15]<-"Moderate"
 dat$smoking_father_thirdtrim_ordinal[dat$pc260 >= 20]<-"Heavy"
 dat$smoking_father_thirdtrim_ordinal<-factor(dat$smoking_father_thirdtrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+dat$smoking_father_thirdtrim_ordinal_anyreport <- dat$smoking_father_thirdtrim_ordinal
 #Pregnancy: Any smoking vs no smoking in the third trimester
 dat$smoking_father_thirdtrim_binary <- NA
 dat$smoking_father_thirdtrim_binary[dat$smoking_father_thirdtrim_ordinal=="None"]<-0
 dat$smoking_father_thirdtrim_binary[dat$smoking_father_thirdtrim_ordinal %in% c("Light","Moderate","Heavy")]<-1
+dat$smoking_father_thirdtrim_binary_anyreport <- dat$smoking_father_thirdtrim_binary
 #Pregnancy: Any smoking vs no smoking at any time during pregnancy
 dat$smoking_father_ever_pregnancy_binary<-NA
 dat$smoking_father_ever_pregnancy_binary[dat$smoking_father_startpregnancy_binary==0 & 
@@ -1282,6 +1300,7 @@ dat$smoking_father_ever_pregnancy_binary[dat$smoking_father_startpregnancy_binar
 dat$smoking_father_ever_pregnancy_binary[dat$smoking_father_startpregnancy_binary==1 | 
                                     dat$smoking_father_secondtrim_binary==1 |
                                     dat$smoking_father_thirdtrim_binary==1] <- 1
+dat$smoking_father_ever_pregnancy_binary_anyreport <- dat$smoking_father_ever_pregnancy_binary
 #Postnatal: ordinal smoking after birth of child, up to 2 years (first 1000 days)
   #smoking at 8 months = pd620; 0=none, 1=light, 5=light to moderate, 10|15=moderate to heavy, 20+=heavy
   #smoking at 21 months = pe450; 0=none, 1=light, 5=light to moderate, 10|15=moderate to heavy, 20+=heavy
@@ -1306,12 +1325,13 @@ dat$smoking_father_postnatal_ordinal[dat$smoking_father_postnatal_ordinal==1]<-"
 dat$smoking_father_postnatal_ordinal[dat$smoking_father_postnatal_ordinal==2]<-"Moderate"
 dat$smoking_father_postnatal_ordinal[dat$smoking_father_postnatal_ordinal==3]<-"Heavy"
 dat$smoking_father_postnatal_ordinal<-factor(dat$smoking_father_postnatal_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+dat$smoking_father_postnatal_ordinal_anyreport<-dat$smoking_father_postnatal_ordinal
 rm(temp_df,temp_var_21,temp_var_8)
 #Postnatal: any vs no smoking after birth of child, up to 2 years (first 1000 days)
 dat$smoking_father_postnatal_binary <- NA
 dat$smoking_father_postnatal_binary[dat$smoking_father_postnatal_ordinal=="None"]<-0
 dat$smoking_father_postnatal_binary[dat$smoking_father_postnatal_ordinal%in% c("Light","Moderate","Heavy")]<-1
-
+dat$smoking_father_postnatal_binary_anyreport<-dat$smoking_father_postnatal_binary
 ##### CAFFEINE EXPOSURES
 ### Maternal
 #First trimester coffee mg per day**
@@ -1485,6 +1505,11 @@ dat$caffeine_father_total_ever_pregnancy_continuous <- dat$caffeine_father_total
 #Ordinal variables**
 dat$caffeine_father_total_secondtrim_ordinal <- cut(dat$caffeine_father_total_secondtrim_continuous,breaks = c(-1,0,200,400,Inf),labels = c("None","Light","Moderate","Heavy"),ordered_result = T)
 dat$caffeine_father_total_ever_pregnancy_ordinal <- cut(dat$caffeine_father_total_ever_pregnancy_continuous,breaks = c(-1,0,200,400,Inf),labels = c("None","Light","Moderate","Heavy"),ordered_result = T)
+
+caffeine_father_vars <- colnames(dat)[grep(colnames(dat),pattern="caffeine_father")]
+for(var in caffeine_father_vars){
+  dat[,paste0(var,"_anyreport")]<-dat[,var]
+}
 
 ##### ALCOHOL EXPOSURES
 
@@ -1665,6 +1690,16 @@ dat$alcohol_father_postnatal_binary <- NA
 dat$alcohol_father_postnatal_binary[dat$alcohol_father_postnatal_ordinal=="None"]<-0
 dat$alcohol_father_postnatal_binary[dat$alcohol_father_postnatal_ordinal%in% c("Light","Moderate","Heavy")]<-1
 
+alcohol_father_vars <- colnames(dat)[grep(colnames(dat),pattern="alcohol_father")]
+for(var in alcohol_father_vars){
+    dat[,paste0(var,"_anyreport")]<-dat[,var]
+}
+dat$alcohol_father_ever_pregnancy_binary_mreport_anyreport<-NULL
+dat$alcohol_father_ever_pregnancy_binary_anyreport <- dat$alcohol_father_ever_pregnancy_binary
+dat$alcohol_father_ever_pregnancy_binary_anyreport[is.na(dat$alcohol_father_ever_pregnancy_binary)] <- dat$alcohol_father_ever_pregnancy_binary_mreport[is.na(dat$alcohol_father_ever_pregnancy_binary)]
+
+
+
 ##### PHYSICAL ACTIVITY EXPOSURES
 
 #Maternal and paternal PA in the second trimester
@@ -1680,6 +1715,7 @@ dat$physact_father_secondtrim_ordinal[which(dat$pb014>0&dat$pb014<=3)]<-"Light" 
 dat$physact_father_secondtrim_ordinal[which(dat$pb014>3&dat$pb014<=6)]<-"Moderate" #<=6
 dat$physact_father_secondtrim_ordinal[dat$pb014>6]<-"Heavy" #>6
 dat$physact_father_secondtrim_ordinal<-factor(dat$physact_father_secondtrim_ordinal,levels=c("None","Light","Moderate","Heavy"),ordered=T)
+dat$physact_father_secondtrim_ordinal_anyreport <- dat$physact_father_secondtrim_ordinal
 #Maternal PA in the third trimester
 dat$physact_mother_thirdtrim_ordinal <- NA
 dat$physact_mother_thirdtrim_ordinal[dat$c504==0|dat$c503==2]<-"None" #0
@@ -1712,3 +1748,40 @@ dat <- left_join(dat,genetic_data,by=c("aln","qlet"),all.x=T)
 
 ##### Save file
 saveRDS(dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds")
+
+##save summary
+tableone::CreateTableOne(names(dat)[grep("binary|ordinal|covs_|neuro_|immuno_|anthro_|negcon_|cardio_",names(dat))],factorVars = names(dat)[grep("binary|ordinal",names(dat))],data=dat)->TABLE1
+saveRDS(TABLE1,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/check_prepared_data/table1_for_dat_ALSPAC.rds")
+
+##correlations of PRS and exposures
+
+flattenCorrMatrix <- function(cormat,pmat){
+  ut <- upper.tri(cormat)
+  data.frame(
+    var1 = rownames(cormat)[row(cormat)[ut]],
+    var2 = rownames(cormat)[col(cormat)[ut]],
+    cor = (cormat)[ut],
+    p = pmat[ut]
+  )
+}
+
+generate_correlations <- function(vars, dat) {
+  vars<-vars[-grep("zscore|ordinal",vars)]
+  df <- dat[,vars]
+  df_cor <- Hmisc::rcorr(as.matrix(df))
+  flattenCorrMatrix(df_cor$r, df_cor$P)
+}
+
+
+smoking_vars <- names(dat)[grep(names(dat),pattern="smoking_m|smoking_f|prs_score_mother_smoking|prs_score_father_smoking")]
+alcohol_vars <- names(dat)[grep(names(dat),pattern="alcohol_m|alcohol_f|prs_score_mother_alcohol|prs_score_father_alcohol")]
+caffeine_vars <- names(dat)[grep(names(dat),pattern="caffeine_m|caffeine_f|prs_score_mother_caffeine|prs_score_father_caffeine")]
+
+smoking_cor <- generate_correlations(smoking_vars,dat)
+alcohol_cor <- generate_correlations(alcohol_vars,dat)
+caffeine_cor <- generate_correlations(caffeine_vars,dat)
+
+saveRDS(smoking_cor,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/check_prepared_data/smoking_correlations_ALSPAC.rds")
+saveRDS(alcohol_cor,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/check_prepared_data/alcohol_correlations_ALSPAC.rds")
+saveRDS(caffeine_cor,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/check_prepared_data/caffeine_correlations_ALSPAC.rds")
+

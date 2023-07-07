@@ -93,14 +93,16 @@ dat$covs_occup_father[raw_dat$job0fthwrk %in% c(2,7)] <- 2 #skilled non-manual
 dat$covs_occup_father[raw_dat$job0fthwrk %in% c(4,5)] <- 1 #skilled manual
 dat$covs_occup_father[raw_dat$job0fthwrk %in% c(6,11,12)] <- 0 #semi-skilled or unskilled or LT unemployed/sick or don't know
 dat$covs_edu_father_highestlowest_binary <- NA
-dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==0] <- 0
+dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father%in%c(0,1,2)] <- 0
 dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==3] <- 1
 dat$covs_edu_mother_highestlowest_binary <- NA
-dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==0] <- 0
+dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother%in%c(0,1,2)] <- 0
 dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==3] <- 1
 dat$covs_occup_father_highestlowest_binary <- NA
-dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==0] <- 0
+dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father%in%c(0,1,2)] <- 0
 dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==3] <- 1
+dat$covs_edu_father_highestlowest_binary_anyreport <- dat$covs_edu_father_highestlowest_binary
+dat$covs_occup_father_highestlowest_binary_anyreport <- dat$covs_occup_father_highestlowest_binary
 # Living with partner
 dat$covs_partner_lives_with_mother_prenatal<-NA
 dat$covs_partner_lives_with_mother_prenatal[raw_dat$hhd0cohabt%in%c(1,2)]<- 1
@@ -558,6 +560,18 @@ dat$alcohol_father_thirdtrim_ordinal<-factor(dat$alcohol_father_thirdtrim_ordina
 #Any alcohol Vs none in third trimester
 dat$alcohol_father_thirdtrim_binary<-dat$alcohol_father_ever_pregnancy_binary
 
+## Any report (to be in line with other cohorts where there is a mix of self and mreport for paternal data)
+alcohol_father_vars <- colnames(dat)[grep(colnames(dat),pattern="alcohol_father")]
+for(var in alcohol_father_vars){
+  dat[,paste0(var,"_anyreport")]<-dat[,var]
+}
+
+smoking_father_vars <- colnames(dat)[grep(colnames(dat),pattern="smoking_father")]
+for(var in smoking_father_vars){
+  dat[,paste0(var,"_anyreport")]<-dat[,var]
+}
+
+
 # CAFFEINE
 # filter
 raw_dat$caffeine_mother_coffee_filter_thirdtrim_continuous<-raw_dat$cdr0dccfpd
@@ -612,5 +626,43 @@ dat <- left_join(dat,genetic_data[[2]][,grep("mumpc|BiBPersonID|prs",colnames(ge
 # save dat
 
 saveRDS(dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/bib/bib_pheno.rds")
+
+##save summary
+tableone::CreateTableOne(names(dat)[grep("binary|ordinal|covs_|neuro_|immuno_|anthro_|negcon_|cardio_",names(dat))],factorVars = names(dat)[grep("binary|ordinal",names(dat))],data=dat)->TABLE1
+saveRDS(TABLE1,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/check_prepared_data/table1_for_dat_BIB.rds")
+
+##correlations of PRS and exposures
+
+flattenCorrMatrix <- function(cormat,pmat){
+  ut <- upper.tri(cormat)
+  data.frame(
+    var1 = rownames(cormat)[row(cormat)[ut]],
+    var2 = rownames(cormat)[col(cormat)[ut]],
+    cor = (cormat)[ut],
+    p = pmat[ut]
+  )
+}
+
+generate_correlations <- function(vars, dat) {
+  vars<-vars[-grep("zscore|ordinal",vars)]
+  df <- dat[,vars]
+  df_cor <- Hmisc::rcorr(as.matrix(df))
+  flattenCorrMatrix(df_cor$r, df_cor$P)
+}
+
+
+smoking_vars <- names(dat)[grep(names(dat),pattern="smoking_m|smoking_f|prs_score_mother_smoking|prs_score_father_smoking")]
+alcohol_vars <- names(dat)[grep(names(dat),pattern="alcohol_m|alcohol_f|prs_score_mother_alcohol|prs_score_father_alcohol")]
+caffeine_vars <- names(dat)[grep(names(dat),pattern="caffeine_m|caffeine_f|prs_score_mother_caffeine|prs_score_father_caffeine")]
+
+smoking_cor <- generate_correlations(smoking_vars,dat)
+alcohol_cor <- generate_correlations(alcohol_vars,dat)
+caffeine_cor <- generate_correlations(caffeine_vars,dat)
+
+saveRDS(smoking_cor,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/check_prepared_data/smoking_correlations_BIB.rds")
+saveRDS(alcohol_cor,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/check_prepared_data/alcohol_correlations_BIB.rds")
+saveRDS(caffeine_cor,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/check_prepared_data/caffeine_correlations_BIB.rds")
+
+
 
 

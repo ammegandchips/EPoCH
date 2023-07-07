@@ -9,6 +9,7 @@
 ## AND: https://stackoverflow.com/questions/46737602/translating-stata-code-to-r-survey-weights
 ## ESSENTIALLY, WE HAVE TO SET UP THE SURVEY DESIGN (DIFFERENT FOR DIFFERENT OUTCOMES BECAUSE DIFFERENT SWEEPS NEED DIFFERENT WEIGHTS) - MAY BE EASIEST TO SET UP DIFFERENT VERSIONS OF MCS DAT DEPENDING ON OUTCOME, E.G. MCS_S1, MCS_S2 ETC
 ## THEN RUN THE PHEWAS USING SPECIFIC FUNCTIONS FOR LM AND GLM FROM THE SURVEY PACKAGE - APPLIED TO EACH VERSION OF MCS DEPENDING ON THE OUTCOMES (MCS_1 ETC)
+## update April 2023: after discussion with Ahmed, maybe this isn't necessary. Only necessary if we are calculating prevalences? He has published without weighting
 
 library(knitr)
 library(haven)
@@ -301,7 +302,11 @@ dat$alcohol_father_postnatal_ordinal<-factor(dat$alcohol_father_postnatal_ordina
 
 
 
-
+## Any report (to be in line with other cohorts where there is a mix of self and mreport for paternal data)
+father_vars <- colnames(dat)[grep(colnames(dat),pattern="alcohol_father|smoking_father|caffeine_father")]
+for(var in father_vars){
+  dat[,paste0(var,"_anyreport")]<-dat[,var]
+}
 
 
 # Birthweight (g)
@@ -761,20 +766,22 @@ dat$covs_occup_father[raw_dat$apd05s00==4]<-1 #low supervisory and technical
 dat$covs_occup_father[raw_dat$apd05s00==5]<-0 #semi-routine or routine
 
 dat$covs_edu_father_highestlowest_binary <- NA
-dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==0] <- 0
+dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father%in%c(0,1,2)] <- 0
 dat$covs_edu_father_highestlowest_binary[dat$covs_edu_father==3] <- 1
+dat$covs_edu_father_highestlowest_binary_anyreport <- dat$covs_edu_father_highestlowest_binary
 
 dat$covs_edu_mother_highestlowest_binary <- NA
-dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==0] <- 0
+dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother%in%c(0,1,2)] <- 0
 dat$covs_edu_mother_highestlowest_binary[dat$covs_edu_mother==3] <- 1
 
 dat$covs_occup_mother_highestlowest_binary <- NA
-dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==0] <- 0
+dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother%in%c(0,1,2)] <- 0
 dat$covs_occup_mother_highestlowest_binary[dat$covs_occup_mother==3] <- 1
 
 dat$covs_occup_father_highestlowest_binary <- NA
-dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==0] <- 0
+dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father%in%c(0,1,2)] <- 0
 dat$covs_occup_father_highestlowest_binary[dat$covs_occup_father==3] <- 1
+dat$covs_occup_father_highestlowest_binary_anyreport <- dat$covs_occup_father_highestlowest_binary
 
 
 
@@ -896,8 +903,13 @@ dat$covs_passivesmk_child_stage3_binary[raw_dat$cmsmkr00==2|raw_dat$dmsmkr00==2]
 dat$covs_passivesmk_child_stage3_binary[raw_dat$cmsmkr00==1|raw_dat$dmsmkr00==1] <- 1
 
 
-
-
 saveRDS(dat,"/Volumes/MRC-IEU-research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rds")
+
+
+##save summary
+tableone::CreateTableOne(names(dat)[grep("binary|ordinal|covs_|neuro_|immuno_|anthro_|negcon_|cardio_",names(dat))],factorVars = names(dat)[grep("binary|ordinal",names(dat))],data=dat)->TABLE1
+saveRDS(TABLE1,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/data_prep/check_prepared_data/table1_for_dat_MCS.rds")
+
+
 
 
