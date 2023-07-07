@@ -11,6 +11,10 @@ select_other_health_behaviours <- function(expclass, exptime, expparent, exptype
       }else{
         if(expclass=="caffeine consumption"){
           basic <- c("any drinking", "active smoking")
+        }else{
+          if(expclass=="physical activity"){
+            basic <- c("active smoking","any drinking")
+          }
         }}}
  
   

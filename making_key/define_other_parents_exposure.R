@@ -12,6 +12,9 @@ select_other_parents_exposure <- function(expclass, exptime, expparent, exptype,
   if(expclass=="caffeine consumption"){
     basic <- "any source"
   }
+  if(expclass=="physical activity"){
+    basic <- "basic"
+  }
   ##
   
   ## adjustment source
