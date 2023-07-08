@@ -71,6 +71,9 @@ print("combining cohort results in long format...")
 
 all_cohort_phewas_long <- bind_rows(cohort_phewas)
 
+#just tidying up a bit due to (accidental) differences in the make_key process for MoBa and the other cohorts - but actually this column isn't needed for the meta-analysis
+all_cohort_phewas_long$exposure_source <-NA
+
 print("combining cohort results in wide format...")
 
 all_cohort_phewas_wide <- pivot_wider(all_cohort_phewas_long,
