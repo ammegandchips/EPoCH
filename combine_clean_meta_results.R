@@ -66,13 +66,44 @@ numeric_cols <-c(c("est","se","p","q","hetp","i2","h2"),
 combined_cleaned[,numeric_cols] <- apply(combined_cleaned[,numeric_cols],2,as.numeric)
 
 
+#tidying up
+combined_cleaned$total_n_exposure[combined_cleaned$total_n_exposure==0]<-NA
+combined_cleaned$total_n_outcome[combined_cleaned$total_n_outcome==0]<-NA
+
 # save
 saveRDS(combined_cleaned,"University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/all_results.rds")
 
 # remove results related to physical activity or diet (for app)
 combined_cleaned <- combined_cleaned[-which(combined_cleaned$exposure_class %in% c("physical activity","diet")),]
+# and results for perinatal survival outcomes
+combined_cleaned <- combined_cleaned[-which(combined_cleaned$outcome_class %in% c("perinatal survival")),]
+
+# QC of cohort results (remove anything where there's evidence of the model not converging, probably because a single explanatory variable (exposure or covariate), uniquely identifies the outcome, i.e. perfect prediction/complete separation.)
+## evidence predicted by a very high effect estimate combined with a large P-value
+
+  df <- combined_cleaned
+  df_bin <- df[df$outcome_type=="binary",]
+  cutoff_bin <- quantile(abs(df_bin$est),probs = 0.99,na.rm = T)
+  df_cont <- df[df$outcome_type=="continuous",]
+  cutoff_cont <- quantile(abs(df_cont$est),probs = 0.99,na.rm = T)
+  df_cleaned <- df[which((df$outcome_type=="binary"& abs(df$est)<=cutoff_bin)|
+                     (df$outcome_type=="continuous"& abs(df$est)<=cutoff_cont)), ]
+  lost_exposures <- unique(df$exposure_linker[(df$exposure_linker %in% df_cleaned$exposure_linker)==F])
+  lost_outcomes <- unique(df$outcome_linker[(df$outcome_linker %in% df_cleaned$outcome_linker)==F])
+  
+  original_associations <-paste(df$exposure_linker,df$outcome_linker)
+  cleaned_associations <-paste(df_cleaned$exposure_linker,df_cleaned$outcome_linker)
+  lost_associations <- unique(original_associations[(original_associations %in% cleaned_associations)==F])
+
+#drop dustmite, autism, and insect allergy because very small Ns leading to implausible effect estimates and SEs:
+combined_cleaned <- combined_cleaned[-which(combined_cleaned$outcome_subclass2 %in% c("dustmite allergy","insect allergy","autism")),]
+#drop associations where very large SEs mean result is unreliable
+cutoff <- quantile(combined_cleaned$se,probs = 0.999)
+print(cutoff)
+combined_cleaned2 <- combined_cleaned[combined_cleaned$se<cutoff,]
+
 saveRDS(combined_cleaned,"~/University of Bristol/grp-EPoCH - Documents/EPoCH GitHub/all_results_reduced.rds")
-saveRDS(combined_cleaned,"/Users/gs8094/Library/CloudStorage/OneDrive-UniversityofExeter/Projects/EPoCH/EPoCH results app/rds/all_results_reduced.rds")
+saveRDS(combined_cleaned,"/Users/gs8094/Library/CloudStorage/OneDrive-UniversityofExeter/Projects/EPoCH/EPoCH results app/data/rds/all_results_reduced.rds")
 
 
 

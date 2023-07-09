@@ -44,15 +44,11 @@ cohort_phewas <- lapply(1:length(cohorts),function(x){
   res <- readRDS(paste0(location_of_phewas_res,cohorts[x],"_",model,"_phewas.rds"))
   res <- res[,c("exposure","regression_term","outcome","est","se","p","n","exposure_n","outcome_n")]
   res <- res[which(res$regression_term!="error"),] # can remove this once we have sorted the issue with MCS
-#  if(cohorts[x]=="BIB_ALL"){
-#  res <- res[-grep("bmi_stage0_zscore|bmi_stage1_zscore|bmi_stage2_zscore|bmi_stage3_zscore|bmi_stage4_zscore",res$outcome),] # can remove this once we have sorted the issue with BIB  
-#  }
-    # if(cohorts[x]=="MOBA"){
-    # res <- res[-grep("cbcl|autism|aggression",res$outcome),] # can remove this once we have sorted the issue with MOBA 
-    # res <- res[-grep("phys",res$exposure),] # can remove this once we have sorted the issue with MOBA 
-    #  }
   res$cohort <- key_cohorts[x]
   key <- readRDS(paste0(location_of_key,tolower(key_cohorts[x]),"_key.rds"))
+  #just tidying up a bit due to (accidental) differences in the make_key process for MoBa and the other cohorts - but actually this column isn't needed for the meta-analysis
+  key$exposure_source <-"reported by self or study mother"
+  key$exposure_linker<-str_replace(key$exposure_linker,pattern="self-reported|reported by self or study mother|self-reported or measured","reported by self or study mother")
   res <- merge(res,key,by=c("exposure","outcome"),all.y=F)
   res$exposure_dose <-NA
   res$exposure_dose[grep("Heavy",res$regression_term)]<-"heavy"
@@ -70,9 +66,6 @@ cohort_phewas <- lapply(1:length(cohorts),function(x){
 print("combining cohort results in long format...")
 
 all_cohort_phewas_long <- bind_rows(cohort_phewas)
-
-#just tidying up a bit due to (accidental) differences in the make_key process for MoBa and the other cohorts - but actually this column isn't needed for the meta-analysis
-all_cohort_phewas_long$exposure_source <-NA
 
 print("combining cohort results in wide format...")
 
