@@ -2,10 +2,14 @@ mkdir -p ~/EPoCH/data/
 
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/alspac_pheno.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_pheno.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bibsa/bibsa_pheno.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bibwe/bibwe_pheno.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_pheno.rds ~/EPoCH/data/
 
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/alspac_key.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/bib_key.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bibsa/bibsa_key.rds ~/EPoCH/data/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bibwe/bibwe_key.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_key.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/moba/moba_key.rds ~/EPoCH/data/
 
@@ -29,6 +33,8 @@ rm -r ~/EPoCH/for_metaanalysis/*
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/moba/results/MOBA_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/ALSPAC_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIB_model* ~/EPoCH/for_metaanalysis/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIBSA_model* ~/EPoCH/for_metaanalysis/
+cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bib/results/BIBWE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/results/MCS_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/moba/results/MOBA_FEMALE_model* ~/EPoCH/for_metaanalysis/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/alspac/results/ALSPAC_FEMALE_model* ~/EPoCH/for_metaanalysis/
