@@ -98,11 +98,13 @@ key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score")&
   paste0(key$covariates_model1a[which(key$exposure_subclass%in%c("polygenic risk score")&key$person_exposed=="partner")],
          ",",paste0(names(dat)[grep(names(dat),pattern="dadpc|genotyping_batch_num_DAD")],collapse=","))
 
-## if exposure is NOT a PRS, add ethnicity of exposed parent
+## if exposure is NOT a PRS, and the cohort is not already stratified by ethnicity (i.e. BiBSA and BiBWE) add ethnicity of exposed parent:
 
+if(tolower(cohort) %in% c("moba","alspac","bib","mcs")){
 key$covariates_model1a[key$person_exposed=="mother"&key$exposure_subclass!="polygenic risk score"]<-paste(key$covariates_model1a[key$person_exposed=="mother"&key$exposure_subclass!="polygenic risk score"],"covs_ethnicity_mother",sep=",")
 key$covariates_model1a[key$person_exposed=="partner"&key$exposure_subclass!="polygenic risk score"]<-paste(key$covariates_model1a[key$person_exposed=="partner"&key$exposure_subclass!="polygenic risk score"],"covs_ethnicity_father",sep=",")
-
+}
+                        
 # define model 2a covariates 
  
 print("defining model 2a covariates...")
