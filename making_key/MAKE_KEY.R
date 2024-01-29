@@ -213,8 +213,9 @@ key$covariates_model4c <- apply(key[,c("covariates_model4a","other_parents_expos
 key$covariates_model2c[key$exposure_subclass=="polygenic risk score"]<-NA
 key$covariates_model3c[key$exposure_subclass=="polygenic risk score"]<-NA
 
-## add ethnicity of other parent
+## add ethnicity of other parent (if cohort not BIB_SA or BIB_WE)
 
+if(tolower(cohort) %in% c("moba","alspac","bib","mcs")){
 key$covariates_model1c[key$person_exposed=="mother"&key$exposure_subclass!="polygenic risk score"]<-paste(key$covariates_model1c[key$person_exposed=="mother"&key$exposure_subclass!="polygenic risk score"],"covs_ethnicity_father",sep=",")
 key$covariates_model1c[key$person_exposed=="partner"&key$exposure_subclass!="polygenic risk score"]<-paste(key$covariates_model1c[key$person_exposed=="partner"&key$exposure_subclass!="polygenic risk score"],"covs_ethnicity_mother",sep=",")
 key$covariates_model2c[key$person_exposed=="mother"&key$exposure_subclass!="polygenic risk score"]<-paste(key$covariates_model2c[key$person_exposed=="mother"&key$exposure_subclass!="polygenic risk score"],"covs_ethnicity_father",sep=",")
@@ -223,7 +224,8 @@ key$covariates_model3c[key$person_exposed=="mother"&key$exposure_subclass!="poly
 key$covariates_model3c[key$person_exposed=="partner"&key$exposure_subclass!="polygenic risk score"]<-paste(key$covariates_model3c[key$person_exposed=="partner"&key$exposure_subclass!="polygenic risk score"],"covs_ethnicity_mother",sep=",")
 key$covariates_model4c[key$person_exposed=="mother"&key$exposure_subclass!="polygenic risk score"]<-paste(key$covariates_model4c[key$person_exposed=="mother"&key$exposure_subclass!="polygenic risk score"],"covs_ethnicity_father",sep=",")
 key$covariates_model4c[key$person_exposed=="partner"&key$exposure_subclass!="polygenic risk score"]<-paste(key$covariates_model4c[key$person_exposed=="partner"&key$exposure_subclass!="polygenic risk score"],"covs_ethnicity_mother",sep=",")
-            
+            }
+                                
 # remove NAs in all lists of covariates
 
 print("tidying up key...")
