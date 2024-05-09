@@ -18,7 +18,7 @@ select_other_parents_exposure <- function(expclass, exptime, expparent, exptype,
   ##
   
   ## adjustment source
-  adjustment_source <- ifelse(expparent=="mother","reported by self of study mother","self-reported")
+  adjustment_source <- ifelse(expparent=="mother","reported by self or study mother","self-reported")
   
   if(expsubclass=="snps"){
     res<-NA
