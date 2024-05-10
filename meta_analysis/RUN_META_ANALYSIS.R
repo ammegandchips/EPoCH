@@ -41,22 +41,8 @@ save_directory <- paste0("~/EPoCH/results/")
 print("reading in cohort phewas results and merging with key...")
 
 cohort_phewas <- lapply(1:length(cohorts),function(x){
-  res <- readRDS(paste0(location_of_phewas_res,cohorts[x],"_",model,"_phewas.rds"))
-  res <- res[,c("exposure","regression_term","outcome","est","se","p","n","exposure_n","outcome_n")]
-  res <- res[which(res$regression_term!="error"),] # can remove this once we have sorted the issue with MCS
+  res <- readRDS(paste0(location_of_phewas_res,cohorts[x],"_",model,"_cleanedphewas.rds"))
   res$cohort <- key_cohorts[x]
-  key <- readRDS(paste0(location_of_key,tolower(key_cohorts[x]),"_key.rds"))
-  #just tidying up a bit due to (accidental) differences in the make_key process for MoBa and the other cohorts - but actually this column isn't needed for the meta-analysis
-  key$exposure_source <-"reported by self or study mother"
-  key$exposure_linker<-str_replace(key$exposure_linker,pattern="self-reported|reported by self or study mother|self-reported or measured","reported by self or study mother")
-  res <- merge(res,key,by=c("exposure","outcome"),all.y=F)
-  res$exposure_dose <-NA
-  res$exposure_dose[grep("Heavy",res$regression_term)]<-"heavy"
-  res$exposure_dose[grep("Light",res$regression_term)]<-"light"
-  res$exposure_dose[grep("Moderate",res$regression_term)]<-"moderate"
-  res$exposure_linker <- paste(res$exposure_linker,res$exposure_dose)
-  res$exposure <-NULL
-  res$regression_term <-NULL
   res<-res[,-grep(colnames(res),pattern="covariate")]
   res
 })
