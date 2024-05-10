@@ -23,6 +23,15 @@ library(stringr)
 
 models <- c(paste0("model",as.vector(outer(1:4, letters[1:3], paste0))))
 
+cohort_name <- cohort
+
+if(grepl("_FEMALE",cohort)){
+  cohort_name <-unlist(strsplit(cohort,split="_FEMALE"))
+}
+if(grepl("_MALE",cohort)){
+  cohort_name <-unlist(strsplit(cohort,split="_MALE"))
+}
+
 location_of_key <- paste0("~/EPoCH/data/")
 location_of_phewas_res <- paste0("~/EPoCH/for_metaanalysis/")
 location_of_extra_functions <- "https://github.com/ammegandchips/EPoCH/blob/main/meta_analysis/"
@@ -37,7 +46,7 @@ cohort_phewas <- lapply(1:length(models),function(x){
   res <- res[,c("exposure","regression_term","outcome","est","se","p","n","exposure_n","outcome_n","model")]
   res <- res[which(res$regression_term!="error"),] # can remove this once we have sorted the issue with MCS
   res$cohort <- cohort
-  key <- readRDS(paste0(location_of_key,tolower(cohort),"_key.rds"))
+  key <- readRDS(paste0(location_of_key,tolower(cohort_name),"_key.rds"))
   #just tidying up a bit due to (accidental) differences in the make_key process for MoBa and the other cohorts - but actually this column isn't needed for the meta-analysis
   key$exposure_source <-"reported by self or study mother"
   key$exposure_linker<-str_replace(key$exposure_linker,pattern="self-reported|reported by self or study mother|self-reported or measured","reported by self or study mother")
