@@ -41,7 +41,7 @@ save_directory <- paste0("~/EPoCH/results/")
 print("reading in cohort phewas results and merging with key...")
 
 cohort_phewas <- lapply(1:length(cohorts),function(x){
-  res <- readRDS(paste0(location_of_phewas_res,cohorts[x],"_",model,"_cleanedphewas.rds"))
+  res <- readRDS(paste0(location_of_phewas_res,cohorts[x],"_",model,"_cleanedphewas.rds"))[[1]]
   res$cohort <- key_cohorts[x]
   res<-res[,-grep(colnames(res),pattern="covariate")]
   res
