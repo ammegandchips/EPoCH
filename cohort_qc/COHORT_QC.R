@@ -148,6 +148,8 @@ split_data <- split(all_models_phewas_long, f = all_models_phewas_long$model)
 
 print("saving results...")
 
+models <- names(split_data)
+
 save_split_results <- function(modelindex){
   saveRDS(split_data[modelindex],file=paste0(save_directory,cohort,"_",models[modelindex],"_cleanedphewas.rds"))
 }
