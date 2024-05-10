@@ -65,6 +65,7 @@ options for `scriptname` are:
   *   MAKE_KEY
   *   RUN_PHEWAS
   *   RUN_META_ANALYSIS
+  *   COHORT_QC
 
 Options for `cohortORmodel` are:
 
