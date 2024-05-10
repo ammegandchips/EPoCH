@@ -13,7 +13,6 @@ cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/bibwe/bibwe_key.
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/mcs/mcs_key.rds ~/EPoCH/data/
 cp /projects/MRC-IEU/research/projects/ieu2/p5/015/working/data/moba/moba_key.rds ~/EPoCH/data/
 
-
 mkdir -p ~/EPoCH/scripts/
 
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/data_prep/check_prepared_data/SUMMARISE_DATA.R -P ~/EPoCH/scripts/
@@ -21,6 +20,7 @@ wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/making_key/MAKE_
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/phewas/RUN_PHEWAS.R -P ~/EPoCH/scripts/
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/phewas/RUN_PHEWAS_SUMMARIES_ONLY.R -P ~/EPoCH/scripts/
 wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/meta_analysis/RUN_META_ANALYSIS.R -P ~/EPoCH/scripts/
+wget https://raw.githubusercontent.com/ammegandchips/EPoCH/main/cohort_qc/COHORT_QC.R -P ~/EPoCH/scripts/
 
 mkdir -p ~/EPoCH/out/
 rm -r ~/EPoCH/out/*
